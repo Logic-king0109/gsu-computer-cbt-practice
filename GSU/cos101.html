@@ -1,0 +1,2920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+            {
+                id: 1,
+                question: "The combination of everyday human social interactions on a small-scale interface:",
+                options: ["information", "responsibility", "cultural anthropology", "immunoslavery"],
+                correctAnswer: 2,
+                explanation: "Cultural anthropology studies human social interactions and cultural patterns."
+            },
+            {
+                id: 2,
+                question: "What is Artificial Intelligence (AI)?",
+                options: [
+                    "A system that can learn and make decisions like humans",
+                    "A machine that only stores information", 
+                    "A robot that moves automatically",
+                    "A computer program for calculations"
+                ],
+                correctAnswer: 0,
+                explanation: "AI refers to systems that can learn and make intelligent decisions similar to humans."
+            },
+      
+      
+
+{
+  id: 1,
+  question: "What is the basic unit of information in computing?",
+  options: [
+    "Byte",
+    "Bit",
+    "Nibble",
+    "Word"
+  ],
+  correctAnswer: 1,
+  explanation: "A bit (binary digit) is the most basic unit of information in computing, representing either 0 or 1."
+},
+{
+  id: 2,
+  question: "Which numbering system is used by computers at the hardware level?",
+  options: [
+    "Decimal",
+    "Binary",
+    "Hexadecimal",
+    "Octal"
+  ],
+  correctAnswer: 1,
+  explanation: "Computers use binary (base-2) numbering system at the hardware level because electronic components can easily represent two states (on/off)."
+},
+{
+  id: 3,
+  question: "What does CPU stand for?",
+  options: [
+    "Central Processing Unit",
+    "Computer Processing Unit",
+    "Central Program Unit",
+    "Computer Program Unit"
+  ],
+  correctAnswer: 0,
+  explanation: "CPU stands for Central Processing Unit, which is the primary component that executes instructions in a computer."
+},
+{
+  id: 4,
+  question: "Which of these is a high-level programming language?",
+  options: [
+    "Assembly",
+    "Machine Code",
+    "Python",
+    "Binary"
+  ],
+  correctAnswer: 2,
+  explanation: "Python is a high-level programming language that is closer to human language than machine language."
+},
+{
+  id: 5,
+  question: "What is RAM used for?",
+  options: [
+    "Permanent storage",
+    "Temporary data storage while programs are running",
+    "Processing calculations",
+    "Displaying graphics"
+  ],
+  correctAnswer: 1,
+  explanation: "RAM (Random Access Memory) provides temporary storage for data and programs that are currently being used by the CPU."
+},
+{
+  id: 6,
+  question: "Which data structure follows LIFO (Last-In-First-Out) principle?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "A stack follows LIFO principle where the last element added is the first one to be removed."
+},
+{
+  id: 7,
+  question: "What is an algorithm?",
+  options: [
+    "A programming language",
+    "A step-by-step procedure to solve a problem",
+    "A type of computer hardware",
+    "A database management system"
+  ],
+  correctAnswer: 1,
+  explanation: "An algorithm is a finite sequence of well-defined instructions for solving a problem or accomplishing a task."
+},
+{
+  id: 8,
+  question: "Which of these is an example of an operating system?",
+  options: [
+    "Microsoft Word",
+    "Windows",
+    "Google Chrome",
+    "Adobe Photoshop"
+  ],
+  correctAnswer: 1,
+  explanation: "Windows is an operating system that manages computer hardware and software resources."
+},
+{
+  id: 9,
+  question: "What does HTML stand for?",
+  options: [
+    "Hyper Text Markup Language",
+    "High Tech Modern Language",
+    "Hyper Transfer Markup Language",
+    "High Text Machine Language"
+  ],
+  correctAnswer: 0,
+  explanation: "HTML stands for Hyper Text Markup Language, used for creating web pages."
+},
+{
+  id: 10,
+  question: "Which loop executes at least once?",
+  options: [
+    "for loop",
+    "while loop",
+    "do-while loop",
+    "if-else statement"
+  ],
+  correctAnswer: 2,
+  explanation: "A do-while loop executes the code block once before checking the condition, so it always runs at least once."
+},
+{
+  id: 11,
+  question: "What is the time complexity of binary search?",
+  options: [
+    "O(1)",
+    "O(n)",
+    "O(log n)",
+    "O(n²)"
+  ],
+  correctAnswer: 2,
+  explanation: "Binary search has O(log n) time complexity because it halves the search space with each comparison."
+},
+{
+  id: 12,
+  question: "Which data type would you use for true/false values?",
+  options: [
+    "int",
+    "float",
+    "boolean",
+    "string"
+  ],
+  correctAnswer: 2,
+  explanation: "Boolean data type is used for true/false values in most programming languages."
+},
+{
+  id: 13,
+  question: "What is the purpose of a compiler?",
+  options: [
+    "To execute programs",
+    "To translate high-level code to machine code",
+    "To debug programs",
+    "To design user interfaces"
+  ],
+  correctAnswer: 1,
+  explanation: "A compiler translates high-level programming language code into machine code that can be executed by the computer."
+},
+{
+  id: 14,
+  question: "Which of these is a relational database?",
+  options: [
+    "MongoDB",
+    "MySQL",
+    "Redis",
+    "Cassandra"
+  ],
+  correctAnswer: 1,
+  explanation: "MySQL is a relational database management system that uses SQL and follows the relational model."
+},
+{
+  id: 15,
+  question: "What does SQL stand for?",
+  options: [
+    "Structured Query Language",
+    "Simple Question Language",
+    "System Query Logic",
+    "Structured Question Logic"
+  ],
+  correctAnswer: 0,
+  explanation: "SQL stands for Structured Query Language, used for managing and querying relational databases."
+},
+{
+  id: 16,
+  question: "Which sorting algorithm has worst-case time complexity O(n²)?",
+  options: [
+    "Merge Sort",
+    "Quick Sort",
+    "Heap Sort",
+    "Bubble Sort"
+  ],
+  correctAnswer: 3,
+  explanation: "Bubble Sort has O(n²) time complexity in worst case where the array is reverse sorted."
+},
+{
+  id: 17,
+  question: "What is a variable in programming?",
+  options: [
+    "A constant value",
+    "A container for storing data",
+    "A type of loop",
+    "A function"
+  ],
+  correctAnswer: 1,
+  explanation: "A variable is a named storage location in memory that holds data which can be changed during program execution."
+},
+{
+  id: 18,
+  question: "Which protocol is used for web browsing?",
+  options: [
+    "FTP",
+    "HTTP",
+    "SMTP",
+    "TCP"
+  ],
+  correctAnswer: 1,
+  explanation: "HTTP (Hypertext Transfer Protocol) is used for transferring web pages on the internet."
+},
+{
+  id: 19,
+  question: "What is object-oriented programming?",
+  options: [
+    "Programming with objects and classes",
+    "Programming without functions",
+    "Programming only with arrays",
+    "Programming for physical objects"
+  ],
+  correctAnswer: 0,
+  explanation: "Object-oriented programming is a paradigm based on objects containing data and methods, organized in classes."
+},
+{
+  id: 20,
+  question: "Which of these is NOT a programming language?",
+  options: [
+    "Java",
+    "Python",
+    "Linux",
+    "C++"
+  ],
+  correctAnswer: 2,
+  explanation: "Linux is an operating system, not a programming language."
+},
+{
+  id: 21,
+  question: "What is the binary equivalent of decimal 5?",
+  options: [
+    "101",
+    "110",
+    "100",
+    "111"
+  ],
+  correctAnswer: 0,
+  explanation: "Decimal 5 in binary is 101 (4 + 0 + 1 = 5)."
+},
+{
+  id: 22,
+  question: "Which data structure uses key-value pairs?",
+  options: [
+    "Array",
+    "Stack",
+    "Dictionary",
+    "Linked List"
+  ],
+  correctAnswer: 2,
+  explanation: "A dictionary (or map) stores data as key-value pairs for efficient lookup."
+},
+{
+  id: 23,
+  question: "What is recursion?",
+  options: [
+    "A function that calls other functions",
+    "A function that calls itself",
+    "A type of loop",
+    "A data structure"
+  ],
+  correctAnswer: 1,
+  explanation: "Recursion occurs when a function calls itself directly or indirectly to solve a problem."
+},
+{
+  id: 24,
+  question: "Which of these is a version control system?",
+  options: [
+    "Git",
+    "Java",
+    "Python",
+    "SQL"
+  ],
+  correctAnswer: 0,
+  explanation: "Git is a distributed version control system for tracking changes in source code."
+},
+{
+  id: 25,
+  question: "What does IDE stand for?",
+  options: [
+    "Integrated Development Environment",
+    "Internet Development Engine",
+    "Integrated Design Environment",
+    "International Development Edition"
+  ],
+  correctAnswer: 0,
+  explanation: "IDE stands for Integrated Development Environment, which provides comprehensive facilities for software development."
+},
+{
+  id: 26,
+  question: "Which loop is best when you know exactly how many times to iterate?",
+  options: [
+    "while loop",
+    "do-while loop",
+    "for loop",
+    "if statement"
+  ],
+  correctAnswer: 2,
+  explanation: "A for loop is ideal when the number of iterations is known beforehand."
+},
+{
+  id: 27,
+  question: "What is the time complexity of accessing an element in an array by index?",
+  options: [
+    "O(1)",
+    "O(n)",
+    "O(log n)",
+    "O(n²)"
+  ],
+  correctAnswer: 0,
+  explanation: "Array access by index is O(1) because it uses direct memory addressing."
+},
+{
+  id: 28,
+  question: "Which of these is a primitive data type in Java?",
+  options: [
+    "String",
+    "Array",
+    "int",
+    "Object"
+  ],
+  correctAnswer: 2,
+  explanation: "int is a primitive data type in Java, while String, Array, and Object are reference types."
+},
+{
+  id: 29,
+  question: "What is a compiler error?",
+  options: [
+    "Error during program execution",
+    "Error detected by compiler before execution",
+    "Logical error in program",
+    "Runtime error"
+  ],
+  correctAnswer: 1,
+  explanation: "A compiler error occurs during compilation when the compiler cannot translate the code due to syntax or semantic errors."
+},
+{
+  id: 30,
+  question: "Which sorting algorithm is known for its stability?",
+  options: [
+    "Quick Sort",
+    "Selection Sort",
+    "Merge Sort",
+    "Heap Sort"
+  ],
+  correctAnswer: 2,
+  explanation: "Merge Sort is a stable sorting algorithm that preserves the relative order of equal elements."
+},
+{
+  id: 31,
+  question: "What is the purpose of a constructor?",
+  options: [
+    "To destroy objects",
+    "To initialize objects",
+    "To perform calculations",
+    "To display output"
+  ],
+  correctAnswer: 1,
+  explanation: "A constructor is a special method that initializes newly created objects."
+},
+{
+  id: 32,
+  question: "Which of these is a network topology?",
+  options: [
+    "LAN",
+    "WAN",
+    "Star",
+    "HTTP"
+  ],
+  correctAnswer: 2,
+  explanation: "Star is a network topology where all nodes connect to a central hub."
+},
+{
+  id: 33,
+  question: "What is polymorphism in OOP?",
+  options: [
+    "Multiple functions with same name",
+    "Data hiding",
+    "Inheritance of properties",
+    "Creating objects"
+  ],
+  correctAnswer: 0,
+  explanation: "Polymorphism allows methods to have the same name but different implementations."
+},
+{
+  id: 34,
+  question: "Which data structure is FIFO (First-In-First-Out)?",
+  options: [
+    "Stack",
+    "Queue",
+    "Tree",
+    "Graph"
+  ],
+  correctAnswer: 1,
+  explanation: "A queue follows FIFO principle where the first element added is the first one to be removed."
+},
+{
+  id: 35,
+  question: "What is the hexadecimal equivalent of binary 1111?",
+  options: [
+    "A",
+    "B",
+    "F",
+    "E"
+  ],
+  correctAnswer: 2,
+  explanation: "Binary 1111 = decimal 15 = hexadecimal F."
+},
+{
+  id: 36,
+  question: "Which programming paradigm focuses on functions?",
+  options: [
+    "Object-oriented",
+    "Functional",
+    "Procedural",
+    "Logical"
+  ],
+  correctAnswer: 1,
+  explanation: "Functional programming treats computation as the evaluation of mathematical functions."
+},
+{
+  id: 37,
+  question: "What is an IP address?",
+  options: [
+    "Internet Protocol address",
+    "International Phone address",
+    "Internet Program address",
+    "Internal Processing address"
+  ],
+  correctAnswer: 0,
+  explanation: "An IP address is a unique numerical identifier for devices on a network using Internet Protocol."
+},
+{
+  id: 38,
+  question: "Which search algorithm checks each element sequentially?",
+  options: [
+    "Binary Search",
+    "Linear Search",
+    "Hash Search",
+    "Tree Search"
+  ],
+  correctAnswer: 1,
+  explanation: "Linear search checks each element in sequence until the target is found."
+},
+{
+  id: 39,
+  question: "What is inheritance in OOP?",
+  options: [
+    "Creating new classes from existing ones",
+    "Hiding data",
+    "Multiple functions with same name",
+    "Initializing objects"
+  ],
+  correctAnswer: 0,
+  explanation: "Inheritance allows a class to acquire properties and behaviors of another class."
+},
+{
+  id: 40,
+  question: "Which of these is a non-linear data structure?",
+  options: [
+    "Array",
+    "Linked List",
+    "Tree",
+    "Stack"
+  ],
+  correctAnswer: 2,
+  explanation: "Tree is a non-linear data structure with hierarchical relationships between elements."
+},
+{
+  id: 41,
+  question: "What is the purpose of an operating system?",
+  options: [
+    "To run applications",
+    "To manage hardware resources",
+    "To compile programs",
+    "To design websites"
+  ],
+  correctAnswer: 1,
+  explanation: "An operating system manages computer hardware and provides services for applications."
+},
+{
+  id: 42,
+  question: "Which language is primarily used for web development?",
+  options: [
+    "C++",
+    "Java",
+    "JavaScript",
+    "Python"
+  ],
+  correctAnswer: 2,
+  explanation: "JavaScript is primarily used for client-side web development to make web pages interactive."
+},
+{
+  id: 43,
+  question: "What is a linked list?",
+  options: [
+    "A linear collection of data elements",
+    "A hierarchical data structure",
+    "A key-value storage",
+    "A sorted array"
+  ],
+  correctAnswer: 0,
+  explanation: "A linked list is a linear data structure where elements are linked using pointers."
+},
+{
+  id: 44,
+  question: "Which operator is used for assignment in most languages?",
+  options: [
+    "==",
+    "=",
+    "!=",
+    "+"
+  ],
+  correctAnswer: 1,
+  explanation: "The single equals sign (=) is typically used for assignment operations."
+},
+{
+  id: 45,
+  question: "What is encapsulation in OOP?",
+  options: [
+    "Bundling data with methods",
+    "Creating multiple instances",
+    "Inheriting properties",
+    "Polymorphic behavior"
+  ],
+  correctAnswer: 0,
+  explanation: "Encapsulation bundles data and methods that operate on that data within a single unit (class)."
+},
+{
+  id: 46,
+  question: "Which data structure has a root node?",
+  options: [
+    "Array",
+    "Stack",
+    "Tree",
+    "Queue"
+  ],
+  correctAnswer: 2,
+  explanation: "A tree data structure has a root node from which all other nodes descend."
+},
+{
+  id: 47,
+  question: "What is the time complexity of bubble sort in worst case?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(1)"
+  ],
+  correctAnswer: 2,
+  explanation: "Bubble sort has O(n²) time complexity in worst case due to nested loops."
+},
+{
+  id: 48,
+  question: "Which of these is a database management system?",
+  options: [
+    "Oracle",
+    "Java",
+    "Python",
+    "HTML"
+  ],
+  correctAnswer: 0,
+  explanation: "Oracle is a popular relational database management system."
+},
+{
+  id: 49,
+  question: "What is a function in programming?",
+  options: [
+    "A reusable block of code",
+    "A data type",
+    "A loop structure",
+    "A variable"
+  ],
+  correctAnswer: 0,
+  explanation: "A function is a reusable block of code that performs a specific task."
+},
+{
+  id: 50,
+  question: "Which protocol is used for email transmission?",
+  options: [
+    "HTTP",
+    "FTP",
+    "SMTP",
+    "TCP"
+  ],
+  correctAnswer: 2,
+  explanation: "SMTP (Simple Mail Transfer Protocol) is used for sending email messages."
+},
+{
+  id: 51,
+  question: "What is the decimal equivalent of binary 1001?",
+  options: [
+    "7",
+    "8",
+    "9",
+    "10"
+  ],
+  correctAnswer: 2,
+  explanation: "Binary 1001 = 8 + 0 + 0 + 1 = decimal 9."
+},
+{
+  id: 52,
+  question: "Which data structure allows efficient insertion and deletion?",
+  options: [
+    "Array",
+    "Linked List",
+    "Matrix",
+    "String"
+  ],
+  correctAnswer: 1,
+  explanation: "Linked lists allow efficient insertion and deletion at any position with O(1) time for these operations."
+},
+{
+  id: 53,
+  question: "What is a class in object-oriented programming?",
+  options: [
+    "A blueprint for objects",
+    "A specific object instance",
+    "A function",
+    "A variable"
+  ],
+  correctAnswer: 0,
+  explanation: "A class is a blueprint or template for creating objects with similar properties and behaviors."
+},
+{
+  id: 54,
+  question: "Which sorting algorithm uses divide and conquer strategy?",
+  options: [
+    "Bubble Sort",
+    "Selection Sort",
+    "Merge Sort",
+    "Insertion Sort"
+  ],
+  correctAnswer: 2,
+  explanation: "Merge Sort uses divide and conquer by recursively splitting the array and merging sorted halves."
+},
+{
+  id: 55,
+  question: "What is an array?",
+  options: [
+    "A collection of similar elements",
+    "A single variable",
+    "A function",
+    "A loop structure"
+  ],
+  correctAnswer: 0,
+  explanation: "An array is a collection of elements of the same data type stored in contiguous memory locations."
+},
+{
+  id: 56,
+  question: "Which language is known for data analysis and machine learning?",
+  options: [
+    "Java",
+    "Python",
+    "C++",
+    "JavaScript"
+  ],
+  correctAnswer: 1,
+  explanation: "Python is widely used for data analysis, machine learning, and scientific computing."
+},
+{
+  id: 57,
+  question: "What is the purpose of a conditional statement?",
+  options: [
+    "To repeat code",
+    "To make decisions in code",
+    "To store data",
+    "To define functions"
+  ],
+  correctAnswer: 1,
+  explanation: "Conditional statements (if, else) allow programs to make decisions based on conditions."
+},
+{
+  id: 58,
+  question: "Which data structure is used for implementing recursion?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Stacks are used to manage function calls and local variables in recursion."
+},
+{
+  id: 59,
+  question: "What is a string in programming?",
+  options: [
+    "A sequence of characters",
+    "A number",
+    "A boolean value",
+    "An array of numbers"
+  ],
+  correctAnswer: 0,
+  explanation: "A string is a sequence of characters used to represent text."
+},
+{
+  id: 60,
+  question: "Which operator compares two values for equality?",
+  options: [
+    "=",
+    "==",
+    "!=",
+    ">"
+  ],
+  correctAnswer: 1,
+  explanation: "The double equals (==) operator compares two values for equality in most programming languages."
+},
+{
+  id: 61,
+  question: "What is the time complexity of linear search?",
+  options: [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n²)"
+  ],
+  correctAnswer: 2,
+  explanation: "Linear search has O(n) time complexity as it may need to check every element in worst case."
+},
+{
+  id: 62,
+  question: "Which of these is a cloud computing service?",
+  options: [
+    "AWS",
+    "Java",
+    "Python",
+    "HTML"
+  ],
+  correctAnswer: 0,
+  explanation: "AWS (Amazon Web Services) is a popular cloud computing platform."
+},
+{
+  id: 63,
+  question: "What is a graph in data structures?",
+  options: [
+    "A collection of nodes and edges",
+    "A linear data structure",
+    "A key-value store",
+    "A sorted list"
+  ],
+  correctAnswer: 0,
+  explanation: "A graph consists of nodes (vertices) connected by edges, representing relationships."
+},
+{
+  id: 64,
+  question: "Which programming language is statically typed?",
+  options: [
+    "Python",
+    "JavaScript",
+    "Java",
+    "Ruby"
+  ],
+  correctAnswer: 2,
+  explanation: "Java is statically typed, meaning variable types are checked at compile time."
+},
+{
+  id: 65,
+  question: "What is the purpose of a database index?",
+  options: [
+    "To slow down queries",
+    "To speed up data retrieval",
+    "To store backup data",
+    "To display data"
+  ],
+  correctAnswer: 1,
+  explanation: "Database indexes speed up data retrieval by providing quick access paths to data."
+},
+{
+  id: 66,
+  question: "Which data structure uses hashing?",
+  options: [
+    "Array",
+    "Linked List",
+    "Hash Table",
+    "Stack"
+  ],
+  correctAnswer: 2,
+  explanation: "Hash tables use hash functions to map keys to array indices for efficient lookup."
+},
+{
+  id: 67,
+  question: "What is a pointer in programming?",
+  options: [
+    "A variable that stores memory address",
+    "A data type",
+    "A function",
+    "A loop"
+  ],
+  correctAnswer: 0,
+  explanation: "A pointer is a variable that stores the memory address of another variable."
+},
+{
+  id: 68,
+  question: "Which algorithm finds the shortest path in a graph?",
+  options: [
+    "Bubble Sort",
+    "Dijkstra's Algorithm",
+    "Binary Search",
+    "Quick Sort"
+  ],
+  correctAnswer: 1,
+  explanation: "Dijkstra's Algorithm finds the shortest path between nodes in a graph with non-negative weights."
+},
+{
+  id: 69,
+  question: "What is an API?",
+  options: [
+    "Application Programming Interface",
+    "Advanced Programming Instruction",
+    "Application Process Integration",
+    "Automated Program Interface"
+  ],
+  correctAnswer: 0,
+  explanation: "API stands for Application Programming Interface, which defines how software components should interact."
+},
+{
+  id: 70,
+  question: "Which data structure is LIFO?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Stack follows LIFO (Last-In-First-Out) principle."
+},
+{
+  id: 71,
+  question: "What is the hexadecimal number system base?",
+  options: [
+    "2",
+    "8",
+    "10",
+    "16"
+  ],
+  correctAnswer: 3,
+  explanation: "Hexadecimal is base-16, using digits 0-9 and letters A-F."
+},
+{
+  id: 72,
+  question: "Which programming language is interpreted?",
+  options: [
+    "C++",
+    "Java",
+    "Python",
+    "C#"
+  ],
+  correctAnswer: 2,
+  explanation: "Python is an interpreted language, executed line by line by an interpreter."
+},
+{
+  id: 73,
+  question: "What is a binary tree?",
+  options: [
+    "A tree with at most two children per node",
+    "A tree with exactly two children",
+    "A sorted tree",
+    "A balanced tree"
+  ],
+  correctAnswer: 0,
+  explanation: "A binary tree is a tree data structure where each node has at most two children."
+},
+{
+  id: 74,
+  question: "Which operator performs logical AND?",
+  options: [
+    "&&",
+    "||",
+    "!",
+    "&"
+  ],
+  correctAnswer: 0,
+  explanation: "The && operator performs logical AND operation in most programming languages."
+},
+{
+  id: 75,
+  question: "What is the time complexity of merge sort?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(log n)"
+  ],
+  correctAnswer: 1,
+  explanation: "Merge sort has O(n log n) time complexity in all cases (best, average, and worst)."
+},
+{
+  id: 76,
+  question: "Which of these is a NoSQL database?",
+  options: [
+    "MySQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Oracle"
+  ],
+  correctAnswer: 2,
+  explanation: "MongoDB is a popular NoSQL document database."
+},
+{
+  id: 77,
+  question: "What is a variable's scope?",
+  options: [
+    "Where the variable can be accessed",
+    "The variable's data type",
+    "The variable's value",
+    "The variable's name"
+  ],
+  correctAnswer: 0,
+  explanation: "A variable's scope defines where in the program the variable can be accessed."
+},
+{
+  id: 78,
+  question: "Which data structure is used in breadth-first search?",
+  options: [
+    "Stack",
+    "Queue",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Breadth-first search uses a queue to explore nodes level by level."
+},
+{
+  id: 79,
+  question: "What is object instantiation?",
+  options: [
+    "Creating an object from a class",
+    "Defining a class",
+    "Inheriting a class",
+    "Destroying an object"
+  ],
+  correctAnswer: 0,
+  explanation: "Object instantiation is the process of creating an instance (object) from a class."
+},
+{
+  id: 80,
+  question: "Which language is used for styling web pages?",
+  options: [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Python"
+  ],
+  correctAnswer: 1,
+  explanation: "CSS (Cascading Style Sheets) is used for styling and layout of web pages."
+},
+{
+  id: 81,
+  question: "What is a recursive function's base case?",
+  options: [
+    "The condition that stops recursion",
+    "The recursive call",
+    "The function parameters",
+    "The return value"
+  ],
+  correctAnswer: 0,
+  explanation: "The base case is the condition that stops the recursion and returns a value without further recursive calls."
+},
+{
+  id: 82,
+  question: "Which data structure has O(1) average case for search?",
+  options: [
+    "Array",
+    "Linked List",
+    "Hash Table",
+    "Binary Search Tree"
+  ],
+  correctAnswer: 2,
+  explanation: "Hash tables provide O(1) average case time complexity for search operations."
+},
+{
+  id: 83,
+  question: "What is a constructor in OOP?",
+  options: [
+    "A method that initializes an object",
+    "A method that destroys an object",
+    "A static method",
+    "A private method"
+  ],
+  correctAnswer: 0,
+  explanation: "A constructor is a special method that initializes a newly created object."
+},
+{
+  id: 84,
+  question: "Which algorithm is used for sorting?",
+  options: [
+    "Binary Search",
+    "Quick Sort",
+    "Linear Search",
+    "Dijkstra's"
+  ],
+  correctAnswer: 1,
+  explanation: "Quick Sort is a popular sorting algorithm that uses divide and conquer strategy."
+},
+{
+  id: 85,
+  question: "What is the purpose of a loop?",
+  options: [
+    "To repeat code multiple times",
+    "To make decisions",
+    "To store data",
+    "To define functions"
+  ],
+  correctAnswer: 0,
+  explanation: "Loops allow executing a block of code repeatedly until a condition is met."
+},
+{
+  id: 86,
+  question: "Which data structure is hierarchical?",
+  options: [
+    "Array",
+    "Stack",
+    "Tree",
+    "Queue"
+  ],
+  correctAnswer: 2,
+  explanation: "Trees are hierarchical data structures with parent-child relationships."
+},
+{
+  id: 87,
+  question: "What is the binary equivalent of decimal 10?",
+  options: [
+    "1001",
+    "1010",
+    "1100",
+    "1110"
+  ],
+  correctAnswer: 1,
+  explanation: "Decimal 10 in binary is 1010 (8 + 0 + 2 + 0 = 10)."
+},
+{
+  id: 88,
+  question: "Which programming language is object-oriented?",
+  options: [
+    "C",
+    "Java",
+    "Assembly",
+    "Fortran"
+  ],
+  correctAnswer: 1,
+  explanation: "Java is a purely object-oriented programming language."
+},
+{
+  id: 89,
+  question: "What is a method in OOP?",
+  options: [
+    "A function defined in a class",
+    "A variable",
+    "A data type",
+    "A loop structure"
+  ],
+  correctAnswer: 0,
+  explanation: "A method is a function that is defined within a class and operates on class instances."
+},
+{
+  id: 90,
+  question: "Which search algorithm requires sorted data?",
+  options: [
+    "Linear Search",
+    "Binary Search",
+    "Hash Search",
+    "Sequential Search"
+  ],
+  correctAnswer: 1,
+  explanation: "Binary search requires the data to be sorted to work correctly."
+},
+{
+  id: 91,
+  question: "What is a network protocol?",
+  options: [
+    "A set of rules for communication",
+    "A programming language",
+    "A data structure",
+    "An algorithm"
+  ],
+  correctAnswer: 0,
+  explanation: "A network protocol defines rules and conventions for communication between network devices."
+},
+{
+  id: 92,
+  question: "Which data structure allows duplicates?",
+  options: [
+    "Set",
+    "Array",
+    "Dictionary with unique keys",
+    "Hash Set"
+  ],
+  correctAnswer: 1,
+  explanation: "Arrays allow duplicate elements, while sets typically enforce uniqueness."
+},
+{
+  id: 93,
+  question: "What is the time complexity of insertion in an array?",
+  options: [
+    "O(1)",
+    "O(n)",
+    "O(log n)",
+    "O(n²)"
+  ],
+  correctAnswer: 1,
+  explanation: "Insertion in an array takes O(n) time in worst case due to potential need to shift elements."
+},
+{
+  id: 94,
+  question: "Which language is used for server-side scripting?",
+  options: [
+    "HTML",
+    "CSS",
+    "PHP",
+    "JavaScript"
+  ],
+  correctAnswer: 2,
+  explanation: "PHP is commonly used for server-side scripting in web development."
+},
+{
+  id: 95,
+  question: "What is a stack overflow?",
+  options: [
+    "When stack memory is exhausted",
+    "A programming website",
+    "A type of loop",
+    "A data structure"
+  ],
+  correctAnswer: 0,
+  explanation: "Stack overflow occurs when the call stack exceeds its memory limit, often due to deep recursion."
+},
+{
+  id: 96,
+  question: "Which sorting algorithm is in-place?",
+  options: [
+    "Merge Sort",
+    "Quick Sort",
+    "Both A and B",
+    "Neither A nor B"
+  ],
+  correctAnswer: 1,
+  explanation: "Quick Sort is an in-place sorting algorithm that doesn't require significant extra memory."
+},
+{
+  id: 97,
+  question: "What is a database transaction?",
+  options: [
+    "A sequence of database operations",
+    "A single query",
+    "A database table",
+    "A database index"
+  ],
+  correctAnswer: 0,
+  explanation: "A transaction is a sequence of database operations that are executed as a single unit."
+},
+{
+  id: 98,
+  question: "Which data structure is used for depth-first search?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Depth-first search uses a stack to explore nodes as deep as possible before backtracking."
+},
+{
+  id: 99,
+  question: "What is a linked list node?",
+  options: [
+    "An element containing data and pointer",
+    "The first element",
+    "The last element",
+    "A data type"
+  ],
+  correctAnswer: 0,
+  explanation: "A linked list node contains data and a pointer/reference to the next node."
+},
+{
+  id: 100,
+  question: "Which operator increments a variable by 1?",
+  options: [
+    "++",
+    "--",
+    "**",
+    "//"
+  ],
+  correctAnswer: 0,
+  explanation: "The ++ operator increments a variable by 1 in most programming languages."
+},
+{
+  id: 101,
+  question: "What is the time complexity of quick sort in average case?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(log n)"
+  ],
+  correctAnswer: 1,
+  explanation: "Quick sort has O(n log n) average case time complexity."
+},
+{
+  id: 102,
+  question: "Which of these is a web framework?",
+  options: [
+    "Django",
+    "Java",
+    "Python",
+    "C++"
+  ],
+  correctAnswer: 0,
+  explanation: "Django is a web framework for Python used for building web applications."
+},
+{
+  id: 103,
+  question: "What is a binary search tree?",
+  options: [
+    "A tree with left child < parent < right child",
+    "Any binary tree",
+    "A balanced tree",
+    "A tree with two roots"
+  ],
+  correctAnswer: 0,
+  explanation: "In a binary search tree, left child values are less than parent, and right child values are greater."
+},
+{
+  id: 104,
+  question: "Which programming language is strongly typed?",
+  options: [
+    "JavaScript",
+    "Python",
+    "Java",
+    "PHP"
+  ],
+  correctAnswer: 2,
+  explanation: "Java is strongly typed, enforcing strict type checking at compile time."
+},
+{
+  id: 105,
+  question: "What is a primary key in database?",
+  options: [
+    "A unique identifier for records",
+    "The first column",
+    "A foreign key",
+    "An index"
+  ],
+  correctAnswer: 0,
+  explanation: "A primary key uniquely identifies each record in a database table."
+},
+{
+  id: 106,
+  question: "Which data structure has O(log n) search time?",
+  options: [
+    "Array",
+    "Linked List",
+    "Binary Search Tree",
+    "Stack"
+  ],
+  correctAnswer: 2,
+  explanation: "Binary Search Tree provides O(log n) search time in average case for balanced trees."
+},
+{
+  id: 107,
+  question: "What is a function parameter?",
+  options: [
+    "Input to a function",
+    "Output from a function",
+    "A local variable",
+    "A global variable"
+  ],
+  correctAnswer: 0,
+  explanation: "Function parameters are variables that receive values passed to the function when it is called."
+},
+{
+  id: 108,
+  question: "Which algorithm finds minimum spanning tree?",
+  options: [
+    "Dijkstra's",
+    "Prim's",
+    "Quick Sort",
+    "Binary Search"
+  ],
+  correctAnswer: 1,
+  explanation: "Prim's Algorithm finds the minimum spanning tree in a weighted undirected graph."
+},
+{
+  id: 109,
+  question: "What is an abstract class?",
+  options: [
+    "A class that cannot be instantiated",
+    "A concrete class",
+    "A final class",
+    "A static class"
+  ],
+  correctAnswer: 0,
+  explanation: "An abstract class cannot be instantiated and is meant to be subclassed."
+},
+{
+  id: 110,
+  question: "Which data structure is FIFO?",
+  options: [
+    "Stack",
+    "Queue",
+    "Tree",
+    "Graph"
+  ],
+  correctAnswer: 1,
+  explanation: "Queue follows FIFO (First-In-First-Out) principle."
+},
+{
+  id: 111,
+  question: "What is the hexadecimal equivalent of decimal 255?",
+  options: [
+    "FF",
+    "FE",
+    "EF",
+    "EE"
+  ],
+  correctAnswer: 0,
+  explanation: "Decimal 255 = hexadecimal FF (15×16 + 15 = 255)."
+},
+{
+  id: 112,
+  question: "Which programming language is dynamically typed?",
+  options: [
+    "Java",
+    "C++",
+    "Python",
+    "C#"
+  ],
+  correctAnswer: 2,
+  explanation: "Python is dynamically typed, meaning variable types are determined at runtime."
+},
+{
+  id: 113,
+  question: "What is a balanced binary tree?",
+  options: [
+    "A tree with minimal height",
+    "Any binary tree",
+    "A complete binary tree",
+    "A full binary tree"
+  ],
+  correctAnswer: 0,
+  explanation: "A balanced binary tree has minimal height, ensuring O(log n) operations."
+},
+{
+  id: 114,
+  question: "Which operator performs logical OR?",
+  options: [
+    "&&",
+    "||",
+    "!",
+    "&"
+  ],
+  correctAnswer: 1,
+  explanation: "The || operator performs logical OR operation."
+},
+{
+  id: 115,
+  question: "What is the time complexity of selection sort?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(log n)"
+  ],
+  correctAnswer: 2,
+  explanation: "Selection sort has O(n²) time complexity in all cases."
+},
+{
+  id: 116,
+  question: "Which of these is a relational database?",
+  options: [
+    "MongoDB",
+    "Redis",
+    "PostgreSQL",
+    "Cassandra"
+  ],
+  correctAnswer: 2,
+  explanation: "PostgreSQL is a powerful open-source relational database."
+},
+{
+  id: 117,
+  question: "What is a variable's lifetime?",
+  options: [
+    "Duration the variable exists in memory",
+    "The variable's data type",
+    "The variable's value",
+    "The variable's name"
+  ],
+  correctAnswer: 0,
+  explanation: "A variable's lifetime is the duration during which it exists in memory."
+},
+{
+  id: 118,
+  question: "Which data structure is used in recursion?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "The call stack manages function calls and local variables in recursion."
+},
+{
+  id: 119,
+  question: "What is method overloading?",
+  options: [
+    "Multiple methods with same name but different parameters",
+    "Inheriting methods",
+    "Overriding methods",
+    "Creating abstract methods"
+  ],
+  correctAnswer: 0,
+  explanation: "Method overloading allows multiple methods with the same name but different parameter lists."
+},
+{
+  id: 120,
+  question: "Which language is used for database queries?",
+  options: [
+    "HTML",
+    "CSS",
+    "SQL",
+  ],
+  correctAnswer: 2,
+  explanation: "SQL (Structured Query Language) is used for querying and managing relational databases."
+},
+{
+  id: 121,
+  question: "What is a recursive case?",
+  options: [
+    "The condition that makes recursive calls",
+    "The base case",
+    "The function return",
+    "The function parameters"
+  ],
+  correctAnswer: 0,
+  explanation: "The recursive case is the part of a recursive function that calls itself with modified parameters."
+},
+{
+  id: 122,
+  question: "Which data structure has O(1) insertion at end?",
+  options: [
+    "Array",
+    "Linked List",
+    "Both A and B",
+    "Neither A nor B"
+  ],
+  correctAnswer: 2,
+  explanation: "Both arrays (if space available) and linked lists allow O(1) insertion at the end."
+},
+{
+  id: 123,
+  question: "What is a destructor in OOP?",
+  options: [
+    "A method that cleans up resources",
+    "A constructor",
+    "A static method",
+    "A private method"
+  ],
+  correctAnswer: 0,
+  explanation: "A destructor is a special method that cleans up resources when an object is destroyed."
+},
+{
+  id: 124,
+  question: "Which algorithm is used for path finding?",
+  options: [
+    "Bubble Sort",
+    "A* Search",
+    "Binary Search",
+    "Quick Sort"
+  ],
+  correctAnswer: 1,
+  explanation: "A* Search algorithm is used for path finding and graph traversal."
+},
+{
+  id: 125,
+  question: "What is the purpose of a switch statement?",
+  options: [
+    "To handle multiple conditions",
+    "To create loops",
+    "To define functions",
+    "To declare variables"
+  ],
+  correctAnswer: 0,
+  explanation: "Switch statements handle multiple possible conditions for a variable more efficiently than multiple if-else statements."
+},
+{
+  id: 126,
+  question: "Which data structure is non-linear?",
+  options: [
+    "Array",
+    "Stack",
+    "Graph",
+    "Queue"
+  ],
+  correctAnswer: 2,
+  explanation: "Graphs are non-linear data structures with arbitrary connections between nodes."
+},
+{
+  id: 127,
+  question: "What is the binary equivalent of decimal 15?",
+  options: [
+    "1101",
+    "1110",
+    "1111",
+    "1001"
+  ],
+  correctAnswer: 2,
+  explanation: "Decimal 15 in binary is 1111 (8 + 4 + 2 + 1 = 15)."
+},
+{
+  id: 128,
+  question: "Which programming language is procedural?",
+  options: [
+    "Java",
+    "C",
+    "Python",
+    "Ruby"
+  ],
+  correctAnswer: 1,
+  explanation: "C is a procedural programming language focused on functions and procedures."
+},
+{
+  id: 129,
+  question: "What is a static method?",
+  options: [
+    "A method that belongs to the class",
+    "A method that belongs to instances",
+    "A private method",
+    "A constructor"
+  ],
+  correctAnswer: 0,
+  explanation: "A static method belongs to the class rather than to any object instance."
+},
+{
+  id: 130,
+  question: "Which search algorithm is fastest for sorted arrays?",
+  options: [
+    "Linear Search",
+    "Binary Search",
+    "Hash Search",
+    "Sequential Search"
+  ],
+  correctAnswer: 1,
+  explanation: "Binary search is the fastest for sorted arrays with O(log n) time complexity."
+},
+{
+  id: 131,
+  question: "What is a network topology?",
+  options: [
+    "Arrangement of network elements",
+    "A programming language",
+    "A data structure",
+    "An algorithm"
+  ],
+  correctAnswer: 0,
+  explanation: "Network topology refers to the arrangement of various elements in a computer network."
+},
+{
+  id: 132,
+  question: "Which data structure maintains order?",
+  options: [
+    "Set",
+    "Array",
+    "Dictionary",
+    "Hash Set"
+  ],
+  correctAnswer: 1,
+  explanation: "Arrays maintain the order of elements based on their indices."
+},
+{
+  id: 133,
+  question: "What is the time complexity of deletion in a linked list?",
+  options: [
+    "O(1)",
+    "O(n)",
+    "O(log n)",
+    "O(n²)"
+  ],
+  correctAnswer: 1,
+  explanation: "Deletion in a linked list takes O(n) time in worst case due to potential need to traverse the list."
+},
+{
+  id: 134,
+  question: "Which language is used for mobile app development?",
+  options: [
+    "HTML",
+    "CSS",
+    "Swift",
+    "SQL"
+  ],
+  correctAnswer: 2,
+  explanation: "Swift is used for iOS mobile app development."
+},
+{
+  id: 135,
+  question: "What is a memory leak?",
+  options: [
+    "When memory is not properly freed",
+    "A type of loop",
+    "A data structure",
+    "An algorithm"
+  ],
+  correctAnswer: 0,
+  explanation: "A memory leak occurs when a program fails to release memory that is no longer needed."
+},
+{
+  id: 136,
+  question: "Which sorting algorithm is stable?",
+  options: [
+    "Quick Sort",
+    "Selection Sort",
+    "Insertion Sort",
+    "Heap Sort"
+  ],
+  correctAnswer: 2,
+  explanation: "Insertion Sort is a stable sorting algorithm that preserves relative order of equal elements."
+},
+{
+  id: 137,
+  question: "What is a database constraint?",
+  options: [
+    "A rule enforced on data",
+    "A database table",
+    "A query",
+    "An index"
+  ],
+  correctAnswer: 0,
+  explanation: "A constraint is a rule that restricts the data that can be stored in a database."
+},
+{
+  id: 138,
+  question: "Which data structure is used in breadth-first traversal?",
+  options: [
+    "Stack",
+    "Queue",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Breadth-first traversal uses a queue to visit nodes level by level."
+},
+{
+  id: 139,
+  question: "What is a doubly linked list?",
+  options: [
+    "A list with pointers to both next and previous",
+    "A list with one pointer",
+    "A circular list",
+    "A sorted list"
+  ],
+  correctAnswer: 0,
+  explanation: "A doubly linked list has nodes with pointers to both next and previous nodes."
+},
+{
+  id: 140,
+  question: "Which operator decrements a variable by 1?",
+  options: [
+    "++",
+    "--",
+    "**",
+    "//"
+  ],
+  correctAnswer: 1,
+  explanation: "The -- operator decrements a variable by 1."
+},
+{
+  id: 141,
+  question: "What is the time complexity of heap sort?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(log n)"
+  ],
+  correctAnswer: 1,
+  explanation: "Heap sort has O(n log n) time complexity in all cases."
+},
+{
+  id: 142,
+  question: "Which of these is a JavaScript framework?",
+  options: [
+    "React",
+    "Java",
+    "Python",
+    "C++"
+  ],
+  correctAnswer: 0,
+  explanation: "React is a JavaScript library for building user interfaces."
+},
+{
+  id: 143,
+  question: "What is a complete binary tree?",
+  options: [
+    "A tree completely filled except possibly the last level",
+    "Any binary tree",
+    "A balanced tree",
+    "A full binary tree"
+  ],
+  correctAnswer: 0,
+  explanation: "A complete binary tree has all levels completely filled except possibly the last level."
+},
+{
+  id: 144,
+  question: "Which programming language is multi-paradigm?",
+  options: [
+    "C",
+    "Java",
+    "Python",
+    "Assembly"
+  ],
+  correctAnswer: 2,
+  explanation: "Python supports multiple programming paradigms including object-oriented, imperative, and functional."
+},
+{
+  id: 145,
+  question: "What is a foreign key in database?",
+  options: [
+    "A key that references another table's primary key",
+    "A primary key",
+    "An index",
+    "A unique constraint"
+  ],
+  correctAnswer: 0,
+  explanation: "A foreign key is a field that references the primary key of another table, establishing a relationship."
+},
+{
+  id: 146,
+  question: "Which data structure has O(1) access by index?",
+  options: [
+    "Array",
+    "Linked List",
+    "Binary Search Tree",
+    "Stack"
+  ],
+  correctAnswer: 0,
+  explanation: "Arrays provide O(1) access to elements by index."
+},
+{
+  id: 147,
+  question: "What is a function return value?",
+  options: [
+    "The value a function sends back",
+    "Function parameters",
+    "Local variables",
+    "Global variables"
+  ],
+  correctAnswer: 0,
+  explanation: "The return value is the result that a function sends back to the code that called it."
+},
+{
+  id: 148,
+  question: "Which algorithm is used for network routing?",
+  options: [
+    "Bubble Sort",
+    "Bellman-Ford",
+    "Binary Search",
+    "Quick Sort"
+  ],
+  correctAnswer: 1,
+  explanation: "Bellman-Ford algorithm is used for finding shortest paths in networks with negative weights."
+},
+{
+  id: 149,
+  question: "What is an interface in OOP?",
+  options: [
+    "A contract for classes to implement",
+    "A concrete class",
+    "A final class",
+    "A static class"
+  ],
+  correctAnswer: 0,
+  explanation: "An interface defines a contract that classes must implement, specifying methods without implementation."
+},
+{
+  id: 150,
+  question: "Which data structure is used for undo functionality?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Stacks are commonly used for undo functionality using LIFO principle."
+},
+{
+  id: 151,
+  question: "What is the hexadecimal equivalent of binary 1100?",
+  options: [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  correctAnswer: 2,
+  explanation: "Binary 1100 = decimal 12 = hexadecimal C."
+},
+{
+  id: 152,
+  question: "Which programming language is compiled?",
+  options: [
+    "Python",
+    "JavaScript",
+    "C++",
+    "Ruby"
+  ],
+  correctAnswer: 2,
+  explanation: "C++ is a compiled language that is translated to machine code before execution."
+},
+{
+  id: 153,
+  question: "What is a full binary tree?",
+  options: [
+    "A tree where every node has 0 or 2 children",
+    "Any binary tree",
+    "A complete tree",
+    "A balanced tree"
+  ],
+  correctAnswer: 0,
+  explanation: "A full binary tree has every node with either 0 or 2 children."
+},
+{
+  id: 154,
+  question: "Which operator performs logical NOT?",
+  options: [
+    "&&",
+    "||",
+    "!",
+    "&"
+  ],
+  correctAnswer: 2,
+  explanation: "The ! operator performs logical NOT operation."
+},
+{
+  id: 155,
+  question: "What is the time complexity of bubble sort in best case?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n²)",
+    "O(1)"
+  ],
+  correctAnswer: 0,
+  explanation: "Bubble sort has O(n) time complexity in best case (when array is already sorted)."
+},
+{
+  id: 156,
+  question: "Which of these is a key-value store?",
+  options: [
+    "MySQL",
+    "PostgreSQL",
+    "Redis",
+    "Oracle"
+  ],
+  correctAnswer: 2,
+  explanation: "Redis is an in-memory key-value data store."
+},
+{
+  id: 157,
+  question: "What is a global variable?",
+  options: [
+    "A variable accessible throughout the program",
+    "A local variable",
+    "A parameter",
+    "A constant"
+  ],
+  correctAnswer: 0,
+  explanation: "A global variable is accessible from any part of the program."
+},
+{
+  id: 158,
+  question: "Which data structure is used in depth-first traversal?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Depth-first traversal uses a stack to explore nodes as deep as possible."
+},
+{
+  id: 159,
+  question: "What is method overriding?",
+  options: [
+    "Redefining a method in subclass",
+    "Creating multiple methods with same name",
+    "Inheriting methods",
+    "Creating abstract methods"
+  ],
+  correctAnswer: 0,
+  explanation: "Method overriding allows a subclass to provide a specific implementation of a method already defined in its superclass."
+},
+{
+  id: 160,
+  question: "Which language is used for web scraping?",
+  options: [
+    "HTML",
+    "CSS",
+    "Python",
+    "SQL"
+  ],
+  correctAnswer: 2,
+  explanation: "Python with libraries like BeautifulSoup is commonly used for web scraping."
+},
+{
+  id: 161,
+  question: "What is tail recursion?",
+  options: [
+    "Recursion where the recursive call is the last operation",
+    "Any recursion",
+    "The base case",
+    "Multiple recursion"
+  ],
+  correctAnswer: 0,
+  explanation: "Tail recursion occurs when the recursive call is the last operation in the function, allowing optimization."
+},
+{
+  id: 162,
+  question: "Which data structure has O(1) insertion at beginning?",
+  options: [
+    "Array",
+    "Linked List",
+    "Both A and B",
+    "Neither A nor B"
+  ],
+  correctAnswer: 1,
+  explanation: "Linked lists allow O(1) insertion at the beginning, while arrays require O(n) for this operation."
+},
+{
+  id: 163,
+  question: "What is a copy constructor?",
+  options: [
+    "A constructor that creates a copy of an object",
+    "A default constructor",
+    "A parameterized constructor",
+    "A static constructor"
+  ],
+  correctAnswer: 0,
+  explanation: "A copy constructor creates a new object as a copy of an existing object."
+},
+{
+  id: 164,
+  question: "Which algorithm is used for pattern matching?",
+  options: [
+    "Bubble Sort",
+    "Knuth-Morris-Pratt",
+    "Binary Search",
+    "Quick Sort"
+  ],
+  correctAnswer: 1,
+  explanation: "Knuth-Morris-Pratt algorithm is used for efficient pattern matching in strings."
+},
+{
+  id: 165,
+  question: "What is the purpose of a break statement?",
+  options: [
+    "To exit a loop or switch",
+    "To continue to next iteration",
+    "To define functions",
+    "To declare variables"
+  ],
+  correctAnswer: 0,
+  explanation: "The break statement exits a loop or switch statement prematurely."
+},
+{
+  id: 166,
+  question: "Which data structure is used for priority queues?",
+  options: [
+    "Array",
+    "Stack",
+    "Heap",
+    "Queue"
+  ],
+  correctAnswer: 2,
+  explanation: "Heaps are commonly used to implement priority queues."
+},
+{
+  id: 167,
+  question: "What is the binary equivalent of decimal 7?",
+  options: [
+    "110",
+    "111",
+    "101",
+    "100"
+  ],
+  correctAnswer: 1,
+  explanation: "Decimal 7 in binary is 111 (4 + 2 + 1 = 7)."
+},
+{
+  id: 168,
+  question: "Which programming language is functional?",
+  options: [
+    "Java",
+    "C",
+    "Haskell",
+    "Python"
+  ],
+  correctAnswer: 2,
+  explanation: "Haskell is a purely functional programming language."
+},
+{
+  id: 169,
+  question: "What is a virtual function?",
+  options: [
+    "A function that can be overridden",
+    "A static function",
+    "A private function",
+    "A constructor"
+  ],
+  correctAnswer: 0,
+  explanation: "A virtual function can be overridden in derived classes and supports runtime polymorphism."
+},
+{
+  id: 170,
+  question: "Which search algorithm uses a hash function?",
+  options: [
+    "Linear Search",
+    "Binary Search",
+    "Hash Search",
+    "Sequential Search"
+  ],
+  correctAnswer: 2,
+  explanation: "Hash search uses a hash function to compute the location of data."
+},
+{
+  id: 171,
+  question: "What is a subnet mask?",
+  options: [
+    "A mask that separates network and host portions",
+    "A programming language",
+    "A data structure",
+    "An algorithm"
+  ],
+  correctAnswer: 0,
+  explanation: "A subnet mask separates the network and host portions of an IP address."
+},
+{
+  id: 172,
+  question: "Which data structure doesn't allow duplicates?",
+  options: [
+    "Array",
+    "Set",
+    "List",
+    "Queue"
+  ],
+  correctAnswer: 1,
+  explanation: "Sets typically do not allow duplicate elements."
+},
+{
+  id: 173,
+  question: "What is the time complexity of accessing a hash table?",
+  options: [
+    "O(1)",
+    "O(n)",
+    "O(log n)",
+    "O(n²)"
+  ],
+  correctAnswer: 0,
+  explanation: "Hash tables provide O(1) average case time complexity for access operations."
+},
+{
+  id: 174,
+  question: "Which language is used for data science?",
+  options: [
+    "HTML",
+    "CSS",
+    "R",
+    "SQL"
+  ],
+  correctAnswer: 2,
+  explanation: "R is a programming language specifically designed for statistical computing and data analysis."
+},
+{
+  id: 175,
+  question: "What is a buffer overflow?",
+  options: [
+    "When data exceeds buffer capacity",
+    "A type of loop",
+    "A data structure",
+    "An algorithm"
+  ],
+  correctAnswer: 0,
+  explanation: "Buffer overflow occurs when a program writes more data to a buffer than it can hold."
+},
+{
+  id: 176,
+  question: "Which sorting algorithm has O(n) best case?",
+  options: [
+    "Quick Sort",
+    "Selection Sort",
+    "Insertion Sort",
+    "Heap Sort"
+  ],
+  correctAnswer: 2,
+  explanation: "Insertion sort has O(n) best case time complexity when the array is already sorted."
+},
+{
+  id: 177,
+  question: "What is a database view?",
+  options: [
+    "A virtual table based on a query",
+    "A physical table",
+    "An index",
+    "A constraint"
+  ],
+  correctAnswer: 0,
+  explanation: "A database view is a virtual table that is based on the result of a SQL query."
+},
+{
+  id: 178,
+  question: "Which data structure is used for symbol tables?",
+  options: [
+    "Stack",
+    "Queue",
+    "Hash Table",
+    "Array"
+  ],
+  correctAnswer: 2,
+  explanation: "Hash tables are commonly used for implementing symbol tables in compilers."
+},
+{
+  id: 179,
+  question: "What is a circular linked list?",
+  options: [
+    "A list where last node points to first",
+    "A list with one pointer",
+    "A doubly linked list",
+    "A sorted list"
+  ],
+  correctAnswer: 0,
+  explanation: "In a circular linked list, the last node points back to the first node, forming a circle."
+},
+{
+  id: 180,
+  question: "Which operator performs modulus operation?",
+  options: [
+    "+",
+    "-",
+    "*",
+    "%"
+  ],
+  correctAnswer: 3,
+  explanation: "The % operator performs modulus (remainder) operation."
+},
+{
+  id: 181,
+  question: "What is the time complexity of radix sort?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(nk)",
+    "O(n²)"
+  ],
+  correctAnswer: 2,
+  explanation: "Radix sort has O(nk) time complexity where k is the number of digits."
+},
+{
+  id: 182,
+  question: "Which of these is a container technology?",
+  options: [
+    "Docker",
+    "Java",
+    "Python",
+    "C++"
+  ],
+  correctAnswer: 0,
+  explanation: "Docker is a platform for developing, shipping, and running applications in containers."
+},
+{
+  id: 183,
+  question: "What is an AVL tree?",
+  options: [
+    "A self-balancing binary search tree",
+    "Any binary tree",
+    "A complete tree",
+    "A full tree"
+  ],
+  correctAnswer: 0,
+  explanation: "An AVL tree is a self-balancing binary search tree where the height difference between left and right subtrees is at most 1."
+},
+{
+  id: 184,
+  question: "Which programming language is used for system programming?",
+  options: [
+    "Python",
+    "JavaScript",
+    "C",
+    "Ruby"
+  ],
+  correctAnswer: 2,
+  explanation: "C is commonly used for system programming due to its efficiency and low-level access."
+},
+{
+  id: 185,
+  question: "What is a composite key in database?",
+  options: [
+    "A key made of multiple columns",
+    "A primary key",
+    "A foreign key",
+    "An index"
+  ],
+  correctAnswer: 0,
+  explanation: "A composite key consists of two or more columns that together uniquely identify a record."
+},
+{
+  id: 186,
+  question: "Which data structure has O(1) for push and pop?",
+  options: [
+    "Array",
+    "Linked List",
+    "Stack",
+    "Queue"
+  ],
+  correctAnswer: 2,
+  explanation: "Stacks provide O(1) time complexity for both push (add) and pop (remove) operations."
+},
+{
+  id: 187,
+  question: "What is a function signature?",
+  options: [
+    "The function's name and parameters",
+    "The return value",
+    "Local variables",
+    "Global variables"
+  ],
+  correctAnswer: 0,
+  explanation: "A function signature includes the function name and its parameter types (and sometimes return type)."
+},
+{
+  id: 188,
+  question: "Which algorithm is used for compression?",
+  options: [
+    "Bubble Sort",
+    "Huffman Coding",
+    "Binary Search",
+    "Quick Sort"
+  ],
+  correctAnswer: 1,
+  explanation: "Huffman Coding is used for lossless data compression."
+},
+{
+  id: 189,
+  question: "What is a final class?",
+  options: [
+    "A class that cannot be inherited",
+    "An abstract class",
+    "A concrete class",
+    "A static class"
+  ],
+  correctAnswer: 0,
+  explanation: "A final class cannot be subclassed or inherited from."
+},
+{
+  id: 190,
+  question: "Which data structure is used for waiting lines?",
+  options: [
+    "Stack",
+    "Queue",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "Queues are used for waiting lines and follow FIFO principle."
+},
+{
+  id: 191,
+  question: "What is the hexadecimal equivalent of binary 1010?",
+  options: [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  correctAnswer: 0,
+  explanation: "Binary 1010 = decimal 10 = hexadecimal A."
+},
+{
+  id: 192,
+  question: "Which programming language is used for AI?",
+  options: [
+    "HTML",
+    "CSS",
+    "Python",
+    "SQL"
+  ],
+  correctAnswer: 2,
+  explanation: "Python is widely used in artificial intelligence and machine learning due to its extensive libraries."
+},
+{
+  id: 193,
+  question: "What is a red-black tree?",
+  options: [
+    "A self-balancing binary search tree",
+    "Any binary tree",
+    "A complete tree",
+    "A full tree"
+  ],
+  correctAnswer: 0,
+  explanation: "A red-black tree is a self-balancing binary search tree with additional color properties to maintain balance."
+},
+{
+  id: 194,
+  question: "Which operator performs exponentiation?",
+  options: [
+    "+",
+    "-",
+    "*",
+    "**"
+  ],
+  correctAnswer: 3,
+  explanation: "The ** operator performs exponentiation in many programming languages."
+},
+{
+  id: 195,
+  question: "What is the time complexity of counting sort?",
+  options: [
+    "O(n)",
+    "O(n log n)",
+    "O(n + k)",
+    "O(n²)"
+  ],
+  correctAnswer: 2,
+  explanation: "Counting sort has O(n + k) time complexity where k is the range of input values."
+},
+{
+  id: 196,
+  question: "Which of these is a graph database?",
+  options: [
+    "MySQL",
+    "PostgreSQL",
+    "Neo4j",
+    "Oracle"
+  ],
+  correctAnswer: 2,
+  explanation: "Neo4j is a popular graph database management system."
+},
+{
+  id: 197,
+  question: "What is a local variable?",
+  options: [
+    "A variable accessible only within its scope",
+    "A global variable",
+    "A parameter",
+    "A constant"
+  ],
+  correctAnswer: 0,
+  explanation: "A local variable is accessible only within the block where it is declared."
+},
+{
+  id: 198,
+  question: "Which data structure is used for function calls?",
+  options: [
+    "Queue",
+    "Stack",
+    "Array",
+    "Linked List"
+  ],
+  correctAnswer: 1,
+  explanation: "The call stack manages function calls and their local variables."
+},
+{
+  id: 199,
+  question: "What is multiple inheritance?",
+  options: [
+    "Inheriting from multiple classes",
+    "Inheriting from one class",
+    "Creating multiple objects",
+    "Overriding multiple methods"
+  ],
+  correctAnswer: 0,
+  explanation: "Multiple inheritance allows a class to inherit from more than one parent class."
+},
+{
+  id: 200,
+  question: "Which language is used for building Android apps?",
+  options: [
+    "Swift",
+    "Kotlin",
+    "Python",
+    "Ruby"
+  ],
+  correctAnswer: 1,
+  explanation: "Kotlin is the preferred language for Android app development, though Java is also used."
+},
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'COS 101';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Exam - UNIBET</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam(40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the branch of physics that deals with static electric charges?",
+  options: [
+    "Electrodynamics",
+    "Magnetostatics",
+    "Electrostatics",
+    "Electromagnetism"
+  ],
+  correctAnswer: 2,
+  explanation: "Electrostatics is the branch of physics that deals with static electric charges or charges at rest."
+},
+{
+  id: 2,
+  question: "According to the fundamental law of electrostatics, what happens between like charges?",
+  options: [
+    "They attract each other",
+    "They repel each other",
+    "They neutralize each other",
+    "No force acts between them"
+  ],
+  correctAnswer: 1,
+  explanation: "The fundamental law of electrostatics states that like charges repel each other and unlike charges attract each other."
+},
+{
+  id: 3,
+  question: "When a glass rod is rubbed with silk, what happens to the glass rod?",
+  options: [
+    "It gains electrons and becomes negatively charged",
+    "It loses electrons and becomes positively charged",
+    "It gains protons and becomes positively charged",
+    "It remains neutral"
+  ],
+  correctAnswer: 1,
+  explanation: "When glass rod is rubbed with silk, the glass rod loses electrons and becomes positively charged, while silk gains electrons and becomes negatively charged."
+},
+{
+  id: 4,
+  question: "Which of the following materials is a good conductor of electricity?",
+  options: [
+    "Rubber",
+    "Glass",
+    "Copper",
+    "Plastic"
+  ],
+  correctAnswer: 2,
+  explanation: "Copper is a good conductor that allows charge to move through it freely, while rubber, glass and plastic are insulators."
+},
+{
+  id: 5,
+  question: "What is the value of Coulomb's constant k in vacuum?",
+  options: [
+    "8.854 × 10⁻¹² Nm²/C²",
+    "9.0 × 10⁹ Nm²/C²",
+    "1.6 × 10⁻¹⁹ Nm²/C²",
+    "6.67 × 10⁻¹¹ Nm²/C²"
+  ],
+  correctAnswer: 1,
+  explanation: "Coulomb's constant k has a value of 9.0 × 10⁹ Nm²/C² in vacuum."
+},
+{
+  id: 6,
+  question: "Two charges of 2.0 × 10⁻⁶ C and -3.0 × 10⁻⁶ C are 12 cm apart. What is the force between them?",
+  options: [
+    "3.75 N attractive",
+    "3.75 N repulsive",
+    "7.50 N attractive",
+    "7.50 N repulsive"
+  ],
+  correctAnswer: 0,
+  explanation: "Using Coulomb's law: F = k|q₁q₂|/r² = (9×10⁹ × 2×10⁻⁶ × 3×10⁻⁶)/(0.12)² = 3.75 N, and since charges are opposite, the force is attractive."
+},
+{
+  id: 7,
+  question: "What is the permittivity of free space ε₀?",
+  options: [
+    "9.0 × 10⁹ C²/Nm²",
+    "8.854 × 10⁻¹² C²/Nm²",
+    "1.6 × 10⁻¹⁹ C²/Nm²",
+    "4π × 10⁻⁷ C²/Nm²"
+  ],
+  correctAnswer: 1,
+  explanation: "The permittivity of free space ε₀ is 8.854 × 10⁻¹² C²/Nm²."
+},
+{
+  id: 8,
+  question: "What are electric lines of force?",
+  options: [
+    "Lines connecting points of equal potential",
+    "Lines showing the path of electrons",
+    "Lines whose tangent gives electric field direction",
+    "Lines connecting positive and negative charges"
+  ],
+  correctAnswer: 2,
+  explanation: "Electric lines of force are lines or curves drawn such that the tangent at any point gives the direction of the electric field."
+},
+{
+  id: 9,
+  question: "Where do electric field lines originate and terminate?",
+  options: [
+    "Originate from negative and terminate at positive charges",
+    "Originate from positive and terminate at negative charges",
+    "Form closed loops without termination",
+    "Always go to infinity"
+  ],
+  correctAnswer: 1,
+  explanation: "Electric field lines originate from positive charges and terminate at negative charges."
+},
+{
+  id: 10,
+  question: "What is the relationship between electric field E and electric potential V?",
+  options: [
+    "E = dV/dx",
+    "E = -dV/dx",
+    "E = V/d",
+    "E = V²/d"
+  ],
+  correctAnswer: 1,
+  explanation: "The electric field is the negative gradient of electric potential: E = -dV/dx."
+},
+{
+  id: 11,
+  question: "A capacitor stores energy in its:",
+  options: [
+    "Magnetic field",
+    "Electric field",
+    "Dielectric material",
+    "Metallic plates"
+  ],
+  correctAnswer: 1,
+  explanation: "A capacitor stores energy in the electric field between its plates."
+},
+{
+  id: 12,
+  question: "What is the capacitance of a parallel plate capacitor?",
+  options: [
+    "Directly proportional to plate separation",
+    "Inversely proportional to plate area",
+    "Directly proportional to plate area",
+    "Independent of dielectric material"
+  ],
+  correctAnswer: 2,
+  explanation: "Capacitance C = εA/d, so it is directly proportional to plate area A and inversely proportional to plate separation d."
+},
+{
+  id: 13,
+  question: "Three capacitors of 2nF, 3nF and 7nF are connected in parallel. What is the equivalent capacitance?",
+  options: [
+    "1.08 nF",
+    "12 nF",
+    "6 nF",
+    "42 nF"
+  ],
+  correctAnswer: 1,
+  explanation: "For parallel connection: C_eq = C₁ + C₂ + C₃ = 2 + 3 + 7 = 12 nF"
+},
+{
+  id: 14,
+  question: "What is current density J defined as?",
+  options: [
+    "Current per unit time",
+    "Current per unit cross-sectional area",
+    "Charge per unit time",
+    "Charge per unit area"
+  ],
+  correctAnswer: 1,
+  explanation: "Current density J is defined as current per unit cross-sectional area: J = I/A"
+},
+{
+  id: 15,
+  question: "If 1.00 mA current flows through a wire, how many electrons pass per second? (e = 1.6 × 10⁻¹⁹ C)",
+  options: [
+    "6.25 × 10¹⁵",
+    "1.6 × 10¹⁶",
+    "3.2 × 10¹⁵",
+    "8.0 × 10¹⁴"
+  ],
+  correctAnswer: 0,
+  explanation: "I = nq/t, so n = It/q = (10⁻³ × 1)/(1.6×10⁻¹⁹) = 6.25 × 10¹⁵ electrons"
+},
+{
+  id: 16,
+  question: "What is Ohm's law?",
+  options: [
+    "V = IR²",
+    "I = V/R",
+    "R = VI",
+    "V = I/R"
+  ],
+  correctAnswer: 1,
+  explanation: "Ohm's law states that current I through a conductor is proportional to potential difference V: I = V/R"
+},
+{
+  id: 17,
+  question: "Which of the following is a non-ohmic conductor?",
+  options: [
+    "Copper wire",
+    "Aluminum wire",
+    "Diode",
+    "Tungsten filament"
+  ],
+  correctAnswer: 2,
+  explanation: "Diodes are non-ohmic conductors that do not obey Ohm's law, while metals like copper and aluminum are ohmic conductors."
+},
+{
+  id: 18,
+  question: "The resistance of a conductor is given by R = ρL/A. What does ρ represent?",
+  options: [
+    "Conductivity",
+    "Resistivity",
+    "Resistance",
+    "Conductance"
+  ],
+  correctAnswer: 1,
+  explanation: "ρ represents resistivity, which is a property of the material that determines its resistance."
+},
+{
+  id: 19,
+  question: "What is the relationship between resistivity ρ and conductivity σ?",
+  options: [
+    "ρ = σ",
+    "ρ = 1/σ",
+    "ρ = σ²",
+    "ρ = 1/σ²"
+  ],
+  correctAnswer: 1,
+  explanation: "Conductivity σ is the reciprocal of resistivity ρ: σ = 1/ρ"
+},
+{
+  id: 20,
+  question: "When resistors are connected in series, what happens to the total resistance?",
+  options: [
+    "It decreases",
+    "It remains the same",
+    "It increases",
+    "It becomes zero"
+  ],
+  correctAnswer: 2,
+  explanation: "For resistors in series, the total resistance increases: R_total = R₁ + R₂ + R₃ + ..."
+},
+{
+  id: 21,
+  question: "Three 100Ω resistors are connected in parallel. What is the equivalent resistance?",
+  options: [
+    "300Ω",
+    "100Ω",
+    "33.3Ω",
+    "50Ω"
+  ],
+  correctAnswer: 2,
+  explanation: "For parallel resistors: 1/R_eq = 1/100 + 1/100 + 1/100 = 3/100, so R_eq = 100/3 = 33.3Ω"
+},
+{
+  id: 22,
+  question: "What is the formula for electrical power dissipated in a resistor?",
+  options: [
+    "P = I/R",
+    "P = V²R",
+    "P = I²R",
+    "P = V/I"
+  ],
+  correctAnswer: 2,
+  explanation: "The power dissipated in a resistor is given by P = I²R = V²/R = VI"
+},
+{
+  id: 23,
+  question: "A cell has EMF 12V and internal resistance 0.1Ω. When connected to 10Ω resistor, what is the terminal voltage?",
+  options: [
+    "12V",
+    "11.9V",
+    "10V",
+    "13V"
+  ],
+  correctAnswer: 1,
+  explanation: "I = E/(R+r) = 12/(10+0.1) = 1.19A, Terminal voltage V = IR = 1.19×10 = 11.9V"
+},
+{
+  id: 24,
+  question: "What is magnetic flux?",
+  options: [
+    "The number of magnetic field lines",
+    "The strength of magnetic field",
+    "The product of magnetic field and area perpendicular to it",
+    "The rate of change of magnetic field"
+  ],
+  correctAnswer: 2,
+  explanation: "Magnetic flux Φ_B = B·A = BAcosθ, which is the product of magnetic field and the area perpendicular to it."
+},
+{
+  id: 25,
+  question: "What does Gauss's law for magnetism state?",
+  options: [
+    "Total magnetic flux through closed surface equals enclosed charge",
+    "Total magnetic flux through closed surface is zero",
+    "Magnetic flux is proportional to current",
+    "Magnetic field lines always form closed loops"
+  ],
+  correctAnswer: 1,
+  explanation: "Gauss's law for magnetism states that the total magnetic flux through any closed surface is zero."
+},
+{
+  id: 26,
+  question: "Which of the following is a ferromagnetic material?",
+  options: [
+    "Aluminum",
+    "Copper",
+    "Iron",
+    "Bismuth"
+  ],
+  correctAnswer: 2,
+  explanation: "Iron is ferromagnetic and strongly attracted to magnets, while aluminum and copper are paramagnetic, and bismuth is diamagnetic."
+},
+{
+  id: 27,
+  question: "What is the Curie temperature?",
+  options: [
+    "Temperature at which conductor becomes superconductor",
+    "Temperature at which ferromagnetic material loses magnetism",
+    "Temperature at which resistance becomes zero",
+    "Temperature at which dielectric breaks down"
+  ],
+  correctAnswer: 1,
+  explanation: "Curie temperature is the temperature at which a ferromagnetic material loses its magnetic properties."
+},
+{
+  id: 28,
+  question: "According to Biot-Savart law, the magnetic field due to current element is:",
+  options: [
+    "Inversely proportional to square of distance",
+    "Directly proportional to square of distance",
+    "Independent of distance",
+    "Inversely proportional to distance"
+  ],
+  correctAnswer: 0,
+  explanation: "Biot-Savart law: dB = (μ₀/4π)(Idlsinθ/r²), so magnetic field is inversely proportional to square of distance."
+},
+{
+  id: 29,
+  question: "What is the magnetic field at distance r from long straight wire carrying current I?",
+  options: [
+    "B = μ₀I/2πr",
+    "B = μ₀I/2r",
+    "B = μ₀I/4πr",
+    "B = μ₀I/r"
+  ],
+  correctAnswer: 0,
+  explanation: "For long straight wire: B = μ₀I/(2πr)"
+},
+{
+  id: 30,
+  question: "What is Ampere's circuital law?",
+  options: [
+    "∮B·dl = μ₀I",
+    "∮E·dl = -dΦ_B/dt",
+    "∮B·dA = 0",
+    "F = q(v×B)"
+  ],
+  correctAnswer: 0,
+  explanation: "Ampere's law states that the line integral of magnetic field around closed loop equals μ₀ times current enclosed: ∮B·dl = μ₀I"
+},
+{
+  id: 31,
+  question: "The magnetic force on a charged particle is given by:",
+  options: [
+    "F = q(E + v×B)",
+    "F = q(v·B)",
+    "F = q(v×B)",
+    "F = qE"
+  ],
+  correctAnswer: 2,
+  explanation: "Magnetic force on charged particle: F = q(v×B)"
+},
+{
+  id: 32,
+  question: "When is the magnetic force on a charged particle maximum?",
+  options: [
+    "When velocity is parallel to magnetic field",
+    "When velocity is perpendicular to magnetic field",
+    "When velocity is at 45° to magnetic field",
+    "When particle is stationary"
+  ],
+  correctAnswer: 1,
+  explanation: "F = qvBsinθ is maximum when θ = 90°, i.e., when velocity is perpendicular to magnetic field."
+},
+{
+  id: 33,
+  question: "What is Faraday's law of electromagnetic induction?",
+  options: [
+    "ε = -dΦ_B/dt",
+    "ε = dΦ_B/dt",
+    "ε = Φ_B/t",
+    "ε = -Φ_B/t"
+  ],
+  correctAnswer: 0,
+  explanation: "Faraday's law: The induced EMF is equal to negative rate of change of magnetic flux: ε = -dΦ_B/dt"
+},
+{
+  id: 34,
+  question: "What does Lenz's law state about induced current?",
+  options: [
+    "It opposes the change in magnetic flux",
+    "It enhances the change in magnetic flux",
+    "It is independent of magnetic flux change",
+    "It is proportional to magnetic flux"
+  ],
+  correctAnswer: 0,
+  explanation: "Lenz's law: The induced current has direction such that its magnetic field opposes the change in magnetic flux that produced it."
+},
+{
+  id: 35,
+  question: "A coil with 25 turns has area 1.8 m². Magnetic field changes from 0 to 0.55 T in 0.85 s. What is induced EMF?",
+  options: [
+    "29.12 V",
+    "14.56 V",
+    "58.24 V",
+    "7.28 V"
+  ],
+  correctAnswer: 0,
+  explanation: "ε = N(dΦ_B/dt) = N(B_f - B_i)A/t = 25×(0.55-0)×1.8/0.85 = 29.12 V"
+},
+{
+  id: 36,
+  question: "In a transformer, what is the relationship between primary and secondary voltages?",
+  options: [
+    "V_s/V_p = N_p/N_s",
+    "V_s/V_p = N_s/N_p",
+    "V_s/V_p = I_p/I_s",
+    "V_s/V_p = I_s/I_p"
+  ],
+  correctAnswer: 1,
+  explanation: "For transformer: V_s/V_p = N_s/N_p, where N is number of turns."
+},
+{
+  id: 37,
+  question: "What is a step-up transformer?",
+  options: [
+    "N_s < N_p",
+    "N_s > N_p",
+    "N_s = N_p",
+    "V_s < V_p"
+  ],
+  correctAnswer: 1,
+  explanation: "Step-up transformer has more secondary turns than primary turns: N_s > N_p, so V_s > V_p"
+},
+{
+  id: 38,
+  question: "What is the principle of operation of an electric generator?",
+  options: [
+    "Motor effect",
+    "Electromagnetic induction",
+    "Magnetic resonance",
+    "Electrostatic induction"
+  ],
+  correctAnswer: 1,
+  explanation: "Electric generator works on electromagnetic induction - mechanical rotation induces EMF in coils."
+},
+{
+  id: 39,
+  question: "In an AC generator, the induced EMF varies:",
+  options: [
+    "Linearly with time",
+    "Sinusoidally with time",
+    "Exponentially with time",
+    "Logarithmically with time"
+  ],
+  correctAnswer: 1,
+  explanation: "In AC generator, induced EMF varies sinusoidally with time: ε = NBAωsin(ωt)"
+},
+{
+  id: 40,
+  question: "What is back EMF in an electric motor?",
+  options: [
+    "EMF that assists the applied voltage",
+    "EMF that opposes the applied voltage",
+    "EMF due to resistance",
+    "EMF due to friction"
+  ],
+  correctAnswer: 1,
+  explanation: "Back EMF is the induced EMF that opposes the applied voltage in a motor, due to rotation in magnetic field."
+},
+{
+  id: 41,
+  question: "What are eddy currents?",
+  options: [
+    "Currents in straight wires",
+    "Induced circulating currents in conductors",
+    "Currents in resistors",
+    "Currents in capacitors"
+  ],
+  correctAnswer: 1,
+  explanation: "Eddy currents are induced electric currents that circulate within conductors when exposed to changing magnetic fields."
+},
+{
+  id: 42,
+  question: "What is self-inductance?",
+  options: [
+    "Induction between two different circuits",
+    "Induction within the same circuit",
+    "Induction due to permanent magnets",
+    "Induction in transformers"
+  ],
+  correctAnswer: 1,
+  explanation: "Self-inductance is the property of a circuit that enables it to induce EMF in itself when current changes."
+},
+{
+  id: 43,
+  question: "What is the unit of self-inductance?",
+  options: [
+    "Farad",
+    "Henry",
+    "Weber",
+    "Tesla"
+  ],
+  correctAnswer: 1,
+  explanation: "Self-inductance is measured in henry (H)."
+},
+{
+  id: 44,
+  question: "In AC circuits, what is RMS value?",
+  options: [
+    "The peak value divided by 2",
+    "The DC value that produces same heating effect",
+    "The average value over one cycle",
+    "The maximum value in the cycle"
+  ],
+  correctAnswer: 1,
+  explanation: "RMS (root mean square) value is the DC value that would produce the same heating effect in a resistor."
+},
+{
+  id: 45,
+  question: "For sinusoidal AC, what is the relationship between peak and RMS voltage?",
+  options: [
+    "V_rms = V_peak/√2",
+    "V_rms = V_peak/2",
+    "V_rms = V_peak",
+    "V_rms = √2 V_peak"
+  ],
+  correctAnswer: 0,
+  explanation: "For sinusoidal AC: V_rms = V_peak/√2 ≈ 0.707 V_peak"
+},
+{
+  id: 46,
+  question: "In a pure capacitive AC circuit, the current:",
+  options: [
+    "Lags voltage by 90°",
+    "Leads voltage by 90°",
+    "Is in phase with voltage",
+    "Lags voltage by 180°"
+  ],
+  correctAnswer: 1,
+  explanation: "In pure capacitive circuit, current leads voltage by 90°."
+},
+{
+  id: 47,
+  question: "What is capacitive reactance?",
+  options: [
+    "X_C = 1/ωC",
+    "X_C = ωC",
+    "X_C = 1/ωL",
+    "X_C = ωL"
+  ],
+  correctAnswer: 0,
+  explanation: "Capacitive reactance X_C = 1/(ωC) = 1/(2πfC)"
+},
+{
+  id: 48,
+  question: "In a pure inductive AC circuit, the current:",
+  options: [
+    "Leads voltage by 90°",
+    "Lags voltage by 90°",
+    "Is in phase with voltage",
+    "Leads voltage by 180°"
+  ],
+  correctAnswer: 1,
+  explanation: "In pure inductive circuit, current lags voltage by 90°."
+},
+{
+  id: 49,
+  question: "What is inductive reactance?",
+  options: [
+    "X_L = 1/ωL",
+    "X_L = ωL",
+    "X_L = 1/ωC",
+    "X_L = ωC"
+  ],
+  correctAnswer: 1,
+  explanation: "Inductive reactance X_L = ωL = 2πfL"
+},
+{
+  id: 50,
+  question: "In an LCR series circuit at resonance, what happens?",
+  options: [
+    "Impedance is maximum",
+    "Current is minimum",
+    "Impedance is minimum",
+    "Power factor is zero"
+  ],
+  correctAnswer: 2,
+  explanation: "At resonance in LCR circuit, X_L = X_C, so impedance Z = R is minimum and current is maximum."
+},
+
+  
+  
+  
+{
+  id: 51,
+  question: "What is the resonance frequency of an LCR circuit?",
+  options: [
+    "f = 1/(2π√RC)",
+    "f = 1/(2π√LC)",
+    "f = 1/(2π√LR)",
+    "f = 2π/√LC"
+  ],
+  correctAnswer: 1,
+  explanation: "Resonance frequency f₀ = 1/(2π√LC)"
+},
+{
+  id: 52,
+  question: "In an LCR circuit at resonance, the phase angle between voltage and current is:",
+  options: [
+    "90°",
+    "45°",
+    "0°",
+    "180°"
+  ],
+  correctAnswer: 2,
+  explanation: "At resonance, X_L = X_C, so the circuit is purely resistive and voltage and current are in phase (0° phase difference)."
+},
+{
+  id: 53,
+  question: "What is the power factor in an AC circuit?",
+  options: [
+    "sinφ",
+    "tanφ",
+    "cosφ",
+    "cotφ"
+  ],
+  correctAnswer: 2,
+  explanation: "Power factor is defined as cosφ, where φ is the phase angle between voltage and current."
+},
+{
+  id: 54,
+  question: "In a purely resistive AC circuit, the power factor is:",
+  options: [
+    "0",
+    "0.5",
+    "0.707",
+    "1"
+  ],
+  correctAnswer: 3,
+  explanation: "In purely resistive circuit, voltage and current are in phase (φ=0°), so power factor cosφ = 1."
+},
+{
+  id: 55,
+  question: "What is the formula for impedance in an RLC series circuit?",
+  options: [
+    "Z = R + X_L + X_C",
+    "Z = √(R² + X_L² + X_C²)",
+    "Z = √[R² + (X_L - X_C)²]",
+    "Z = R + (X_L - X_C)"
+  ],
+  correctAnswer: 2,
+  explanation: "Impedance Z = √[R² + (X_L - X_C)²]"
+},
+{
+  id: 56,
+  question: "A 2μF capacitor and 1000Ω resistor are connected to 12V, 50Hz AC. What is the current?",
+  options: [
+    "12 mA",
+    "6.4 mA",
+    "3.2 mA",
+    "24 mA"
+  ],
+  correctAnswer: 1,
+  explanation: "X_C = 1/(2πfC) = 1590Ω, Z = √(R² + X_C²) = 1880Ω, I = V/Z = 12/1880 = 6.4 mA"
+},
+{
+  id: 57,
+  question: "What is the principle of charging by induction?",
+  options: [
+    "Direct contact between charged and neutral bodies",
+    "Rubbing two objects together",
+    "Bringing charged object near neutral conductor without contact",
+    "Heating the object"
+  ],
+  correctAnswer: 2,
+  explanation: "Charging by induction involves bringing a charged object near a neutral conductor without physical contact, causing charge separation."
+},
+{
+  id: 58,
+  question: "In charging by induction, the induced charge is:",
+  options: [
+    "Same as the inducing charge",
+    "Opposite to the inducing charge",
+    "Always positive",
+    "Always negative"
+  ],
+  correctAnswer: 1,
+  explanation: "The charge induced on the near side is opposite to the inducing charge, while the far side has the same charge."
+},
+{
+  id: 59,
+  question: "What device is used to demonstrate charging by induction?",
+  options: [
+    "Voltmeter",
+    "Gold leaf electroscope",
+    "Ammeter",
+    "Potentiometer"
+  ],
+  correctAnswer: 1,
+  explanation: "Gold leaf electroscope is commonly used to demonstrate charging by induction."
+},
+{
+  id: 60,
+  question: "The force between two parallel wires carrying current in the same direction is:",
+  options: [
+    "Repulsive",
+    "Attractive",
+    "Zero",
+    "Oscillatory"
+  ],
+  correctAnswer: 1,
+  explanation: "Parallel wires carrying currents in the same direction attract each other due to their magnetic fields."
+},
+{
+  id: 61,
+  question: "What is the magnetic field at the center of a circular loop of radius R carrying current I?",
+  options: [
+    "μ₀I/2R",
+    "μ₀I/2πR",
+    "μ₀I/R",
+    "μ₀I/πR"
+  ],
+  correctAnswer: 0,
+  explanation: "Magnetic field at center of circular loop: B = μ₀I/2R for one turn."
+},
+{
+  id: 62,
+  question: "For a solenoid with n turns per unit length, the magnetic field inside is:",
+  options: [
+    "B = μ₀nI",
+    "B = μ₀I/2πr",
+    "B = μ₀I/2R",
+    "B = μ₀nI/2"
+  ],
+  correctAnswer: 0,
+  explanation: "Magnetic field inside long solenoid: B = μ₀nI, where n is turns per unit length."
+},
+{
+  id: 63,
+  question: "Helmholtz coils are used to produce:",
+  options: [
+    "Very strong magnetic field",
+    "Uniform magnetic field",
+    "Oscillating magnetic field",
+    "Radial magnetic field"
+  ],
+  correctAnswer: 1,
+  explanation: "Helmholtz coils produce a nearly uniform magnetic field in the region between them."
+},
+{
+  id: 64,
+  question: "What is the drift velocity of electrons in a typical conductor?",
+  options: [
+    "~10⁶ m/s",
+    "~10³ m/s",
+    "~1 m/s",
+    "~10⁻⁴ m/s"
+  ],
+  correctAnswer: 3,
+  explanation: "Drift velocity is very small, typically of the order of 10⁻⁴ m/s or millimeters per second."
+},
+{
+  id: 65,
+  question: "The formula for drift velocity is:",
+  options: [
+    "v_d = I/nAq",
+    "v_d = nAq/I",
+    "v_d = I²/nAq",
+    "v_d = nAq/I²"
+  ],
+  correctAnswer: 0,
+  explanation: "Drift velocity v_d = I/(nAq), where n is electron density, A is area, q is charge."
+},
+{
+  id: 66,
+  question: "A current of 4.5A flows for 1 hour. What charge flows?",
+  options: [
+    "16200 C",
+    "8100 C",
+    "32400 C",
+    "4050 C"
+  ],
+  correctAnswer: 0,
+  explanation: "Q = It = 4.5 × 3600 = 16200 C"
+},
+{
+  id: 67,
+  question: "What is the potential difference between two points?",
+  options: [
+    "Work done per unit charge moving between points",
+    "Force per unit charge",
+    "Charge per unit time",
+    "Energy per unit current"
+  ],
+  correctAnswer: 0,
+  explanation: "Potential difference is defined as work done per unit charge in moving between two points."
+},
+{
+  id: 68,
+  question: "The absolute electric potential at a distance r from point charge Q is:",
+  options: [
+    "kQ/r",
+    "kQ/r²",
+    "k/rQ",
+    "kQ²/r"
+  ],
+  correctAnswer: 0,
+  explanation: "Electric potential V = kQ/r, where k = 1/(4πε₀)"
+},
+{
+  id: 69,
+  question: "What is the electric field between two parallel plates with potential difference V and separation d?",
+  options: [
+    "E = V/d",
+    "E = Vd",
+    "E = V²/d",
+    "E = d/V"
+  ],
+  correctAnswer: 0,
+  explanation: "For parallel plates, electric field E = V/d"
+},
+{
+  id: 70,
+  question: "A point charge of 30nC is 2cm away in air. What is the potential? (k=9×10⁹)",
+  options: [
+    "13500 V",
+    "6750 V",
+    "27000 V",
+    "1350 V"
+  ],
+  correctAnswer: 0,
+  explanation: "V = kQ/r = (9×10⁹ × 30×10⁻⁹)/0.02 = 13500 V"
+},
+{
+  id: 71,
+  question: "Two points are 30cm and 50cm from 2nC charge. What is potential difference between them?",
+  options: [
+    "12 V",
+    "24 V",
+    "48 V",
+    "6 V"
+  ],
+  correctAnswer: 1,
+  explanation: "V_A - V_B = kQ(1/r_A - 1/r_B) = 9×10⁹×2×10⁻⁹(1/0.3 - 1/0.5) = 24 V"
+},
+{
+  id: 72,
+  question: "What is the time constant for an RL circuit?",
+  options: [
+    "L/R",
+    "R/L",
+    "LR",
+    "1/LR"
+  ],
+  correctAnswer: 0,
+  explanation: "Time constant for RL circuit is τ = L/R"
+},
+{
+  id: 73,
+  question: "In an RC circuit, the capacitor charges to about 63% of maximum in:",
+  options: [
+    "One time constant",
+    "Two time constants",
+    "Half time constant",
+    "Four time constants"
+  ],
+  correctAnswer: 0,
+  explanation: "Capacitor charges to 63.2% of maximum voltage in one time constant τ = RC"
+},
+{
+  id: 74,
+  question: "What is the condition for maximum power transfer from a source to load?",
+  options: [
+    "R_load >> R_source",
+    "R_load << R_source",
+    "R_load = R_source",
+    "R_load = 2R_source"
+  ],
+  correctAnswer: 2,
+  explanation: "Maximum power transfer occurs when load resistance equals source resistance."
+},
+{
+  id: 75,
+  question: "A cell of EMF 1.5V and internal resistance 1Ω delivers maximum power to what load?",
+  options: [
+    "0.5Ω",
+    "1Ω",
+    "2Ω",
+    "1.5Ω"
+  ],
+  correctAnswer: 1,
+  explanation: "For maximum power, R_load = r_internal = 1Ω"
+},
+{
+  id: 76,
+  question: "What is a potentiometer used for?",
+  options: [
+    "Measuring current",
+    "Measuring resistance",
+    "Comparing EMFs",
+    "Measuring power"
+  ],
+  correctAnswer: 2,
+  explanation: "Potentiometer is used for accurate comparison of EMFs without drawing current."
+},
+{
+  id: 77,
+  question: "In a potentiometer, when no current flows through galvanometer:",
+  options: [
+    "PD across wire equals unknown EMF",
+    "Current is maximum",
+    "Resistance is minimum",
+    "Power is maximum"
+  ],
+  correctAnswer: 0,
+  explanation: "Balance condition: PD across potentiometer wire equals the unknown EMF being measured."
+},
+{
+  id: 78,
+  question: "A galvanometer of 100Ω resistance and 100μA full scale is converted to 5A ammeter. What shunt is needed?",
+  options: [
+    "0.002Ω",
+    "0.02Ω",
+    "0.2Ω",
+    "2Ω"
+  ],
+  correctAnswer: 1,
+  explanation: "I_gR_g = I_sR_s, (100×10⁻⁶)×100 = (5-0.0001)R_s, R_s ≈ 0.02Ω"
+},
+{
+  id: 79,
+  question: "The same galvanometer is converted to 5V voltmeter. What series resistance?",
+  options: [
+    "50 kΩ",
+    "5 kΩ",
+    "500 Ω",
+    "50 Ω"
+  ],
+  correctAnswer: 0,
+  explanation: "R_series = V/I_g - R_g = 5/(100×10⁻⁶) - 100 = 50000 - 100 = 49900Ω ≈ 50kΩ"
+},
+{
+  id: 80,
+  question: "What is magnetic susceptibility?",
+  options: [
+    "Measure of how easily material magnetizes",
+    "Measure of magnetic field strength",
+    "Measure of magnetic flux",
+    "Measure of coercivity"
+  ],
+  correctAnswer: 0,
+  explanation: "Magnetic susceptibility measures how easily a material can be magnetized in an external magnetic field."
+},
+{
+  id: 81,
+  question: "Diamagnetic materials have:",
+  options: [
+    "Positive susceptibility",
+    "Negative susceptibility",
+    "Zero susceptibility",
+    "Infinite susceptibility"
+  ],
+  correctAnswer: 1,
+  explanation: "Diamagnetic materials have small negative susceptibility and are weakly repelled by magnets."
+},
+{
+  id: 82,
+  question: "Paramagnetic materials have:",
+  options: [
+    "Large positive susceptibility",
+    "Small positive susceptibility",
+    "Negative susceptibility",
+    "Zero susceptibility"
+  ],
+  correctAnswer: 1,
+  explanation: "Paramagnetic materials have small positive susceptibility and are weakly attracted to magnets."
+},
+{
+  id: 83,
+  question: "Ferromagnetic materials have:",
+  options: [
+    "Small positive susceptibility",
+    "Large positive susceptibility",
+    "Negative susceptibility",
+    "Zero susceptibility"
+  ],
+  correctAnswer: 1,
+  explanation: "Ferromagnetic materials have large positive susceptibility and are strongly attracted to magnets."
+},
+{
+  id: 84,
+  question: "What is hysteresis in magnetic materials?",
+  options: [
+    "Linear B-H relationship",
+    "Lag of magnetization behind magnetizing field",
+    "Instantaneous magnetization",
+    "Constant magnetization"
+  ],
+  correctAnswer: 1,
+  explanation: "Hysteresis is the lag of magnetic induction behind the magnetizing field when the field is changed."
+},
+{
+  id: 85,
+  question: "The area of hysteresis loop represents:",
+  options: [
+    "Magnetic susceptibility",
+    "Energy loss per cycle",
+    "Magnetic flux",
+    "Coercive force"
+  ],
+  correctAnswer: 1,
+  explanation: "Area of hysteresis loop represents energy dissipated as heat per cycle of magnetization."
+},
+{
+  id: 86,
+  question: "What is coercivity?",
+  options: [
+    "Field needed to saturate material",
+    "Field needed to reduce magnetization to zero",
+    "Residual magnetization",
+    "Maximum magnetization"
+  ],
+  correctAnswer: 1,
+  explanation: "Coercivity is the reverse magnetic field needed to reduce magnetization to zero."
+},
+{
+  id: 87,
+  question: "Soft magnetic materials have:",
+  options: [
+    "Large hysteresis area",
+    "Small hysteresis area",
+    "High coercivity",
+    "High retentivity"
+  ],
+  correctAnswer: 1,
+  explanation: "Soft magnetic materials have small hysteresis area, low coercivity, and are easily magnetized/demagnetized."
+},
+{
+  id: 88,
+  question: "Hard magnetic materials have:",
+  options: [
+    "Small hysteresis area",
+    "Large hysteresis area",
+    "Low coercivity",
+    "Low retentivity"
+  ],
+  correctAnswer: 1,
+  explanation: "Hard magnetic materials have large hysteresis area, high coercivity, and make good permanent magnets."
+},
+{
+  id: 89,
+  question: "What is retentivity?",
+  options: [
+    "Field needed to demagnetize",
+    "Residual magnetization after field removal",
+    "Ease of magnetization",
+    "Magnetic susceptibility"
+  ],
+  correctAnswer: 1,
+  explanation: "Retentivity is the residual magnetization remaining after the external field is removed."
+},
+{
+  id: 90,
+  question: "The magnetic field due to a moving charge depends on:",
+  options: [
+    "Charge only",
+    "Velocity only",
+    "Both charge and velocity",
+    "Neither charge nor velocity"
+  ],
+  correctAnswer: 2,
+  explanation: "Magnetic field due to moving charge: B = (μ₀/4π)(qv×r̂)/r², depends on both charge and velocity."
+},
+{
+  id: 91,
+  question: "For a charged particle in uniform magnetic field, the radius of circular path is:",
+  options: [
+    "R = mv/qB",
+    "R = qB/mv",
+    "R = mq/Bv",
+    "R = B/mvq"
+  ],
+  correctAnswer: 0,
+  explanation: "Radius R = mv/(qB) for charged particle moving perpendicular to uniform magnetic field."
+},
+{
+  id: 92,
+  question: "The time period for circular motion of charged particle in magnetic field is:",
+  options: [
+    "T = 2πm/qB",
+    "T = 2πqB/m",
+    "T = m/2πqB",
+    "T = qB/2πm"
+  ],
+  correctAnswer: 0,
+  explanation: "Time period T = 2πm/(qB), independent of velocity and radius."
+},
+{
+  id: 93,
+  question: "What is cyclotron frequency?",
+  options: [
+    "f = qB/2πm",
+    "f = 2πm/qB",
+    "f = m/2πqB",
+    "f = 2πqB/m"
+  ],
+  correctAnswer: 0,
+  explanation: "Cyclotron frequency f = qB/(2πm)"
+},
+{
+  id: 94,
+  question: "In velocity selector, particles pass undeflected when:",
+  options: [
+    "E = vB",
+    "v = E/B",
+    "B = vE",
+    "v = BE"
+  ],
+  correctAnswer: 1,
+  explanation: "In velocity selector, electric and magnetic forces balance when v = E/B"
+},
+{
+  id: 95,
+  question: "The force on a current element Idl in magnetic field B is:",
+  options: [
+    "F = I(dl·B)",
+    "F = I(dl×B)",
+    "F = I(B×dl)",
+    "F = I(B·dl)"
+  ],
+  correctAnswer: 1,
+  explanation: "Force on current element: dF = I(dl×B)"
+},
+{
+  id: 96,
+  question: "Torque on a current loop in magnetic field is maximum when:",
+  options: [
+    "Plane parallel to field",
+    "Plane perpendicular to field",
+    "At 45° to field",
+    "Independent of orientation"
+  ],
+  correctAnswer: 1,
+  explanation: "Torque τ = NIABsinθ is maximum when θ=90°, i.e., plane perpendicular to field."
+},
+{
+  id: 97,
+  question: "The magnetic moment of current loop is:",
+  options: [
+    "μ = NIA",
+    "μ = NI/A",
+    "μ = NA/I",
+    "μ = I/NA"
+  ],
+  correctAnswer: 0,
+  explanation: "Magnetic moment μ = NIA, where N is turns, I is current, A is area."
+},
+{
+  id: 98,
+  question: "What is the principle of moving coil galvanometer?",
+  options: [
+    "Motor effect",
+    "Generator effect",
+    "Heating effect",
+    "Chemical effect"
+  ],
+  correctAnswer: 0,
+  explanation: "Moving coil galvanometer works on motor principle - current in magnetic field experiences torque."
+},
+{
+  id: 99,
+  question: "The current sensitivity of galvanometer can be increased by:",
+  options: [
+    "Increasing spring constant",
+    "Decreasing magnetic field",
+    "Increasing number of turns",
+    "Decreasing coil area"
+  ],
+  correctAnswer: 2,
+  explanation: "Current sensitivity increases with more turns, stronger magnetic field, and softer springs."
+},
+{
+  id: 100,
+  question: "What is the condition for balance in Wheatstone bridge?",
+  options: [
+    "P/Q = R/S",
+    "P/R = Q/S",
+    "PQ = RS",
+    "P+Q = R+S"
+  ],
+  correctAnswer: 0,
+  explanation: "Wheatstone bridge balance condition: P/Q = R/S"
+},
+
+
+
+
+
+{
+  id: 101,
+  question: "What is the formula for the force between two parallel current-carrying wires?",
+  options: [
+    "F = μ₀I₁I₂L/2πr",
+    "F = μ₀I₁I₂/2πrL",
+    "F = 2πμ₀I₁I₂L/r",
+    "F = μ₀I₁I₂r/2πL"
+  ],
+  correctAnswer: 0,
+  explanation: "Force per unit length between parallel wires: F/L = μ₀I₁I₂/2πr"
+},
+{
+  id: 102,
+  question: "In a transformer, the relationship between primary and secondary currents is:",
+  options: [
+    "I_s/I_p = N_p/N_s",
+    "I_s/I_p = N_s/N_p",
+    "I_s/I_p = V_p/V_s",
+    "I_s/I_p = 1"
+  ],
+  correctAnswer: 0,
+  explanation: "For ideal transformer: I_s/I_p = N_p/N_s = V_p/V_s"
+},
+{
+  id: 103,
+  question: "A step-down transformer has:",
+  options: [
+    "N_s > N_p",
+    "N_s < N_p",
+    "N_s = N_p",
+    "V_s > V_p"
+  ],
+  correctAnswer: 1,
+  explanation: "Step-down transformer has fewer secondary turns than primary turns: N_s < N_p"
+},
+{
+  id: 104,
+  question: "The efficiency of an ideal transformer is:",
+  options: [
+    "50%",
+    "75%",
+    "90%",
+    "100%"
+  ],
+  correctAnswer: 3,
+  explanation: "Ideal transformer has 100% efficiency with no energy losses."
+},
+{
+  id: 105,
+  question: "Eddy currents cause energy losses in:",
+  options: [
+    "Transformers only",
+    "Motors only",
+    "Transformers and motors",
+    "Capacitors only"
+  ],
+  correctAnswer: 2,
+  explanation: "Eddy currents cause energy losses in transformers, motors, and any device with changing magnetic fields in conductors."
+},
+{
+  id: 106,
+  question: "Lamination of transformer core reduces:",
+  options: [
+    "Hysteresis losses",
+    "Eddy current losses",
+    "Copper losses",
+    "All losses"
+  ],
+  correctAnswer: 1,
+  explanation: "Lamination reduces eddy current losses by breaking the path of circulating currents."
+},
+{
+  id: 107,
+  question: "The self-induced EMF in an inductor is given by:",
+  options: [
+    "ε = -L di/dt",
+    "ε = L di/dt",
+    "ε = -L dt/di",
+    "ε = L dt/di"
+  ],
+  correctAnswer: 0,
+  explanation: "Self-induced EMF: ε = -L di/dt (Lenz's law)"
+},
+{
+  id: 108,
+  question: "The energy stored in an inductor is:",
+  options: [
+    "U = ½LI²",
+    "U = ½L/I²",
+    "U = LI²",
+    "U = L/I"
+  ],
+  correctAnswer: 0,
+  explanation: "Energy stored in inductor: U = ½LI²"
+},
+{
+  id: 109,
+  question: "Mutual inductance between two coils depends on:",
+  options: [
+    "Current in primary only",
+    "Geometry and relative position",
+    "Time rate of current change",
+    "Resistance of coils"
+  ],
+  correctAnswer: 1,
+  explanation: "Mutual inductance depends on geometry, number of turns, and relative position of coils."
+},
+{
+  id: 110,
+  question: "The unit of mutual inductance is:",
+  options: [
+    "Farad",
+    "Henry",
+    "Weber",
+    "Tesla"
+  ],
+  correctAnswer: 1,
+  explanation: "Mutual inductance is measured in henry (H), same as self-inductance."
+},
+{
+  id: 111,
+  question: "In an AC circuit with R and L in series, the voltage:",
+  options: [
+    "Lags current",
+    "Leads current",
+    "Is in phase with current",
+    "Is 180° out of phase"
+  ],
+  correctAnswer: 1,
+  explanation: "In RL circuit, voltage leads current by angle φ where tanφ = X_L/R"
+},
+{
+  id: 112,
+  question: "In an AC circuit with R and C in series, the voltage:",
+  options: [
+    "Lags current",
+    "Leads current",
+    "Is in phase with current",
+    "Is 180° out of phase"
+  ],
+  correctAnswer: 0,
+  explanation: "In RC circuit, voltage lags current by angle φ where tanφ = X_C/R"
+},
+{
+  id: 113,
+  question: "The quality factor Q of a resonant circuit is defined as:",
+  options: [
+    "Q = R/ωL",
+    "Q = ωL/R",
+    "Q = ωC/R",
+    "Q = R/ωC"
+  ],
+  correctAnswer: 1,
+  explanation: "Quality factor Q = ωL/R = 1/ωCR at resonance"
+},
+{
+  id: 114,
+  question: "A high Q factor indicates:",
+  options: [
+    "Low energy losses",
+    "High energy losses",
+    "Broad bandwidth",
+    "Low selectivity"
+  ],
+  correctAnswer: 0,
+  explanation: "High Q factor means low energy losses and sharp resonance peak."
+},
+{
+  id: 115,
+  question: "The bandwidth of a resonant circuit is:",
+  options: [
+    "Δf = f₀/Q",
+    "Δf = Q/f₀",
+    "Δf = f₀Q",
+    "Δf = 1/f₀Q"
+  ],
+  correctAnswer: 0,
+  explanation: "Bandwidth Δf = f₀/Q, where f₀ is resonance frequency"
+},
+{
+  id: 116,
+  question: "In a series RLC circuit, at frequencies below resonance:",
+  options: [
+    "Circuit is capacitive",
+    "Circuit is inductive",
+    "Circuit is resistive",
+    "Impedance is minimum"
+  ],
+  correctAnswer: 0,
+  explanation: "Below resonance, X_C > X_L, so circuit is capacitive"
+},
+{
+  id: 117,
+  question: "In a series RLC circuit, at frequencies above resonance:",
+  options: [
+    "Circuit is capacitive",
+    "Circuit is inductive",
+    "Circuit is resistive",
+    "Impedance is minimum"
+  ],
+  correctAnswer: 1,
+  explanation: "Above resonance, X_L > X_C, so circuit is inductive"
+},
+{
+  id: 118,
+  question: "The power in an AC circuit is given by:",
+  options: [
+    "P = VI",
+    "P = VI cosφ",
+    "P = VI sinφ",
+    "P = VI tanφ"
+  ],
+  correctAnswer: 1,
+  explanation: "Average power P = V_rms I_rms cosφ, where cosφ is power factor"
+},
+{
+  id: 119,
+  question: "In a purely reactive circuit, the average power is:",
+  options: [
+    "Maximum",
+    "Minimum",
+    "Zero",
+    "Infinite"
+  ],
+  correctAnswer: 2,
+  explanation: "In purely reactive circuit (L or C only), φ=90°, cosφ=0, so average power is zero"
+},
+{
+  id: 120,
+  question: "The form factor for sinusoidal AC is:",
+  options: [
+    "1.11",
+    "1.414",
+    "0.707",
+    "0.637"
+  ],
+  correctAnswer: 0,
+  explanation: "Form factor = RMS/Average = 0.707V_peak/0.637V_peak = 1.11"
+},
+{
+  id: 121,
+  question: "The peak factor for sinusoidal AC is:",
+  options: [
+    "1.414",
+    "1.11",
+    "0.707",
+    "0.637"
+  ],
+  correctAnswer: 0,
+  explanation: "Peak factor = Peak/RMS = V_peak/0.707V_peak = 1.414"
+},
+{
+  id: 122,
+  question: "In a three-phase system, the phase difference between phases is:",
+  options: [
+    "60°",
+    "90°",
+    "120°",
+    "180°"
+  ],
+  correctAnswer: 2,
+  explanation: "In three-phase system, phases are 120° apart"
+},
+{
+  id: 123,
+  question: "The advantage of three-phase system over single-phase is:",
+  options: [
+    "Higher power for same current",
+    "Lower voltage",
+    "Simpler construction",
+    "Lower frequency"
+  ],
+  correctAnswer: 0,
+  explanation: "Three-phase system delivers more power for the same current compared to single-phase"
+},
+{
+  id: 124,
+  question: "In star connection, line voltage is related to phase voltage by:",
+  options: [
+    "V_L = V_ph",
+    "V_L = √3 V_ph",
+    "V_L = V_ph/√3",
+    "V_L = 3V_ph"
+  ],
+  correctAnswer: 1,
+  explanation: "In star connection: V_L = √3 V_ph"
+},
+{
+  id: 125,
+  question: "In delta connection, line current is related to phase current by:",
+  options: [
+    "I_L = I_ph",
+    "I_L = √3 I_ph",
+    "I_L = I_ph/√3",
+    "I_L = 3I_ph"
+  ],
+  correctAnswer: 1,
+  explanation: "In delta connection: I_L = √3 I_ph"
+},
+{
+  id: 126,
+  question: "The power in balanced three-phase system is:",
+  options: [
+    "P = √3 V_L I_L cosφ",
+    "P = 3 V_L I_L cosφ",
+    "P = V_L I_L cosφ",
+    "P = √3 V_L I_L"
+  ],
+  correctAnswer: 0,
+  explanation: "Three-phase power: P = √3 V_L I_L cosφ"
+},
+{
+  id: 127,
+  question: "What is skin effect in AC circuits?",
+  options: [
+    "Current distributes uniformly",
+    "Current concentrates at surface",
+    "Voltage increases with frequency",
+    "Resistance decreases with frequency"
+  ],
+  correctAnswer: 1,
+  explanation: "Skin effect: At high frequencies, current concentrates near the surface of conductor"
+},
+{
+  id: 128,
+  question: "Skin effect increases with:",
+  options: [
+    "Decreasing frequency",
+    "Increasing frequency",
+    "Decreasing resistivity",
+    "Increasing diameter"
+  ],
+  correctAnswer: 1,
+  explanation: "Skin effect becomes more pronounced as frequency increases"
+},
+{
+  id: 129,
+  question: "What is proximity effect?",
+  options: [
+    "Effect of temperature on resistance",
+    "Effect of nearby current-carrying conductors",
+    "Effect of magnetic field on resistance",
+    "Effect of voltage on current"
+  ],
+  correctAnswer: 1,
+  explanation: "Proximity effect: Current distribution affected by nearby current-carrying conductors"
+},
+{
+  id: 130,
+  question: "The dielectric strength of a material is:",
+  options: [
+    "Maximum electric field it can withstand",
+    "Ability to store charge",
+    "Resistance to current flow",
+    "Magnetic permeability"
+  ],
+  correctAnswer: 0,
+  explanation: "Dielectric strength is the maximum electric field a material can withstand without breakdown"
+},
+{
+  id: 131,
+  question: "What is dielectric loss?",
+  options: [
+    "Energy loss in magnetic field",
+    "Energy loss in electric field",
+    "Copper loss",
+    "Eddy current loss"
+  ],
+  correctAnswer: 1,
+  explanation: "Dielectric loss is energy dissipation in dielectric material under alternating electric field"
+},
+{
+  id: 132,
+  question: "The loss tangent tanδ measures:",
+  options: [
+    "Magnetic losses",
+    "Dielectric losses",
+    "Copper losses",
+    "Hysteresis losses"
+  ],
+  correctAnswer: 1,
+  explanation: "Loss tangent tanδ measures dielectric losses in insulating materials"
+},
+{
+  id: 133,
+  question: "A good dielectric should have:",
+  options: [
+    "High loss tangent",
+    "Low loss tangent",
+    "High conductivity",
+    "Low breakdown voltage"
+  ],
+  correctAnswer: 1,
+  explanation: "Good dielectric has low loss tangent (minimal energy losses) and high breakdown voltage"
+},
+{
+  id: 134,
+  question: "What is piezoelectric effect?",
+  options: [
+    "Voltage produces magnetic field",
+    "Pressure produces voltage",
+    "Heat produces voltage",
+    "Light produces current"
+  ],
+  correctAnswer: 1,
+  explanation: "Piezoelectric effect: Mechanical stress generates electric voltage in certain crystals"
+},
+{
+  id: 135,
+  question: "What is pyroelectric effect?",
+  options: [
+    "Pressure produces voltage",
+    "Temperature change produces voltage",
+    "Light produces current",
+    "Magnetic field produces voltage"
+  ],
+  correctAnswer: 1,
+  explanation: "Pyroelectric effect: Temperature change generates electric voltage in certain materials"
+},
+{
+  id: 136,
+  question: "What is ferroelectricity?",
+  options: [
+    "Spontaneous electric polarization",
+    "Spontaneous magnetic polarization",
+    "High electrical conductivity",
+    "Zero electrical resistance"
+  ],
+  correctAnswer: 0,
+  explanation: "Ferroelectric materials have spontaneous electric polarization that can be reversed by electric field"
+},
+{
+  id: 137,
+  question: "The Curie temperature for ferroelectric materials is:",
+  options: [
+    "Temperature of superconductivity",
+    "Temperature where ferroelectricity disappears",
+    "Temperature of maximum polarization",
+    "Temperature of zero resistance"
+  ],
+  correctAnswer: 1,
+  explanation: "Curie temperature is where ferroelectric materials lose their spontaneous polarization"
+},
+{
+  id: 138,
+  question: "What is electret?",
+  options: [
+    "Permanent magnet",
+    "Permanent electric dipole",
+    "Temporary magnet",
+    "Superconductor"
+  ],
+  correctAnswer: 1,
+  explanation: "Electret is dielectric material with permanent electric polarization, analogous to permanent magnet"
+},
+{
+  id: 139,
+  question: "In a semiconductor, the Fermi level is:",
+  options: [
+    "Always in conduction band",
+    "Always in valence band",
+    "In the middle of band gap",
+    "At the surface only"
+  ],
+  correctAnswer: 2,
+  explanation: "In intrinsic semiconductor, Fermi level is approximately in the middle of band gap"
+},
+{
+  id: 140,
+  question: "What is Hall effect?",
+  options: [
+    "Voltage perpendicular to current and magnetic field",
+    "Voltage parallel to current",
+    "Current due to temperature gradient",
+    "Resistance change with magnetic field"
+  ],
+  correctAnswer: 0,
+  explanation: "Hall effect: Voltage develops perpendicular to both current and magnetic field directions"
+},
+{
+  id: 141,
+  question: "Hall coefficient R_H is given by:",
+  options: [
+    "R_H = 1/ne",
+    "R_H = ne",
+    "R_H = n/e",
+    "R_H = e/n"
+  ],
+  correctAnswer: 0,
+  explanation: "Hall coefficient R_H = 1/ne for electrons, where n is carrier density"
+},
+{
+  id: 142,
+  question: "Positive Hall coefficient indicates:",
+  options: [
+    "Electron conduction",
+    "Hole conduction",
+    "Both electrons and holes",
+    "No conduction"
+  ],
+  correctAnswer: 1,
+  explanation: "Positive Hall coefficient indicates hole conduction (p-type semiconductor)"
+},
+{
+  id: 143,
+  question: "Negative Hall coefficient indicates:",
+  options: [
+    "Electron conduction",
+    "Hole conduction",
+    "Both electrons and holes",
+    "No conduction"
+  ],
+  correctAnswer: 0,
+  explanation: "Negative Hall coefficient indicates electron conduction (n-type semiconductor)"
+},
+{
+  id: 144,
+  question: "What is superconductivity?",
+  options: [
+    "Zero resistance below critical temperature",
+    "Infinite resistance",
+    "Variable resistance",
+    "Negative resistance"
+  ],
+  correctAnswer: 0,
+  explanation: "Superconductivity: Zero electrical resistance below critical temperature"
+},
+{
+  id: 145,
+  question: "Meissner effect in superconductors is:",
+  options: [
+    "Zero resistance",
+    "Expulsion of magnetic field",
+    "Perfect conductivity",
+    "Infinite conductivity"
+  ],
+  correctAnswer: 1,
+  explanation: "Meissner effect: Perfect diamagnetism - expulsion of magnetic field from superconductor"
+},
+{
+  id: 146,
+  question: "Type I superconductors have:",
+  options: [
+    "Complete Meissner effect",
+    "Partial flux penetration",
+    "No Meissner effect",
+    "Variable critical field"
+  ],
+  correctAnswer: 0,
+  explanation: "Type I superconductors exhibit complete Meissner effect up to critical field"
+},
+{
+  id: 147,
+  question: "Type II superconductors have:",
+  options: [
+    "Complete Meissner effect",
+    "Mixed state with flux penetration",
+    "No Meissner effect",
+    "Only surface superconductivity"
+  ],
+  correctAnswer: 1,
+  explanation: "Type II superconductors have mixed state where magnetic flux partially penetrates"
+},
+{
+  id: 148,
+  question: "What is critical temperature T_c?",
+  options: [
+    "Temperature where resistance becomes maximum",
+    "Temperature where superconductivity begins",
+    "Temperature of magnetic ordering",
+    "Temperature of structural change"
+  ],
+  correctAnswer: 1,
+  explanation: "Critical temperature T_c is where material becomes superconducting"
+},
+{
+  id: 149,
+  question: "What is critical magnetic field H_c?",
+  options: [
+    "Field that destroys superconductivity",
+    "Field that enhances superconductivity",
+    "Field for maximum current",
+    "Field for zero resistance"
+  ],
+  correctAnswer: 0,
+  explanation: "Critical magnetic field H_c is the field above which superconductivity is destroyed"
+},
+{
+  id: 150,
+  question: "High-temperature superconductors are those with T_c above:",
+  options: [
+    "10 K",
+    "30 K",
+    "77 K",
+    "100 K"
+  ],
+  correctAnswer: 2,
+  explanation: "High-temperature superconductors have T_c above 77 K (liquid nitrogen temperature)"
+}
+
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG24/MHND/1052';
+            const course = urlParams.get('course') || 'PHY102';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

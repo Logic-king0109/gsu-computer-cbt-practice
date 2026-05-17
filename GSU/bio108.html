@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+       if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+ 
+{
+  id: 1,
+  question: "What is the primary function of a microscope in biological studies?",
+  options: [
+    "To measure temperature",
+    "To magnify small objects",
+    "To separate mixtures",
+    "To count cells"
+  ],
+  correctAnswer: 1,
+  explanation: "Microscopes are optical instruments designed to magnify small objects, making them visible for detailed study in biological laboratories."
+},
+{
+  id: 2,
+  question: "Which part of the microscope controls the amount of light reaching the specimen?",
+  options: [
+    "Eyepiece",
+    "Stage",
+    "Diaphragm",
+    "Objective lens"
+  ],
+  correctAnswer: 2,
+  explanation: "The diaphragm regulates the amount of light passing through the condenser, thus controlling illumination on the specimen."
+},
+{
+  id: 3,
+  question: "What is the total magnification when using a 10x eyepiece and 40x objective lens?",
+  options: [
+    "40x",
+    "50x",
+    "400x",
+    "4000x"
+  ],
+  correctAnswer: 2,
+  explanation: "Total magnification is calculated by multiplying the eyepiece magnification by the objective lens magnification: 10x × 40x = 400x."
+},
+{
+  id: 4,
+  question: "Which chemical is commonly used to test for the presence of starch?",
+  options: [
+    "Benedict's solution",
+    "Iodine solution",
+    "Biuret reagent",
+    "Sudan IV"
+  ],
+  correctAnswer: 1,
+  explanation: "Iodine solution turns blue-black in the presence of starch, making it the standard test for starch identification."
+},
+{
+  id: 5,
+  question: "What color indicates a positive Benedict's test for reducing sugars?",
+  options: [
+    "Blue",
+    "Green",
+    "Brick-red precipitate",
+    "Purple"
+  ],
+  correctAnswer: 2,
+  explanation: "Benedict's test produces a brick-red precipitate when reducing sugars are present, indicating a positive result."
+},
+{
+  id: 6,
+  question: "Which reagent is used to test for proteins?",
+  options: [
+    "Iodine solution",
+    "Benedict's solution",
+    "Biuret reagent",
+    "Ethanol"
+  ],
+  correctAnswer: 2,
+  explanation: "Biuret reagent turns violet in the presence of proteins, making it the standard test for protein detection."
+},
+{
+  id: 7,
+  question: "What is the function of the cover slip when preparing a wet mount?",
+  options: [
+    "To magnify the specimen",
+    "To prevent evaporation and flatten the specimen",
+    "To add color to the specimen",
+    "To separate different specimens"
+  ],
+  correctAnswer: 1,
+  explanation: "The cover slip helps flatten the specimen for better viewing and prevents the preparation from drying out too quickly."
+},
+{
+  id: 8,
+  question: "Which of these is a proper laboratory safety practice?",
+  options: [
+    "Eating in the laboratory",
+    "Wearing open-toed shoes",
+    "Washing hands after handling specimens",
+    "Tasting unknown chemicals"
+  ],
+  correctAnswer: 2,
+  explanation: "Washing hands after handling specimens is essential laboratory safety practice to prevent contamination and exposure to harmful substances."
+},
+{
+  id: 9,
+  question: "What is the purpose of staining biological specimens?",
+  options: [
+    "To preserve them permanently",
+    "To make structures more visible",
+    "To kill microorganisms",
+    "To increase magnification"
+  ],
+  correctAnswer: 1,
+  explanation: "Staining enhances contrast and makes specific cellular structures more visible under the microscope."
+},
+{
+  id: 10,
+  question: "Which microscope is best for viewing living organisms?",
+  options: [
+    "Electron microscope",
+    "Compound light microscope",
+    "Dissecting microscope",
+    "Phase-contrast microscope"
+  ],
+  correctAnswer: 3,
+  explanation: "Phase-contrast microscopes allow observation of living organisms without staining, which might kill or alter them."
+},
+{
+  id: 11,
+  question: "What is the measuring unit typically used for microscopic structures?",
+  options: [
+    "Centimeters",
+    "Millimeters",
+    "Micrometers",
+    "Kilometers"
+  ],
+  correctAnswer: 2,
+  explanation: "Micrometers (μm) are the standard unit for measuring microscopic structures, as they are appropriate for cellular dimensions."
+},
+{
+  id: 12,
+  question: "Which plant cell structure is visible under light microscope without staining?",
+  options: [
+    "Mitochondria",
+    "Cell wall",
+    "Ribosomes",
+    "Endoplasmic reticulum"
+  ],
+  correctAnswer: 1,
+  explanation: "The cell wall is large enough and has sufficient contrast to be visible in unstained plant cells under light microscopy."
+},
+{
+  id: 13,
+  question: "What is the function of methylene blue in biological staining?",
+  options: [
+    "To test for lipids",
+    "To stain nuclei blue",
+    "To test for sugars",
+    "To preserve tissues"
+  ],
+  correctAnswer: 1,
+  explanation: "Methylene blue is a basic dye that stains acidic structures like nuclei, making them appear blue under the microscope."
+},
+{
+  id: 14,
+  question: "Which tool is used to measure the diameter of the field of view?",
+  options: [
+    "Thermometer",
+    "Stage micrometer",
+    "Graduated cylinder",
+    "Pipette"
+  ],
+  correctAnswer: 1,
+  explanation: "A stage micrometer is a calibrated slide used to measure the dimensions of the microscope's field of view and calibrate ocular micrometers."
+},
+{
+  id: 15,
+  question: "What happens to the field of view when switching from low to high power objective?",
+  options: [
+    "It becomes brighter and larger",
+    "It becomes darker and smaller",
+    "It remains the same",
+    "It becomes colored"
+  ],
+  correctAnswer: 1,
+  explanation: "Higher magnification objectives have smaller fields of view and often require more light, making the view appear darker if light adjustment isn't made."
+},
+{
+  id: 16,
+  question: "Which of these is NOT a characteristic of good biological drawing?",
+  options: [
+    "Clear labeling",
+    "Proportional accuracy",
+    "Use of color shading",
+    "Definite continuous lines"
+  ],
+  correctAnswer: 2,
+  explanation: "Biological drawings should use stippling or hatching rather than color shading, and must be clear, accurate, and properly labeled."
+},
+{
+  id: 17,
+  question: "What is the purpose of the coarse adjustment knob on a microscope?",
+  options: [
+    "Fine focusing",
+    "Initial rough focusing",
+    "Light adjustment",
+    "Stage movement"
+  ],
+  correctAnswer: 1,
+  explanation: "The coarse adjustment knob is used for initial, rough focusing, especially with low-power objectives."
+},
+{
+  id: 18,
+  question: "Which plant tissue is responsible for water transport?",
+  options: [
+    "Phloem",
+    "Xylem",
+    "Epidermis",
+    "Cambium"
+  ],
+  correctAnswer: 1,
+  explanation: "Xylem tissue specializes in transporting water and minerals from roots to other parts of the plant."
+},
+{
+  id: 19,
+  question: "What is the main function of root hairs?",
+  options: [
+    "Photosynthesis",
+    "Water absorption",
+    "Support",
+    "Food storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Root hairs significantly increase the surface area for water and mineral absorption from the soil."
+},
+{
+  id: 20,
+  question: "Which cell organelle is known as the 'powerhouse' of the cell?",
+  options: [
+    "Nucleus",
+    "Mitochondria",
+    "Chloroplast",
+    "Golgi apparatus"
+  ],
+  correctAnswer: 1,
+  explanation: "Mitochondria are called the powerhouse because they generate most of the cell's ATP through cellular respiration."
+},
+{
+  id: 21,
+  question: "What is the function of the iris diaphragm in a microscope?",
+  options: [
+    "Magnify images",
+    "Control light intensity",
+    "Move the stage",
+    "Focus the image"
+  ],
+  correctAnswer: 1,
+  explanation: "The iris diaphragm regulates the amount of light passing through the condenser to optimize contrast and resolution."
+},
+{
+  id: 22,
+  question: "Which of these is a unicellular organism commonly studied in biology labs?",
+  options: [
+    "Amoeba",
+    "Earthworm",
+    "Fern",
+    "Grasshopper"
+  ],
+  correctAnswer: 0,
+  explanation: "Amoeba is a common unicellular protist frequently studied in biology laboratories to demonstrate cellular structure and movement."
+},
+{
+  id: 23,
+  question: "What is the purpose of using immersion oil with the 100x objective?",
+  options: [
+    "To clean the lens",
+    "To increase resolution by reducing light refraction",
+    "To stain the specimen",
+    "To prevent specimen drying"
+  ],
+  correctAnswer: 1,
+  explanation: "Immersion oil has a refractive index similar to glass, reducing light refraction and increasing resolution at high magnifications."
+},
+{
+  id: 24,
+  question: "Which blood cells are responsible for oxygen transport?",
+  options: [
+    "White blood cells",
+    "Red blood cells",
+    "Platelets",
+    "Plasma"
+  ],
+  correctAnswer: 1,
+  explanation: "Red blood cells contain hemoglobin that binds and transports oxygen throughout the body."
+},
+{
+  id: 25,
+  question: "What is the normal pH range of human blood?",
+  options: [
+    "6.8-7.0",
+    "7.35-7.45",
+    "7.8-8.0",
+    "8.0-8.5"
+  ],
+  correctAnswer: 1,
+  explanation: "Human blood maintains a slightly alkaline pH range of 7.35-7.45, which is crucial for proper physiological function."
+},
+{
+  id: 26,
+  question: "Which plant pigment is responsible for photosynthesis?",
+  options: [
+    "Chlorophyll",
+    "Xanthophyll",
+    "Carotene",
+    "Anthocyanin"
+  ],
+  correctAnswer: 0,
+  explanation: "Chlorophyll is the primary pigment that captures light energy for photosynthesis in plants."
+},
+{
+  id: 27,
+  question: "What is the function of guard cells in plants?",
+  options: [
+    "Photosynthesis",
+    "Regulate stomatal opening",
+    "Water transport",
+    "Food storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Guard cells control the opening and closing of stomata, regulating gas exchange and water loss."
+},
+{
+  id: 28,
+  question: "Which of these is a correct way to carry a microscope?",
+  options: [
+    "By the eyepiece only",
+    "By the stage only",
+    "With one hand",
+    "With both hands - one on arm and one under base"
+  ],
+  correctAnswer: 3,
+  explanation: "Proper microscope handling requires both hands - one on the arm and one supporting the base to prevent damage."
+},
+{
+  id: 29,
+  question: "What is the purpose of a control experiment?",
+  options: [
+    "To make the experiment more complicated",
+    "To provide comparison for experimental results",
+    "To use more equipment",
+    "To increase costs"
+  ],
+  correctAnswer: 1,
+  explanation: "Control experiments provide a baseline for comparison, helping to validate results by showing what happens without the experimental variable."
+},
+{
+  id: 30,
+  question: "Which of these is a characteristic of animal cells but not plant cells?",
+  options: [
+    "Cell wall",
+    "Chloroplasts",
+    "Centrioles",
+    "Large vacuole"
+  ],
+  correctAnswer: 2,
+  explanation: "Centrioles are present in animal cells and involved in cell division, but are typically absent in plant cells."
+},
+{
+  id: 31,
+  question: "What is the function of the nucleolus?",
+  options: [
+    "Protein synthesis",
+    "Ribosome production",
+    "Energy production",
+    "Cell movement"
+  ],
+  correctAnswer: 1,
+  explanation: "The nucleolus is responsible for producing ribosomal RNA and assembling ribosomes."
+},
+{
+  id: 32,
+  question: "Which process is used to separate pigments in plant leaves?",
+  options: [
+    "Titration",
+    "Chromatography",
+    "Centrifugation",
+    "Filtration"
+  ],
+  correctAnswer: 1,
+  explanation: "Paper chromatography is commonly used to separate and identify different plant pigments based on their solubility and migration rates."
+},
+{
+  id: 33,
+  question: "What is the eye lens also known as in a microscope?",
+  options: [
+    "Objective",
+    "Ocular",
+    "Condenser",
+    "Diaphragm"
+  ],
+  correctAnswer: 1,
+  explanation: "The eyepiece or ocular lens is the lens through which the viewer looks to see the magnified image."
+},
+{
+  id: 34,
+  question: "Which of these is used to measure liquid volume precisely?",
+  options: [
+    "Beaker",
+    "Graduated cylinder",
+    "Test tube",
+    "Petri dish"
+  ],
+  correctAnswer: 1,
+  explanation: "Graduated cylinders provide more precise volume measurements than beakers due to their narrower shape and finer graduations."
+},
+{
+  id: 35,
+  question: "What is the purpose of a dichotomous key?",
+  options: [
+    "To measure temperature",
+    "To identify organisms",
+    "To separate mixtures",
+    "To count cells"
+  ],
+  correctAnswer: 1,
+  explanation: "Dichotomous keys are tools that use a series of choices between alternative characteristics to identify organisms or objects."
+},
+{
+  id: 36,
+  question: "Which blood type is considered the universal donor?",
+  options: [
+    "A",
+    "B",
+    "AB",
+    "O"
+  ],
+  correctAnswer: 3,
+  explanation: "Type O negative blood is considered the universal donor because it lacks A, B, and Rh antigens that could trigger immune reactions."
+},
+{
+  id: 37,
+  question: "What is the function of the condenser in a microscope?",
+  options: [
+    "Magnify the image",
+    "Focus light onto the specimen",
+    "Hold the slide in place",
+    "Adjust focus"
+  ],
+  correctAnswer: 1,
+  explanation: "The condenser lens system focuses and concentrates light onto the specimen for optimal illumination."
+},
+{
+  id: 38,
+  question: "Which of these is a proper waste disposal method for broken glass?",
+  options: [
+    "Regular trash bin",
+    "Sharps container",
+    "Sink drain",
+    "Recycling bin"
+  ],
+  correctAnswer: 1,
+  explanation: "Broken glass should be disposed of in designated sharps containers to prevent injury and contamination."
+},
+{
+  id: 39,
+  question: "What is the normal human body temperature in Celsius?",
+  options: [
+    "34°C",
+    "36°C",
+    "37°C",
+    "39°C"
+  ],
+  correctAnswer: 2,
+  explanation: "The normal human body temperature is approximately 37°C (98.6°F), though it can vary slightly among individuals."
+},
+{
+  id: 40,
+  question: "Which plant adaptation helps reduce water loss in arid environments?",
+  options: [
+    "Broad leaves",
+    "Thick cuticle",
+    "Many stomata",
+    "Thin epidermis"
+  ],
+  correctAnswer: 1,
+  explanation: "A thick waxy cuticle on leaves reduces water loss through evaporation, an important adaptation in dry environments."
+},
+{
+  id: 41,
+  question: "What is the purpose of using a coverslip when making a wet mount?",
+  options: [
+    "To increase magnification",
+    "To prevent evaporation and flatten specimen",
+    "To add color to specimen",
+    "To separate different specimens"
+  ],
+  correctAnswer: 1,
+  explanation: "The coverslip helps flatten the specimen for better viewing and prevents the preparation from drying out during observation."
+},
+{
+  id: 42,
+  question: "Which cell structure contains genetic material?",
+  options: [
+    "Mitochondria",
+    "Nucleus",
+    "Ribosome",
+    "Golgi apparatus"
+  ],
+  correctAnswer: 1,
+  explanation: "The nucleus contains the cell's genetic material (DNA) and controls cellular activities."
+},
+{
+  id: 43,
+  question: "What is the function of white blood cells?",
+  options: [
+    "Oxygen transport",
+    "Blood clotting",
+    "Immune defense",
+    "Nutrient transport"
+  ],
+  correctAnswer: 2,
+  explanation: "White blood cells are part of the immune system and defend the body against infections and foreign substances."
+},
+{
+  id: 44,
+  question: "Which instrument is used to measure the rate of transpiration in plants?",
+  options: [
+    "Potometer",
+    "Thermometer",
+    "Photometer",
+    "Barometer"
+  ],
+  correctAnswer: 0,
+  explanation: "A potometer measures the rate of water uptake by plants, which is directly related to transpiration rate."
+},
+{
+  id: 45,
+  question: "What is the purpose of the stage clips on a microscope?",
+  options: [
+    "To focus light",
+    "To hold slides in place",
+    "To adjust magnification",
+    "To clean lenses"
+  ],
+  correctAnswer: 1,
+  explanation: "Stage clips secure the microscope slide in position on the stage, preventing movement during observation."
+},
+{
+  id: 46,
+  question: "Which of these is a characteristic of prokaryotic cells?",
+  options: [
+    "Membrane-bound nucleus",
+    "Multiple chromosomes",
+    "No membrane-bound organelles",
+    "Large size"
+  ],
+  correctAnswer: 2,
+  explanation: "Prokaryotic cells lack membrane-bound organelles, including a true nucleus, unlike eukaryotic cells."
+},
+{
+  id: 47,
+  question: "What is the function of the endoplasmic reticulum?",
+  options: [
+    "Protein synthesis and transport",
+    "Energy production",
+    "Cell division",
+    "Waste disposal"
+  ],
+  correctAnswer: 0,
+  explanation: "The endoplasmic reticulum is involved in protein synthesis (rough ER) and lipid synthesis (smooth ER), as well as intracellular transport."
+},
+{
+  id: 48,
+  question: "Which solution is used to test for the presence of lipids?",
+  options: [
+    "Iodine solution",
+    "Benedict's solution",
+    "Sudan IV",
+    "Biuret reagent"
+  ],
+  correctAnswer: 2,
+  explanation: "Sudan IV stain dissolves in lipids and produces a red color, indicating the presence of fats or oils."
+},
+{
+  id: 49,
+  question: "What is the purpose of calibration in laboratory instruments?",
+  options: [
+    "To make them look new",
+    "To ensure accurate measurements",
+    "To increase their size",
+    "To change their color"
+  ],
+  correctAnswer: 1,
+  explanation: "Calibration ensures that laboratory instruments provide accurate and reliable measurements by comparing them to known standards."
+},
+{
+  id: 50,
+  question: "Which plant hormone promotes cell elongation?",
+  options: [
+    "Abscisic acid",
+    "Auxin",
+    "Ethylene",
+    "Cytokinin"
+  ],
+  correctAnswer: 1,
+  explanation: "Auxins are plant hormones that stimulate cell elongation, particularly in stems and roots, and are involved in phototropism and gravitropism."
+},
+
+
+{
+  id: 51,
+  question: "What is the function of the Golgi apparatus?",
+  options: [
+    "Protein synthesis",
+    "Modify, sort, and package proteins",
+    "Cellular respiration",
+    "DNA replication"
+  ],
+  correctAnswer: 1,
+  explanation: "The Golgi apparatus modifies, sorts, and packages proteins for transport to their cellular destinations or secretion."
+},
+{
+  id: 52,
+  question: "Which microscope part is used for fine focusing?",
+  options: [
+    "Coarse adjustment knob",
+    "Fine adjustment knob",
+    "Stage control",
+    "Diaphragm"
+  ],
+  correctAnswer: 1,
+  explanation: "The fine adjustment knob allows precise focusing, especially when using high-power objectives."
+},
+{
+  id: 53,
+  question: "What color indicates a positive Biuret test?",
+  options: [
+    "Blue",
+    "Violet",
+    "Red",
+    "Green"
+  ],
+  correctAnswer: 1,
+  explanation: "Biuret reagent turns violet in the presence of proteins, indicating peptide bonds."
+},
+{
+  id: 54,
+  question: "Which plant tissue transports organic nutrients?",
+  options: [
+    "Xylem",
+    "Phloem",
+    "Epidermis",
+    "Cambium"
+  ],
+  correctAnswer: 1,
+  explanation: "Phloem transports sugars and other organic compounds throughout the plant."
+},
+{
+  id: 55,
+  question: "What is the purpose of a respirometer?",
+  options: [
+    "Measure respiration rate",
+    "Measure photosynthesis",
+    "Count cells",
+    "Separate mixtures"
+  ],
+  correctAnswer: 0,
+  explanation: "A respirometer measures the rate of respiration by tracking oxygen consumption or carbon dioxide production."
+},
+{
+  id: 56,
+  question: "Which blood cells are involved in clotting?",
+  options: [
+    "Red blood cells",
+    "White blood cells",
+    "Platelets",
+    "Plasma cells"
+  ],
+  correctAnswer: 2,
+  explanation: "Platelets (thrombocytes) are essential for blood clotting and wound healing."
+},
+{
+  id: 57,
+  question: "What is the function of ribosomes?",
+  options: [
+    "Energy production",
+    "Protein synthesis",
+    "Lipid synthesis",
+    "Waste removal"
+  ],
+  correctAnswer: 1,
+  explanation: "Ribosomes are the sites of protein synthesis in cells."
+},
+{
+  id: 58,
+  question: "Which solution is used to test for vitamin C?",
+  options: [
+    "Iodine solution",
+    "DCPIP",
+    "Benedict's solution",
+    "Biuret reagent"
+  ],
+  correctAnswer: 1,
+  explanation: "DCPIP (2,6-dichlorophenolindophenol) decolorizes in the presence of vitamin C."
+},
+{
+  id: 59,
+  question: "What is the purpose of a quadrant in ecology?",
+  options: [
+    "Measure temperature",
+    "Sample populations",
+    "Test pH",
+    "Measure volume"
+  ],
+  correctAnswer: 1,
+  explanation: "Quadrats are used to sample plant or slow-moving animal populations in ecological studies."
+},
+{
+  id: 60,
+  question: "Which cell organelle contains digestive enzymes?",
+  options: [
+    "Mitochondria",
+    "Lysosome",
+    "Nucleus",
+    "Chloroplast"
+  ],
+  correctAnswer: 1,
+  explanation: "Lysosomes contain hydrolytic enzymes for intracellular digestion."
+},
+{
+  id: 61,
+  question: "What is the normal human heart rate range (beats per minute)?",
+  options: [
+    "40-60",
+    "60-100",
+    "100-140",
+    "140-180"
+  ],
+  correctAnswer: 1,
+  explanation: "The normal resting heart rate for adults is 60-100 beats per minute."
+},
+{
+  id: 62,
+  question: "Which plant adaptation increases surface area for absorption?",
+  options: [
+    "Thick cuticle",
+    "Root hairs",
+    "Guard cells",
+    "Stomata"
+  ],
+  correctAnswer: 1,
+  explanation: "Root hairs dramatically increase surface area for water and mineral absorption."
+},
+{
+  id: 63,
+  question: "What is the function of the cell membrane?",
+  options: [
+    "Rigid support",
+    "Selective barrier",
+    "Protein synthesis",
+    "Energy production"
+  ],
+  correctAnswer: 1,
+  explanation: "The cell membrane regulates what enters and leaves the cell, providing selective permeability."
+},
+{
+  id: 64,
+  question: "Which instrument measures blood pressure?",
+  options: [
+    "Thermometer",
+    "Sphygmomanometer",
+    "Stethoscope",
+    "Microscope"
+  ],
+  correctAnswer: 1,
+  explanation: "A sphygmomanometer is used to measure blood pressure."
+},
+{
+  id: 65,
+  question: "What is the purpose of a control variable in experiments?",
+  options: [
+    "To change randomly",
+    "To keep constant",
+    "To ignore",
+    "To measure inaccurately"
+  ],
+  correctAnswer: 1,
+  explanation: "Control variables are kept constant to ensure that only the independent variable affects the results."
+},
+{
+  id: 66,
+  question: "Which process requires oxygen?",
+  options: [
+    "Anaerobic respiration",
+    "Aerobic respiration",
+    "Fermentation",
+    "Glycolysis only"
+  ],
+  correctAnswer: 1,
+  explanation: "Aerobic respiration requires oxygen as the final electron acceptor in the electron transport chain."
+},
+{
+  id: 67,
+  question: "What is the function of chloroplasts?",
+  options: [
+    "Cellular respiration",
+    "Photosynthesis",
+    "Protein synthesis",
+    "Lipid storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Chloroplasts are the sites of photosynthesis in plant cells."
+},
+{
+  id: 68,
+  question: "Which stain is used for bacterial observation?",
+  options: [
+    "Iodine",
+    "Methylene blue",
+    "Crystal violet",
+    "Sudan IV"
+  ],
+  correctAnswer: 2,
+  explanation: "Crystal violet is commonly used in Gram staining to visualize bacteria."
+},
+{
+  id: 69,
+  question: "What is the purpose of a pipette?",
+  options: [
+    "Measure temperature",
+    "Transfer precise liquid volumes",
+    "Magnify specimens",
+    "Separate mixtures"
+  ],
+  correctAnswer: 1,
+  explanation: "Pipettes are used to accurately measure and transfer specific volumes of liquids."
+},
+{
+  id: 70,
+  question: "Which blood vessel carries oxygenated blood?",
+  options: [
+    "Pulmonary artery",
+    "Pulmonary vein",
+    "Superior vena cava",
+    "Inferior vena cava"
+  ],
+  correctAnswer: 1,
+  explanation: "Pulmonary veins carry oxygenated blood from the lungs to the heart."
+},
+{
+  id: 71,
+  question: "What is the function of the large central vacuole in plant cells?",
+  options: [
+    "Protein synthesis",
+    "Storage and support",
+    "Energy production",
+    "Cell division"
+  ],
+  correctAnswer: 1,
+  explanation: "The large central vacuole stores water, nutrients, and waste, and provides turgor pressure for support."
+},
+{
+  id: 72,
+  question: "Which process produces the most ATP?",
+  options: [
+    "Glycolysis",
+    "Fermentation",
+    "Aerobic respiration",
+    "Photosynthesis"
+  ],
+  correctAnswer: 2,
+  explanation: "Aerobic respiration produces the most ATP (36-38 ATP per glucose molecule) through complete oxidation."
+},
+{
+  id: 73,
+  question: "What is the purpose of a hemocytometer?",
+  options: [
+    "Measure blood pressure",
+    "Count cells",
+    "Test for sugars",
+    "Separate proteins"
+  ],
+  correctAnswer: 1,
+  explanation: "A hemocytometer is a specialized slide used for counting cells in a liquid sample."
+},
+{
+  id: 74,
+  question: "Which plant response is directed toward light?",
+  options: [
+    "Gravitropism",
+    "Phototropism",
+    "Thigmotropism",
+    "Hydrotropism"
+  ],
+  correctAnswer: 1,
+  explanation: "Phototropism is plant growth in response to light direction."
+},
+{
+  id: 75,
+  question: "What is the function of the mitochondria?",
+  options: [
+    "Photosynthesis",
+    "ATP production",
+    "Protein synthesis",
+    "Lipid storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Mitochondria produce ATP through cellular respiration."
+},
+{
+  id: 76,
+  question: "Which solution is used to test for carbon dioxide?",
+  options: [
+    "Iodine solution",
+    "Limewater",
+    "Benedict's solution",
+    "Biuret reagent"
+  ],
+  correctAnswer: 1,
+  explanation: "Limewater turns cloudy in the presence of carbon dioxide due to calcium carbonate formation."
+},
+{
+  id: 77,
+  question: "What is the purpose of a water bath in laboratories?",
+  options: [
+    "Cool samples",
+    "Maintain constant temperature",
+    "Sterilize equipment",
+    "Measure volume"
+  ],
+  correctAnswer: 1,
+  explanation: "Water baths maintain samples at a constant temperature for experiments."
+},
+{
+  id: 78,
+  question: "Which cell structure contains chlorophyll?",
+  options: [
+    "Mitochondria",
+    "Chloroplast",
+    "Nucleus",
+    "Vacuole"
+  ],
+  correctAnswer: 1,
+  explanation: "Chloroplasts contain chlorophyll, the green pigment essential for photosynthesis."
+},
+{
+  id: 79,
+  question: "What is the function of the stomata?",
+  options: [
+    "Water absorption",
+    "Gas exchange",
+    "Support",
+    "Food storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Stomata allow gas exchange (CO2 in, O2 out) and transpiration in plants."
+},
+{
+  id: 80,
+  question: "Which instrument measures pulse rate?",
+  options: [
+    "Thermometer",
+    "Stopwatch",
+    "Microscope",
+    "Centrifuge"
+  ],
+  correctAnswer: 1,
+  explanation: "A stopwatch is used with pulse detection to measure heart rate."
+},
+{
+  id: 81,
+  question: "What is the purpose of a centrifuge?",
+  options: [
+    "Magnify specimens",
+    "Separate mixtures by density",
+    "Measure temperature",
+    "Count cells"
+  ],
+  correctAnswer: 1,
+  explanation: "Centrifuges separate mixtures based on density differences using centrifugal force."
+},
+{
+  id: 82,
+  question: "Which process occurs in the cytoplasm?",
+  options: [
+    "Krebs cycle",
+    "Glycolysis",
+    "Electron transport",
+    "Light reactions"
+  ],
+  correctAnswer: 1,
+  explanation: "Glycolysis occurs in the cytoplasm, while other processes occur in mitochondria or chloroplasts."
+},
+{
+  id: 83,
+  question: "What is the function of the nucleoid in bacteria?",
+  options: [
+    "Protein synthesis",
+    "DNA storage",
+    "Energy production",
+    "Movement"
+  ],
+  correctAnswer: 1,
+  explanation: "The nucleoid region contains the bacterial chromosome (DNA) in prokaryotic cells."
+},
+{
+  id: 84,
+  question: "Which test identifies simple sugars?",
+  options: [
+    "Iodine test",
+    "Benedict's test",
+    "Biuret test",
+    "Sudan IV test"
+  ],
+  correctAnswer: 1,
+  explanation: "Benedict's test identifies reducing sugars like glucose and fructose."
+},
+{
+  id: 85,
+  question: "What is the purpose of a spectrophotometer?",
+  options: [
+    "Count cells",
+    "Measure light absorption",
+    "Separate mixtures",
+    "Magnify images"
+  ],
+  correctAnswer: 1,
+  explanation: "Spectrophotometers measure the intensity of light absorbed by substances at specific wavelengths."
+},
+{
+  id: 86,
+  question: "Which plant hormone promotes fruit ripening?",
+  options: [
+    "Auxin",
+    "Gibberellin",
+    "Ethylene",
+    "Abscisic acid"
+  ],
+  correctAnswer: 2,
+  explanation: "Ethylene gas promotes fruit ripening and leaf abscission."
+},
+{
+  id: 87,
+  question: "What is the function of the cytoskeleton?",
+  options: [
+    "Energy storage",
+    "Cell shape and movement",
+    "Protein synthesis",
+    "Waste removal"
+  ],
+  correctAnswer: 1,
+  explanation: "The cytoskeleton provides structural support, enables cell movement, and facilitates intracellular transport."
+},
+{
+  id: 88,
+  question: "Which blood type is universal recipient?",
+  options: [
+    "A",
+    "B",
+    "AB",
+    "O"
+  ],
+  correctAnswer: 2,
+  explanation: "Type AB positive can receive blood from all types because it has no antibodies against A, B, or Rh antigens."
+},
+{
+  id: 89,
+  question: "What is the purpose of a buffer solution?",
+  options: [
+    "Change pH rapidly",
+    "Maintain constant pH",
+    "Increase temperature",
+    "Decrease viscosity"
+  ],
+  correctAnswer: 1,
+  explanation: "Buffer solutions resist pH changes when acids or bases are added."
+},
+{
+  id: 90,
+  question: "Which process requires carbon dioxide?",
+  options: [
+    "Respiration",
+    "Photosynthesis",
+    "Fermentation",
+    "Glycolysis"
+  ],
+  correctAnswer: 1,
+  explanation: "Photosynthesis uses carbon dioxide to produce glucose and oxygen."
+},
+{
+  id: 91,
+  question: "What is the function of cilia and flagella?",
+  options: [
+    "Protein synthesis",
+    "Cell movement",
+    "Energy production",
+    "DNA replication"
+  ],
+  correctAnswer: 1,
+  explanation: "Cilia and flagella are hair-like structures that enable cell movement or move fluids past cells."
+},
+{
+  id: 92,
+  question: "Which solution is used to preserve biological specimens?",
+  options: [
+    "Water",
+    "Formalin",
+    "Alcohol",
+    "Salt solution"
+  ],
+  correctAnswer: 1,
+  explanation: "Formalin (formaldehyde solution) is commonly used to preserve biological specimens."
+},
+{
+  id: 93,
+  question: "What is the purpose of an autoclave?",
+  options: [
+    "Measure volume",
+    "Sterilize equipment",
+    "Count cells",
+    "Separate mixtures"
+  ],
+  correctAnswer: 1,
+  explanation: "Autoclaves use steam under pressure to sterilize laboratory equipment and media."
+},
+{
+  id: 94,
+  question: "Which cell structure produces ribosomes?",
+  options: [
+    "Nucleus",
+    "Nucleolus",
+    "Golgi apparatus",
+    "Endoplasmic reticulum"
+  ],
+  correctAnswer: 1,
+  explanation: "The nucleolus within the nucleus produces ribosomal RNA and assembles ribosomes."
+},
+{
+  id: 95,
+  question: "What is the function of antibodies?",
+  options: [
+    "Carry oxygen",
+    "Fight infections",
+    "Clot blood",
+    "Transport nutrients"
+  ],
+  correctAnswer: 1,
+  explanation: "Antibodies are proteins produced by immune cells to recognize and neutralize pathogens."
+},
+{
+  id: 96,
+  question: "Which process occurs in mitochondria?",
+  options: [
+    "Glycolysis",
+    "Krebs cycle",
+    "Light reactions",
+    "Calvin cycle"
+  ],
+  correctAnswer: 1,
+  explanation: "The Krebs cycle and electron transport chain occur in mitochondria during aerobic respiration."
+},
+{
+  id: 97,
+  question: "What is the purpose of a pH meter?",
+  options: [
+    "Measure temperature",
+    "Measure acidity/alkalinity",
+    "Count cells",
+    "Separate proteins"
+  ],
+  correctAnswer: 1,
+  explanation: "pH meters accurately measure the hydrogen ion concentration in solutions."
+},
+{
+  id: 98,
+  question: "Which plant adaptation prevents water loss?",
+  options: [
+    "Broad leaves",
+    "Waxy cuticle",
+    "Many stomata",
+    "Thin epidermis"
+  ],
+  correctAnswer: 1,
+  explanation: "A waxy cuticle on leaves reduces water loss through evaporation."
+},
+{
+  id: 99,
+  question: "What is the function of the endoplasmic reticulum?",
+  options: [
+    "ATP production",
+    "Protein and lipid synthesis",
+    "Cell division",
+    "Waste removal"
+  ],
+  correctAnswer: 1,
+  explanation: "The ER is involved in protein synthesis (rough ER) and lipid synthesis (smooth ER)."
+},
+{
+  id: 100,
+  question: "Which test identifies starch?",
+  options: [
+    "Benedict's test",
+    "Iodine test",
+    "Biuret test",
+    "Sudan IV test"
+  ],
+  correctAnswer: 1,
+  explanation: "Iodine solution turns blue-black in the presence of starch."
+}
+
+           
+       
+     
+               
+         
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'BIO108';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+                else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

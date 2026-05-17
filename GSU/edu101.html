@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the primary goal of education?",
+  options: [
+    "To prepare students for employment",
+    "To develop knowledgeable and responsible citizens",
+    "To maintain social order",
+    "To transmit cultural heritage"
+  ],
+  correctAnswer: 1,
+  explanation: "The primary goal of education is the holistic development of individuals to become knowledgeable, responsible citizens who can contribute positively to society."
+},
+{
+  id: 2,
+  question: "Which philosopher emphasized 'learning by doing'?",
+  options: [
+    "John Dewey",
+    "Maria Montessori",
+    "Jean Piaget",
+    "Lev Vygotsky"
+  ],
+  correctAnswer: 0,
+  explanation: "John Dewey, an American philosopher and educational reformer, emphasized experiential learning and 'learning by doing' through his progressive education philosophy."
+},
+{
+  id: 3,
+  question: "What is the main focus of the Montessori method?",
+  options: [
+    "Teacher-centered instruction",
+    "Standardized testing",
+    "Child-directed learning",
+    "Competitive education"
+  ],
+  correctAnswer: 2,
+  explanation: "The Montessori method, developed by Maria Montessori, focuses on child-directed learning in prepared environments that encourage independence and self-motivation."
+},
+{
+  id: 4,
+  question: "Which learning theory emphasizes observable behaviors?",
+  options: [
+    "Constructivism",
+    "Behaviorism",
+    "Cognitivism",
+    "Humanism"
+  ],
+  correctAnswer: 1,
+  explanation: "Behaviorism, associated with psychologists like B.F. Skinner and John Watson, focuses on observable behaviors and the environmental factors that shape them."
+},
+{
+  id: 5,
+  question: "What does 'scaffolding' refer to in education?",
+  options: [
+    "Physical classroom structures",
+    "Temporary support for learning",
+    "Standardized test preparation",
+    "Classroom management techniques"
+  ],
+  correctAnswer: 1,
+  explanation: "Scaffolding, a concept from Vygotsky's sociocultural theory, refers to temporary support provided by teachers to help students achieve learning goals they couldn't reach independently."
+},
+{
+  id: 6,
+  question: "Which type of curriculum is actually taught in classrooms?",
+  options: [
+    "Official curriculum",
+    "Hidden curriculum",
+    "Taught curriculum",
+    "Tested curriculum"
+  ],
+  correctAnswer: 2,
+  explanation: "The taught curriculum refers to what teachers actually deliver in the classroom, which may differ from the official or written curriculum."
+},
+{
+  id: 7,
+  question: "What is formative assessment primarily used for?",
+  options: [
+    "Grading students",
+    "Improving instruction and learning",
+    "School accountability",
+    "Student placement"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative assessment is used during the learning process to provide feedback and improve both teaching and learning, rather than for final grading."
+},
+{
+  id: 8,
+  question: "Which educational philosophy emphasizes great books and classical subjects?",
+  options: [
+    "Progressivism",
+    "Essentialism",
+    "Perennialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 2,
+  explanation: "Perennialism emphasizes the enduring ideas found in great books and classical subjects that are relevant across time periods."
+},
+{
+  id: 9,
+  question: "What is the zone of proximal development?",
+  options: [
+    "What students can do independently",
+    "The gap between independent and assisted performance",
+    "Students' learning preferences",
+    "Classroom learning spaces"
+  ],
+  correctAnswer: 1,
+  explanation: "Vygotsky's zone of proximal development refers to the difference between what a learner can do without help and what they can achieve with guidance."
+},
+{
+  id: 10,
+  question: "Which teaching method involves students working in small groups?",
+  options: [
+    "Lecture method",
+    "Cooperative learning",
+    "Direct instruction",
+    "Demonstration method"
+  ],
+  correctAnswer: 1,
+  explanation: "Cooperative learning involves students working together in small groups to achieve shared learning goals."
+},
+{
+  id: 11,
+  question: "What is multicultural education primarily concerned with?",
+  options: [
+    "Teaching multiple languages",
+    "Educational equity for diverse students",
+    "International education programs",
+    "Study abroad opportunities"
+  ],
+  correctAnswer: 1,
+  explanation: "Multicultural education focuses on ensuring educational equity and addressing the needs of students from diverse cultural backgrounds."
+},
+{
+  id: 12,
+  question: "Which psychologist developed the theory of multiple intelligences?",
+  options: [
+    "Howard Gardner",
+    "Benjamin Bloom",
+    "Erik Erikson",
+    "Abraham Maslow"
+  ],
+  correctAnswer: 0,
+  explanation: "Howard Gardner proposed the theory of multiple intelligences, suggesting that intelligence encompasses more than just linguistic and logical-mathematical abilities."
+},
+{
+  id: 13,
+  question: "What is the main purpose of classroom management?",
+  options: [
+    "To maintain strict discipline",
+    "To create an environment conducive to learning",
+    "To control student behavior",
+    "To implement school rules"
+  ],
+  correctAnswer: 1,
+  explanation: "Effective classroom management aims to create a positive learning environment where teaching and learning can occur efficiently."
+},
+{
+  id: 14,
+  question: "Which type of assessment occurs at the end of a learning period?",
+  options: [
+    "Formative assessment",
+    "Summative assessment",
+    "Diagnostic assessment",
+    "Authentic assessment"
+  ],
+  correctAnswer: 1,
+  explanation: "Summative assessment evaluates student learning at the end of an instructional unit or period, typically for grading purposes."
+},
+{
+  id: 15,
+  question: "What does 'differentiated instruction' mean?",
+  options: [
+    "Teaching different subjects",
+    "Tailoring instruction to meet individual needs",
+    "Using various teaching methods",
+    "Grouping students by ability"
+  ],
+  correctAnswer: 1,
+  explanation: "Differentiated instruction involves adapting teaching methods, content, and assessment to address the diverse needs of individual students."
+},
+{
+  id: 16,
+  question: "Which educational level is typically covered by elementary education?",
+  options: [
+    "Grades 1-6",
+    "Grades K-5",
+    "Grades 1-8",
+    "Grades K-8"
+  ],
+  correctAnswer: 1,
+  explanation: "Elementary education typically covers kindergarten through fifth grade (K-5), though this can vary by educational system."
+},
+{
+  id: 17,
+  question: "What is the primary role of a teacher?",
+  options: [
+    "Classroom disciplinarian",
+    "Facilitator of learning",
+    "Curriculum implementer",
+    "Test administrator"
+  ],
+  correctAnswer: 1,
+  explanation: "The primary role of a teacher is to facilitate learning and help students acquire knowledge, skills, and values."
+},
+{
+  id: 18,
+  question: "Which learning style emphasizes hands-on experiences?",
+  options: [
+    "Auditory learning",
+    "Visual learning",
+    "Kinesthetic learning",
+    "Reading/writing learning"
+  ],
+  correctAnswer: 2,
+  explanation: "Kinesthetic learners prefer hands-on experiences and physical activities to understand and retain information."
+},
+{
+  id: 19,
+  question: "What is 'inclusive education'?",
+  options: [
+    "Education for gifted students",
+    "Education that includes students with disabilities in regular classrooms",
+    "International education programs",
+    "Education in rural areas"
+  ],
+  correctAnswer: 1,
+  explanation: "Inclusive education involves educating students with disabilities in general education classrooms alongside their non-disabled peers."
+},
+{
+  id: 20,
+  question: "Which teaching approach is most student-centered?",
+  options: [
+    "Direct instruction",
+    "Lecture method",
+    "Inquiry-based learning",
+    "Teacher demonstration"
+  ],
+  correctAnswer: 2,
+  explanation: "Inquiry-based learning is highly student-centered, as it involves students asking questions, investigating, and constructing their own understanding."
+},
+{
+  id: 21,
+  question: "What is the purpose of educational psychology?",
+  options: [
+    "To study school administration",
+    "To understand how people learn",
+    "To develop curriculum materials",
+    "To evaluate teacher performance"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational psychology focuses on understanding how people learn and the psychological processes involved in teaching and learning."
+},
+{
+  id: 22,
+  question: "Which philosopher developed the Socratic method?",
+  options: [
+    "Aristotle",
+    "Plato",
+    "Socrates",
+    "John Locke"
+  ],
+  correctAnswer: 2,
+  explanation: "Socrates developed the Socratic method, which uses questioning to stimulate critical thinking and illuminate ideas."
+},
+{
+  id: 23,
+  question: "What does 'pedagogy' refer to?",
+  options: [
+    "Child development",
+    "The art and science of teaching",
+    "School administration",
+    "Educational research"
+  ],
+  correctAnswer: 1,
+  explanation: "Pedagogy encompasses the art and science of teaching, including teaching methods, strategies, and principles."
+},
+{
+  id: 24,
+  question: "Which type of intelligence involves understanding oneself?",
+  options: [
+    "Interpersonal intelligence",
+    "Intrapersonal intelligence",
+    "Emotional intelligence",
+    "Naturalist intelligence"
+  ],
+  correctAnswer: 1,
+  explanation: "Intrapersonal intelligence, in Gardner's theory, involves self-awareness and understanding one's own emotions, motivations, and inner states."
+},
+{
+  id: 25,
+  question: "What is the main focus of special education?",
+  options: [
+    "Advanced academic programs",
+    "Services for students with disabilities",
+    "Foreign language education",
+    "Arts education"
+  ],
+  correctAnswer: 1,
+  explanation: "Special education provides specialized instruction and services to meet the unique needs of students with disabilities."
+},
+{
+  id: 26,
+  question: "Which educational approach emphasizes basic skills and knowledge?",
+  options: [
+    "Progressivism",
+    "Essentialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Essentialism focuses on teaching essential basic skills and core knowledge that all students should master."
+},
+{
+  id: 27,
+  question: "What is 'authentic assessment'?",
+  options: [
+    "Standardized testing",
+    "Real-world application of skills",
+    "Multiple-choice exams",
+    "Teacher-made tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Authentic assessment evaluates students' abilities to apply skills and knowledge to real-world tasks and situations."
+},
+{
+  id: 28,
+  question: "Which developmental theorist proposed eight psychosocial stages?",
+  options: [
+    "Jean Piaget",
+    "Erik Erikson",
+    "Lawrence Kohlberg",
+    "Lev Vygotsky"
+  ],
+  correctAnswer: 1,
+  explanation: "Erik Erikson proposed eight psychosocial stages that describe human development from infancy to old age."
+},
+{
+  id: 29,
+  question: "What is the primary purpose of lesson planning?",
+  options: [
+    "To satisfy administrative requirements",
+    "To organize and guide instruction",
+    "To document teaching activities",
+    "To prepare for evaluations"
+  ],
+  correctAnswer: 1,
+  explanation: "Lesson planning helps teachers organize content, materials, and activities to achieve specific learning objectives effectively."
+},
+{
+  id: 30,
+  question: "Which teaching method is most teacher-centered?",
+  options: [
+    "Cooperative learning",
+    "Direct instruction",
+    "Problem-based learning",
+    "Project-based learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct instruction is highly teacher-centered, with the teacher actively directing all classroom activities and content delivery."
+},
+{
+  id: 31,
+  question: "What does 'cultural responsive teaching' emphasize?",
+  options: [
+    "Teaching about different cultures",
+    "Using students' cultural references in teaching",
+    "International education",
+    "Multicultural festivals"
+  ],
+  correctAnswer: 1,
+  explanation: "Culturally responsive teaching uses students' cultural knowledge, experiences, and perspectives to make learning more relevant and effective."
+},
+{
+  id: 32,
+  question: "Which educational level follows elementary school?",
+  options: [
+    "Primary school",
+    "Middle school",
+    "Preschool",
+    "Tertiary education"
+  ],
+  correctAnswer: 1,
+  explanation: "Middle school (or junior high school) typically follows elementary school and serves students in grades 6-8."
+},
+{
+  id: 33,
+  question: "What is the main goal of vocational education?",
+  options: [
+    "College preparation",
+    "Career and technical skills development",
+    "General education",
+    "Advanced academic studies"
+  ],
+  correctAnswer: 1,
+  explanation: "Vocational education focuses on developing specific skills and knowledge for particular occupations or trades."
+},
+{
+  id: 34,
+  question: "Which psychologist developed the cognitive development stages?",
+  options: [
+    "B.F. Skinner",
+    "Jean Piaget",
+    "Albert Bandura",
+    "Erik Erikson"
+  ],
+  correctAnswer: 1,
+  explanation: "Jean Piaget proposed four stages of cognitive development: sensorimotor, preoperational, concrete operational, and formal operational."
+},
+{
+  id: 35,
+  question: "What is 'classroom climate'?",
+  options: [
+    "The physical classroom temperature",
+    "The emotional and psychological environment",
+    "The seating arrangement",
+    "The classroom rules"
+  ],
+  correctAnswer: 1,
+  explanation: "Classroom climate refers to the emotional and psychological environment that affects teaching and learning experiences."
+},
+{
+  id: 36,
+  question: "Which teaching strategy promotes critical thinking?",
+  options: [
+    "Rote memorization",
+    "Socratic questioning",
+    "Direct instruction",
+    "Drill and practice"
+  ],
+  correctAnswer: 1,
+  explanation: "Socratic questioning encourages students to think critically by challenging assumptions and exploring complex ideas through dialogue."
+},
+{
+  id: 37,
+  question: "What is the purpose of educational standards?",
+  options: [
+    "To limit teacher creativity",
+    "To ensure consistent learning expectations",
+    "To standardize teaching methods",
+    "To compare schools internationally"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational standards establish consistent expectations for what students should know and be able to do at each grade level."
+},
+{
+  id: 38,
+  question: "Which learning theory emphasizes mental processes?",
+  options: [
+    "Behaviorism",
+    "Cognitivism",
+    "Humanism",
+    "Constructivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Cognitivism focuses on mental processes like memory, thinking, problem-solving, and information processing."
+},
+{
+  id: 39,
+  question: "What is 'scaffolding' in teaching?",
+  options: [
+    "Physical classroom structures",
+    "Temporary learning support",
+    "Permanent learning aids",
+    "Assessment frameworks"
+  ],
+  correctAnswer: 1,
+  explanation: "Scaffolding provides temporary support to help students accomplish tasks they cannot yet do independently, gradually removed as competence increases."
+},
+{
+  id: 40,
+  question: "Which educational philosophy emphasizes social change?",
+  options: [
+    "Perennialism",
+    "Essentialism",
+    "Progressivism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 3,
+  explanation: "Reconstructionism emphasizes education as a means for social reform and addressing social problems."
+},
+{
+  id: 41,
+  question: "What is the main purpose of homework?",
+  options: [
+    "To keep students busy",
+    "To reinforce classroom learning",
+    "To test parental involvement",
+    "To prepare for standardized tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Homework primarily serves to reinforce and extend classroom learning, practice skills, and develop independent study habits."
+},
+{
+  id: 42,
+  question: "Which assessment method is most subjective?",
+  options: [
+    "Multiple-choice tests",
+    "Essay examinations",
+    "True-false questions",
+    "Standardized tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Essay examinations are more subjective as they require interpretation and judgment in scoring, unlike objective tests with predetermined answers."
+},
+{
+  id: 43,
+  question: "What does ' IEP' stand for in special education?",
+  options: [
+    "Individual Education Program",
+    "Inclusive Education Plan",
+    "Integrated Education Process",
+    "Individualized Education Plan"
+  ],
+  correctAnswer: 3,
+  explanation: "IEP stands for Individualized Education Plan - a legal document outlining special education services for eligible students."
+},
+{
+  id: 44,
+  question: "Which teaching method uses real-world problems?",
+  options: [
+    "Problem-based learning",
+    "Direct instruction",
+    "Lecture method",
+    "Drill and practice"
+  ],
+  correctAnswer: 0,
+  explanation: "Problem-based learning uses complex, real-world problems as the starting point for learning and skill development."
+},
+{
+  id: 45,
+  question: "What is 'metacognition'?",
+  options: [
+    "Learning about metaphysics",
+    "Thinking about one's own thinking",
+    "Advanced cognitive skills",
+    "Memory techniques"
+  ],
+  correctAnswer: 1,
+  explanation: "Metacognition refers to awareness and understanding of one's own thought processes - thinking about thinking."
+},
+{
+  id: 46,
+  question: "Which educational approach is most traditional?",
+  options: [
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Perennialism is considered traditional as it emphasizes timeless knowledge and classical subjects."
+},
+{
+  id: 47,
+  question: "What is the primary focus of early childhood education?",
+  options: [
+    "Academic preparation",
+    "Holistic development",
+    "Socialization",
+    "Play-based learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Early childhood education focuses on holistic development - cognitive, social, emotional, and physical growth of young children."
+},
+{
+  id: 48,
+  question: "Which theorist emphasized the importance of play in learning?",
+  options: [
+    "B.F. Skinner",
+    "Friedrich Froebel",
+    "John Dewey",
+    "Maria Montessori"
+  ],
+  correctAnswer: 1,
+  explanation: "Friedrich Froebel, founder of the kindergarten movement, emphasized the educational importance of play and self-activity."
+},
+{
+  id: 49,
+  question: "What is 'differentiated instruction'?",
+  options: [
+    "Teaching different subjects",
+    "Tailoring instruction to student needs",
+    "Using various teaching methods",
+    "Grouping students by ability"
+  ],
+  correctAnswer: 1,
+  explanation: "Differentiated instruction involves modifying content, process, product, and learning environment to address student variability."
+},
+{
+  id: 50,
+  question: "Which educational level prepares students for college?",
+  options: [
+    "Elementary education",
+    "Secondary education",
+    "Vocational education",
+    "Special education"
+  ],
+  correctAnswer: 1,
+  explanation: "Secondary education, particularly high school, typically includes college preparatory programs and courses."
+},
+{
+  id: 51,
+  question: "What is the main purpose of educational research?",
+  options: [
+    "To evaluate teachers",
+    "To improve educational practice",
+    "To develop new curricula",
+    "To compare school systems"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational research aims to improve educational practice by generating knowledge about teaching, learning, and educational systems."
+},
+{
+  id: 52,
+  question: "Which teaching strategy is most interactive?",
+  options: [
+    "Lecture",
+    "Demonstration",
+    "Discussion",
+    "Independent study"
+  ],
+  correctAnswer: 2,
+  explanation: "Discussion-based teaching is highly interactive, involving exchange of ideas between teacher and students and among students themselves."
+},
+{
+  id: 53,
+  question: "What does 'inquiry-based learning' emphasize?",
+  options: [
+    "Teacher explanations",
+    "Student questions and investigations",
+    "Textbook learning",
+    "Standardized testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Inquiry-based learning emphasizes student-generated questions, investigations, and discovery of knowledge."
+},
+{
+  id: 54,
+  question: "Which educational philosophy is most child-centered?",
+  options: [
+    "Essentialism",
+    "Perennialism",
+    "Progressivism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 2,
+  explanation: "Progressivism is highly child-centered, focusing on students' interests, experiences, and active participation in learning."
+},
+{
+  id: 55,
+  question: "What is 'formative evaluation'?",
+  options: [
+    "End-of-term assessment",
+    "Ongoing assessment during learning",
+    "Standardized testing",
+    "Teacher performance evaluation"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative evaluation occurs during the instructional process to provide feedback and improve learning and teaching."
+},
+{
+  id: 56,
+  question: "Which psychologist developed social learning theory?",
+  options: [
+    "B.F. Skinner",
+    "Albert Bandura",
+    "Jean Piaget",
+    "Lev Vygotsky"
+  ],
+  correctAnswer: 1,
+  explanation: "Albert Bandura developed social learning theory, emphasizing learning through observation and modeling."
+},
+{
+  id: 57,
+  question: "What is the primary goal of classroom rules?",
+  options: [
+    "To control students",
+    "To create a safe learning environment",
+    "To make teaching easier",
+    "To maintain order"
+  ],
+  correctAnswer: 1,
+  explanation: "Classroom rules primarily aim to create a safe, predictable environment conducive to learning and respect."
+},
+{
+  id: 58,
+  question: "Which teaching method uses step-by-step instruction?",
+  options: [
+    "Discovery learning",
+    "Direct instruction",
+    "Inquiry learning",
+    "Project-based learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct instruction involves explicit, step-by-step teaching with clear objectives and structured lessons."
+},
+{
+  id: 59,
+  question: "What is 'cultural capital' in education?",
+  options: [
+    "Money for cultural activities",
+    "Knowledge of cultural institutions",
+    "Assets that promote social mobility",
+    "International education funds"
+  ],
+  correctAnswer: 2,
+  explanation: "Cultural capital refers to social assets (education, speech, dress) that promote social mobility beyond economic means."
+},
+{
+  id: 60,
+  question: "Which educational approach emphasizes individual choice?",
+  options: [
+    "Essentialism",
+    "Existentialism",
+    "Perennialism",
+    "Progressivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Existentialism in education emphasizes individual choice, freedom, and personal responsibility in learning."
+},
+{
+  id: 61,
+  question: "What is the main purpose of educational technology?",
+  options: [
+    "To replace teachers",
+    "To enhance teaching and learning",
+    "To reduce costs",
+    "To automate assessment"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational technology aims to enhance teaching and learning processes through appropriate technological tools and resources."
+},
+{
+  id: 62,
+  question: "Which learning theory emphasizes personal growth?",
+  options: [
+    "Behaviorism",
+    "Humanism",
+    "Cognitivism",
+    "Constructivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Humanism, associated with Maslow and Rogers, emphasizes personal growth, self-actualization, and the whole person."
+},
+{
+  id: 63,
+  question: "What is 'backward design' in curriculum planning?",
+  options: [
+    "Starting with learning objectives",
+    "Planning from the end goal backward",
+    "Reviewing previous curriculum",
+    "Using traditional methods"
+  ],
+  correctAnswer: 1,
+  explanation: "Backward design starts with desired learning outcomes and works backward to develop instruction and assessment."
+},
+{
+  id: 64,
+  question: "Which assessment type is most standardized?",
+  options: [
+    "Portfolio assessment",
+    "Multiple-choice tests",
+    "Teacher observations",
+    "Project-based assessment"
+  ],
+  correctAnswer: 1,
+  explanation: "Multiple-choice tests in standardized exams have consistent administration and scoring across different settings."
+},
+{
+  id: 65,
+  question: "What is 'inclusive practice' in education?",
+  options: [
+    "Including all students in activities",
+    "Adapting teaching for diverse learners",
+    "Mainstreaming special needs students",
+    "Cultural celebrations"
+  ],
+  correctAnswer: 1,
+  explanation: "Inclusive practice involves adapting teaching methods and environments to meet the needs of all diverse learners."
+},
+{
+  id: 66,
+  question: "Which educational level focuses on basic literacy and numeracy?",
+  options: [
+    "Secondary education",
+    "Elementary education",
+    "Higher education",
+    "Vocational education"
+  ],
+  correctAnswer: 1,
+  explanation: "Elementary education primarily focuses on developing fundamental skills in reading, writing, and mathematics."
+},
+{
+  id: 67,
+  question: "What is the main goal of character education?",
+  options: [
+    "Academic achievement",
+    "Moral and ethical development",
+    "Social skills",
+    "Cultural awareness"
+  ],
+  correctAnswer: 1,
+  explanation: "Character education aims to develop students' moral reasoning, ethical behavior, and personal responsibility."
+},
+{
+  id: 68,
+  question: "Which teaching method is most collaborative?",
+  options: [
+    "Independent study",
+    "Cooperative learning",
+    "Direct instruction",
+    "Lecture method"
+  ],
+  correctAnswer: 1,
+  explanation: "Cooperative learning involves students working together in structured groups to achieve shared learning goals."
+},
+{
+  id: 69,
+  question: "What is 'educational equity'?",
+  options: [
+    "Equal funding for all schools",
+    "Equal educational opportunities",
+    "Same education for everyone",
+    "Equal test scores"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational equity means ensuring all students have access to the resources and opportunities they need to succeed."
+},
+{
+  id: 70,
+  question: "Which philosopher emphasized the importance of reason?",
+  options: [
+    "John Dewey",
+    "Aristotle",
+    "Jean-Jacques Rousseau",
+    "Friedrich Froebel"
+  ],
+  correctAnswer: 1,
+  explanation: "Aristotle emphasized the development of reason and logical thinking as central to education."
+},
+{
+  id: 71,
+  question: "What is 'scaffolding' in Vygotsky's theory?",
+  options: [
+    "Physical learning aids",
+    "Temporary learning support",
+    "Permanent learning structures",
+    "Assessment frameworks"
+  ],
+  correctAnswer: 1,
+  explanation: "In Vygotsky's sociocultural theory, scaffolding refers to temporary support that helps students accomplish tasks beyond their independent ability."
+},
+{
+  id: 72,
+  question: "Which educational approach is most future-oriented?",
+  options: [
+    "Perennialism",
+    "Reconstructionism",
+    "Essentialism",
+    "Progressivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Reconstructionism looks toward the future, emphasizing education as a tool for social reform and improvement."
+},
+{
+  id: 73,
+  question: "What is the primary purpose of student assessment?",
+  options: [
+    "To rank students",
+    "To improve learning and teaching",
+    "To evaluate teachers",
+    "To satisfy administrators"
+  ],
+  correctAnswer: 1,
+  explanation: "The fundamental purpose of assessment is to enhance student learning and improve instructional practices."
+},
+{
+  id: 74,
+  question: "Which learning style prefers visual aids?",
+  options: [
+    "Auditory learners",
+    "Visual learners",
+    "Kinesthetic learners",
+    "Tactile learners"
+  ],
+  correctAnswer: 1,
+  explanation: "Visual learners prefer and benefit from diagrams, charts, pictures, and other visual representations of information."
+},
+{
+  id: 75,
+  question: "What is 'professional development' for teachers?",
+  options: [
+    "Career advancement",
+    "Ongoing learning and improvement",
+    "Graduate studies",
+    "Teaching certification"
+  ],
+  correctAnswer: 1,
+  explanation: "Professional development involves continuous learning opportunities that help teachers improve their knowledge and instructional practices."
+},
+{
+  id: 76,
+  question: "Which educational philosophy is most structured?",
+  options: [
+    "Progressivism",
+    "Essentialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Essentialism is highly structured, emphasizing discipline, hard work, and a standardized curriculum."
+},
+{
+  id: 77,
+  question: "What is 'differentiated assessment'?",
+  options: [
+    "Different tests for different students",
+    "Varied assessment methods",
+    "Adapting assessment to student needs",
+    "Multiple grading systems"
+  ],
+  correctAnswer: 2,
+  explanation: "Differentiated assessment involves adapting evaluation methods to accommodate diverse student needs and abilities."
+},
+{
+  id: 78,
+  question: "Which theorist emphasized moral development stages?",
+  options: [
+    "Jean Piaget",
+    "Lawrence Kohlberg",
+    "Erik Erikson",
+    "Lev Vygotsky"
+  ],
+  correctAnswer: 1,
+  explanation: "Lawrence Kohlberg proposed six stages of moral development, from preconventional to postconventional reasoning."
+},
+{
+  id: 79,
+  question: "What is the main focus of adult education?",
+  options: [
+    "Remedial education",
+    "Lifelong learning needs",
+    "Vocational training",
+    "Literacy programs"
+  ],
+  correctAnswer: 1,
+  explanation: "Adult education focuses on meeting the diverse learning needs of adults throughout their lives."
+},
+{
+  id: 80,
+  question: "Which teaching method emphasizes real-world application?",
+  options: [
+    "Project-based learning",
+    "Direct instruction",
+    "Lecture method",
+    "Drill and practice"
+  ],
+  correctAnswer: 0,
+  explanation: "Project-based learning involves extended projects that apply knowledge and skills to real-world situations."
+},
+{
+  id: 81,
+  question: "What is 'educational leadership'?",
+  options: [
+    "School administration",
+    "Guiding educational improvement",
+    "Teacher supervision",
+    "Curriculum development"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational leadership involves guiding and influencing educational institutions toward improvement and excellence."
+},
+{
+  id: 82,
+  question: "Which learning theory emphasizes social interaction?",
+  options: [
+    "Behaviorism",
+    "Constructivism",
+    "Cognitivism",
+    "Humanism"
+  ],
+  correctAnswer: 1,
+  explanation: "Social constructivism, particularly Vygotsky's theory, emphasizes learning through social interaction and cultural context."
+},
+{
+  id: 83,
+  question: "What is 'curriculum alignment'?",
+  options: [
+    "Matching textbooks to standards",
+    "Coordinating objectives, instruction, and assessment",
+    "Sequencing grade levels",
+    "Standardizing curriculum across schools"
+  ],
+  correctAnswer: 1,
+  explanation: "Curriculum alignment ensures that learning objectives, instructional methods, and assessments are coherent and consistent."
+},
+{
+  id: 84,
+  question: "Which educational approach is most flexible?",
+  options: [
+    "Essentialism",
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Progressivism is highly flexible, adapting to students' interests and changing societal needs."
+},
+{
+  id: 85,
+  question: "What is 'formative feedback'?",
+  options: [
+    "Final grades",
+    "Ongoing constructive comments",
+    "Standardized test results",
+    "Report card comments"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative feedback provides specific, constructive information during learning to help students improve."
+},
+{
+  id: 86,
+  question: "Which psychologist emphasized self-actualization?",
+  options: [
+    "B.F. Skinner",
+    "Abraham Maslow",
+    "Jean Piaget",
+    "Albert Bandura"
+  ],
+  correctAnswer: 1,
+  explanation: "Abraham Maslow developed the hierarchy of needs, with self-actualization as the highest level of human development."
+},
+{
+  id: 87,
+  question: "What is the primary purpose of educational policy?",
+  options: [
+    "To control schools",
+    "To guide educational practice",
+    "To allocate funding",
+    "To evaluate teachers"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational policy provides framework and guidance for educational practice and decision-making."
+},
+{
+  id: 88,
+  question: "Which teaching strategy is most direct?",
+  options: [
+    "Inquiry learning",
+    "Direct instruction",
+    "Discovery learning",
+    "Project-based learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct instruction involves explicit teaching with clear objectives and teacher-directed activities."
+},
+{
+  id: 89,
+  question: "What is 'multiple intelligences theory'?",
+  options: [
+    "Different IQ tests",
+    "Various types of smartness",
+    "Learning styles",
+    "Cognitive abilities"
+  ],
+  correctAnswer: 1,
+  explanation: "Gardner's theory proposes multiple types of intelligence, including linguistic, logical, spatial, musical, and others."
+},
+{
+  id: 90,
+  question: "Which educational philosophy is most conservative?",
+  options: [
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Perennialism is considered conservative as it preserves traditional knowledge and educational approaches."
+},
+{
+  id: 91,
+  question: "What is 'educational assessment'?",
+  options: [
+    "Student testing",
+    "Systematic gathering of learning information",
+    "Teacher evaluation",
+    "School inspection"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational assessment involves systematically gathering and interpreting information about student learning."
+},
+{
+  id: 92,
+  question: "Which learning environment is most structured?",
+  options: [
+    "Montessori classroom",
+    "Traditional classroom",
+    "Outdoor education",
+    "Online learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Traditional classrooms typically have highly structured environments with teacher-directed activities and fixed schedules."
+},
+{
+  id: 93,
+  question: "What is 'educational technology integration'?",
+  options: [
+    "Using computers in class",
+    "Seamlessly incorporating technology into teaching",
+    "Online learning",
+    "Digital assessment"
+  ],
+  correctAnswer: 1,
+  explanation: "Technology integration means embedding technology naturally into teaching and learning processes to enhance education."
+},
+{
+  id: 94,
+  question: "Which educational approach emphasizes critical thinking?",
+  options: [
+    "Essentialism",
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Progressivism emphasizes developing critical thinking skills through active learning and problem-solving."
+},
+{
+  id: 95,
+  question: "What is 'classroom management' primarily concerned with?",
+  options: [
+    "Discipline",
+    "Creating effective learning environments",
+    "Student control",
+    "Rule enforcement"
+  ],
+  correctAnswer: 1,
+  explanation: "Classroom management focuses on creating and maintaining environments conducive to learning and positive interactions."
+},
+{
+  id: 96,
+  question: "Which assessment method is most authentic?",
+  options: [
+    "Standardized tests",
+    "Performance tasks",
+    "Multiple-choice exams",
+    "True-false questions"
+  ],
+  correctAnswer: 1,
+  explanation: "Performance tasks are authentic assessments that require students to apply skills in real-world contexts."
+},
+{
+  id: 97,
+  question: "What is 'educational philosophy'?",
+  options: [
+    "Teacher beliefs",
+    "System of educational beliefs and values",
+    "Teaching methods",
+    "School mission statements"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational philosophy comprises the fundamental beliefs and values that guide educational practice and decision-making."
+},
+{
+  id: 98,
+  question: "Which teaching method is most exploratory?",
+  options: [
+    "Direct instruction",
+    "Discovery learning",
+    "Lecture method",
+    "Drill and practice"
+  ],
+  correctAnswer: 1,
+  explanation: "Discovery learning encourages students to explore and discover knowledge through their own investigations."
+},
+{
+  id: 99,
+  question: "What is 'inclusive education' primarily about?",
+  options: [
+    "Special education",
+    "Educating all students together",
+    "Mainstreaming",
+    "Diversity celebration"
+  ],
+  correctAnswer: 1,
+  explanation: "Inclusive education involves educating all students, regardless of abilities or backgrounds, in general education settings."
+},
+{
+  id: 100,
+  question: "Which educational level is most specialized?",
+  options: [
+    "Elementary education",
+    "Higher education",
+    "Secondary education",
+    "Early childhood education"
+  ],
+  correctAnswer: 1,
+  explanation: "Higher education offers the most specialized programs and courses in specific academic and professional fields."
+},
+{
+  id: 101,
+  question: "What is the main purpose of educational standards?",
+  options: [
+    "To limit teacher autonomy",
+    "To ensure quality and consistency",
+    "To compare schools",
+    "To standardize testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational standards establish consistent expectations for student learning and ensure educational quality across institutions."
+},
+{
+  id: 102,
+  question: "Which learning theory emphasizes environmental factors?",
+  options: [
+    "Behaviorism",
+    "Cognitivism",
+    "Constructivism",
+    "Humanism"
+  ],
+  correctAnswer: 0,
+  explanation: "Behaviorism focuses on how environmental factors and reinforcement shape learning and behavior."
+},
+{
+  id: 103,
+  question: "What is 'differentiated instruction' based on?",
+  options: [
+    "Student preferences",
+    "Individual learning needs",
+    "Learning styles",
+    "Ability grouping"
+  ],
+  correctAnswer: 1,
+  explanation: "Differentiated instruction responds to individual students' readiness, interests, and learning profiles."
+},
+{
+  id: 104,
+  question: "Which educational philosophy is most radical?",
+  options: [
+    "Perennialism",
+    "Reconstructionism",
+    "Essentialism",
+    "Progressivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Reconstructionism is considered radical as it advocates for significant social change through education."
+},
+{
+  id: 105,
+  question: "What is 'educational equity' different from equality?",
+  options: [
+    "Equity means same treatment",
+    "Equity means fair treatment based on needs",
+    "Equity means equal resources",
+    "Equity means same outcomes"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational equity involves providing resources and support based on individual needs, while equality means treating everyone the same."
+},
+{
+  id: 106,
+  question: "Which teaching method is most teacher-directed?",
+  options: [
+    "Project-based learning",
+    "Direct instruction",
+    "Inquiry learning",
+    "Cooperative learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct instruction is highly teacher-directed, with the teacher controlling content, pace, and activities."
+},
+{
+  id: 107,
+  question: "What is 'formative assessment' primarily for?",
+  options: [
+    "Grading",
+    "Improving learning",
+    "Reporting to parents",
+    "School accountability"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative assessment focuses on providing feedback to improve student learning during the instructional process."
+},
+{
+  id: 108,
+  question: "Which educational approach emphasizes classic literature?",
+  options: [
+    "Progressivism",
+    "Perennialism",
+    "Essentialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Perennialism emphasizes studying classic literature and great books that contain timeless ideas and wisdom."
+},
+{
+  id: 109,
+  question: "What is 'scaffolding' in educational terms?",
+  options: [
+    "Physical structures",
+    "Temporary learning support",
+    "Permanent aids",
+    "Assessment tools"
+  ],
+  correctAnswer: 1,
+  explanation: "Scaffolding provides temporary support that helps students achieve learning goals, gradually removed as students gain competence."
+},
+{
+  id: 110,
+  question: "Which learning style prefers listening?",
+  options: [
+    "Visual learners",
+    "Auditory learners",
+    "Kinesthetic learners",
+    "Tactile learners"
+  ],
+  correctAnswer: 1,
+  explanation: "Auditory learners prefer and benefit from listening to explanations, discussions, and verbal instructions."
+},
+{
+  id: 111,
+  question: "What is the main goal of special education?",
+  options: [
+    "Separate education",
+    "Meeting unique needs",
+    "Remedial instruction",
+    "Therapy services"
+  ],
+  correctAnswer: 1,
+  explanation: "Special education aims to meet the unique learning needs of students with disabilities through specialized instruction and services."
+},
+{
+  id: 112,
+  question: "Which educational philosophy is most pragmatic?",
+  options: [
+    "Perennialism",
+    "Progressivism",
+    "Essentialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Progressivism is pragmatic, focusing on practical problem-solving and preparing students for real-life challenges."
+},
+{
+  id: 113,
+  question: "What is 'cultural responsive teaching'?",
+  options: [
+    "Teaching about cultures",
+    "Using cultural knowledge in teaching",
+    "Multicultural curriculum",
+    "International education"
+  ],
+  correctAnswer: 1,
+  explanation: "Culturally responsive teaching uses students' cultural backgrounds and experiences to make learning more meaningful and effective."
+},
+{
+  id: 114,
+  question: "Which assessment method is most objective?",
+  options: [
+    "Essay tests",
+    "Multiple-choice tests",
+    "Portfolio assessment",
+    "Performance tasks"
+  ],
+  correctAnswer: 1,
+  explanation: "Multiple-choice tests are highly objective with predetermined correct answers and consistent scoring."
+},
+{
+  id: 115,
+  question: "What is 'educational leadership' primarily about?",
+  options: [
+    "Administration",
+    "Influencing improvement",
+    "Supervision",
+    "Policy making"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational leadership involves influencing and guiding educational institutions toward continuous improvement and excellence."
+},
+{
+  id: 116,
+  question: "Which learning theory emphasizes personal meaning?",
+  options: [
+    "Behaviorism",
+    "Humanism",
+    "Cognitivism",
+    "Constructivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Humanism emphasizes personal growth, self-direction, and finding personal meaning in learning experiences."
+},
+{
+  id: 117,
+  question: "What is 'backward design' in education?",
+  options: [
+    "Outcome-based planning",
+    "Traditional planning",
+    "Student-centered planning",
+    "Spiral curriculum"
+  ],
+  correctAnswer: 0,
+  explanation: "Backward design starts with desired learning outcomes and works backward to plan instruction and assessment."
+},
+{
+  id: 118,
+  question: "Which educational approach is most structured?",
+  options: [
+    "Progressivism",
+    "Essentialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Essentialism provides a highly structured approach with clear standards, discipline, and traditional subject matter."
+},
+{
+  id: 119,
+  question: "What is 'inclusive practice'?",
+  options: [
+    "Special education",
+    "Adapting for all learners",
+    "Mainstreaming",
+    "Diversity training"
+  ],
+  correctAnswer: 1,
+  explanation: "Inclusive practice involves adapting teaching methods and environments to meet the needs of all diverse learners."
+},
+{
+  id: 120,
+  question: "Which teaching method is most student-centered?",
+  options: [
+    "Direct instruction",
+    "Inquiry-based learning",
+    "Lecture method",
+    "Demonstration"
+  ],
+  correctAnswer: 1,
+  explanation: "Inquiry-based learning is highly student-centered, with students driving the learning process through questions and investigations."
+},
+{
+  id: 121,
+  question: "What is 'metacognition' in learning?",
+  options: [
+    "Advanced thinking",
+    "Thinking about thinking",
+    "Memory strategies",
+    "Learning techniques"
+  ],
+  correctAnswer: 1,
+  explanation: "Metacognition involves awareness and control of one's own thinking processes during learning."
+},
+{
+  id: 122,
+  question: "Which educational philosophy emphasizes social reform?",
+  options: [
+    "Perennialism",
+    "Reconstructionism",
+    "Essentialism",
+    "Progressivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Reconstructionism views education as a means for social reform and addressing societal problems."
+},
+{
+  id: 123,
+  question: "What is 'formative evaluation'?",
+  options: [
+    "Final assessment",
+    "Ongoing assessment",
+    "Standardized testing",
+    "Teacher evaluation"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative evaluation occurs during instruction to provide feedback and improve learning and teaching."
+},
+{
+  id: 124,
+  question: "Which learning environment is most flexible?",
+  options: [
+    "Traditional classroom",
+    "Montessori classroom",
+    "Structured classroom",
+    "Direct instruction classroom"
+  ],
+  correctAnswer: 1,
+  explanation: "Montessori classrooms offer flexible environments where students choose activities and work at their own pace."
+},
+{
+  id: 125,
+  question: "What is 'educational technology' primarily for?",
+  options: [
+    "Replacing teachers",
+    "Enhancing learning",
+    "Automating tasks",
+    "Reducing costs"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational technology aims to enhance and support teaching and learning processes through appropriate tools."
+},
+{
+  id: 126,
+  question: "Which assessment type is most comprehensive?",
+  options: [
+    "Multiple-choice test",
+    "Portfolio assessment",
+    "Standardized test",
+    "Quiz"
+  ],
+  correctAnswer: 1,
+  explanation: "Portfolio assessment provides a comprehensive view of student growth through collections of work over time."
+},
+{
+  id: 127,
+  question: "What is 'professional development'?",
+  options: [
+    "Career advancement",
+    "Continuous learning for teachers",
+    "Graduate education",
+    "Teaching certification"
+  ],
+  correctAnswer: 1,
+  explanation: "Professional development involves ongoing learning opportunities that help teachers improve their practice."
+},
+{
+  id: 128,
+  question: "Which educational approach is most traditional?",
+  options: [
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism",
+    "Existentialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Perennialism maintains traditional educational values and emphasis on classical knowledge."
+},
+{
+  id: 129,
+  question: "What is 'differentiated instruction' based on?",
+  options: [
+    "Learning styles only",
+    "Multiple student factors",
+    "Ability grouping",
+    "Student preferences"
+  ],
+  correctAnswer: 1,
+  explanation: "Differentiated instruction considers multiple factors including readiness, interest, and learning profile."
+},
+{
+  id: 130,
+  question: "Which teaching strategy promotes deepest learning?",
+  options: [
+    "Rote memorization",
+    "Critical thinking activities",
+    "Direct instruction",
+    "Drill and practice"
+  ],
+  correctAnswer: 1,
+  explanation: "Critical thinking activities promote deep learning by requiring analysis, evaluation, and synthesis of information."
+},
+{
+  id: 131,
+  question: "What is 'educational equity'?",
+  options: [
+    "Same treatment for all",
+    "Fair access to opportunities",
+    "Equal outcomes",
+    "Same resources"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational equity ensures all students have fair access to the resources and opportunities they need to succeed."
+},
+{
+  id: 132,
+  question: "Which learning theory is most teacher-centered?",
+  options: [
+    "Constructivism",
+    "Behaviorism",
+    "Humanism",
+    "Cognitivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Behaviorism often involves teacher-centered approaches with direct instruction and controlled environments."
+},
+{
+  id: 133,
+  question: "What is 'curriculum development'?",
+  options: [
+    "Textbook selection",
+    "Planning learning experiences",
+    "Lesson planning",
+    "Standard setting"
+  ],
+  correctAnswer: 1,
+  explanation: "Curriculum development involves systematic planning of learning experiences to achieve educational goals."
+},
+{
+  id: 134,
+  question: "Which educational philosophy is most experimental?",
+  options: [
+    "Essentialism",
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Progressivism emphasizes experimentation, problem-solving, and learning through experience."
+},
+{
+  id: 135,
+  question: "What is 'authentic assessment'?",
+  options: [
+    "Standardized tests",
+    "Real-world application",
+    "Teacher-made tests",
+    "Objective tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Authentic assessment evaluates students' ability to apply skills and knowledge in real-world contexts."
+},
+{
+  id: 136,
+  question: "Which teaching method is most interactive?",
+  options: [
+    "Lecture",
+    "Discussion",
+    "Independent study",
+    "Direct instruction"
+  ],
+  correctAnswer: 1,
+  explanation: "Discussion-based teaching creates high interaction between teacher and students and among students."
+},
+{
+  id: 137,
+  question: "What is 'educational research' primarily for?",
+  options: [
+    "Evaluating teachers",
+    "Improving practice",
+    "Comparing schools",
+    "Developing tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational research aims to improve educational practice through systematic study of teaching and learning."
+},
+{
+  id: 138,
+  question: "Which learning style prefers movement?",
+  options: [
+    "Visual learners",
+    "Auditory learners",
+    "Kinesthetic learners",
+    "Reading learners"
+  ],
+  correctAnswer: 2,
+  explanation: "Kinesthetic learners prefer physical movement and hands-on activities to understand and retain information."
+},
+{
+  id: 139,
+  question: "What is 'inclusive education'?",
+  options: [
+    "Special education",
+    "Education for all in general settings",
+    "Mainstreaming",
+    "Diversity programs"
+  ],
+  correctAnswer: 1,
+  explanation: "Inclusive education involves educating all students together in general education classrooms with appropriate supports."
+},
+{
+  id: 140,
+  question: "Which educational approach emphasizes basic skills?",
+  options: [
+    "Progressivism",
+    "Essentialism",
+    "Reconstructionism",
+    "Perennialism"
+  ],
+  correctAnswer: 1,
+  explanation: "Essentialism focuses on teaching essential basic skills and core knowledge that all students need."
+},
+{
+  id: 141,
+  question: "What is 'formative feedback'?",
+  options: [
+    "Final grades",
+    "Ongoing constructive comments",
+    "Report cards",
+    "Test scores"
+  ],
+  correctAnswer: 1,
+  explanation: "Formative feedback provides specific, timely information to help students improve during the learning process."
+},
+{
+  id: 142,
+  question: "Which teaching method is most exploratory?",
+  options: [
+    "Direct instruction",
+    "Discovery learning",
+    "Lecture",
+    "Drill and practice"
+  ],
+  correctAnswer: 1,
+  explanation: "Discovery learning encourages students to explore and discover knowledge through their own investigations."
+},
+{
+  id: 143,
+  question: "What is 'educational policy'?",
+  options: [
+    "School rules",
+    "Framework for educational practice",
+    "Government regulations",
+    "Administrative procedures"
+  ],
+  correctAnswer: 1,
+  explanation: "Educational policy provides the framework and guidelines that shape educational practice and decision-making."
+},
+{
+  id: 144,
+  question: "Which learning theory emphasizes social context?",
+  options: [
+    "Behaviorism",
+    "Social constructivism",
+    "Cognitivism",
+    "Humanism"
+  ],
+  correctAnswer: 1,
+  explanation: "Social constructivism, particularly Vygotsky's theory, emphasizes learning through social interaction and cultural context."
+},
+{
+  id: 145,
+  question: "What is 'differentiated assessment'?",
+  options: [
+    "Different tests for different students",
+    "Adapting assessment to needs",
+    "Multiple grading systems",
+    "Varied test formats"
+  ],
+  correctAnswer: 1,
+  explanation: "Differentiated assessment involves modifying evaluation methods to accommodate diverse student needs and abilities."
+},
+{
+  id: 146,
+  question: "Which educational philosophy is most child-centered?",
+  options: [
+    "Essentialism",
+    "Progressivism",
+    "Perennialism",
+    "Reconstructionism"
+  ],
+  correctAnswer: 1,
+  explanation: "Progressivism is highly child-centered, focusing on students' interests, experiences, and active learning."
+},
+{
+  id: 147,
+  question: "What is 'classroom climate'?",
+  options: [
+    "Physical environment",
+    "Emotional environment",
+    "Temperature control",
+    "Seating arrangement"
+  ],
+  correctAnswer: 1,
+  explanation: "Classroom climate refers to the emotional and psychological environment that affects teaching and learning."
+},
+{
+  id: 148,
+  question: "Which assessment method is most subjective?",
+  options: [
+    "Multiple-choice tests",
+    "Essay examinations",
+    "True-false questions",
+    "Standardized tests"
+  ],
+  correctAnswer: 1,
+  explanation: "Essay examinations require subjective judgment in scoring, as answers can vary in quality and interpretation."
+},
+{
+  id: 149,
+  question: "What is 'educational technology integration'?",
+  options: [
+    "Using computers",
+    "Seamless technology use in teaching",
+    "Online courses",
+    "Digital resources"
+  ],
+  correctAnswer: 1,
+  explanation: "Technology integration means embedding technology naturally into all aspects of teaching and learning."
+},
+{
+  id: 150,
+  question: "Which educational approach emphasizes individual freedom?",
+  options: [
+    "Essentialism",
+    "Existentialism",
+    "Perennialism",
+    "Progressivism"
+  ],
+  correctAnswer: 1,
+  explanation: "Existentialism emphasizes individual choice, freedom, and personal responsibility in education."
+}
+     
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'EDU 101';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

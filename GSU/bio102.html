@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+          
+
+{
+  id: 1,
+  question: "What does the term 'Gymnosperm' literally mean?",
+  options: [
+    "Flowering plant",
+    "Naked seed",
+    "Protected seed",
+    "Vascular plant"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperm comes from Greek: 'gymnos' = naked and 'sperm' = seed, referring to seeds that are not enclosed in an ovary."
+},
+{
+  id: 2,
+  question: "Which of these is NOT a group of gymnosperms?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Ferns"
+  ],
+  correctAnswer: 3,
+  explanation: "Ferns are pteridophytes, not gymnosperms. The four main gymnosperm groups are conifers, cycads, ginkgo, and gnetophytes."
+},
+{
+  id: 3,
+  question: "What is the dominant generation in gymnosperms?",
+  options: [
+    "Gametophyte",
+    "Sporophyte",
+    "Both equally",
+    "Neither"
+  ],
+  correctAnswer: 1,
+  explanation: "In gymnosperms, the sporophyte generation (2n) is dominant, while the gametophyte is reduced and dependent on the sporophyte."
+},
+{
+  id: 4,
+  question: "How do gymnosperms differ from ferns in terms of reproduction?",
+  options: [
+    "They require water for fertilization",
+    "They produce spores",
+    "They have air-borne pollen",
+    "They lack vascular tissue"
+  ],
+  correctAnswer: 2,
+  explanation: "Gymnosperms have air-borne pollen and do not depend on water for fertilization, unlike ferns which require water for sperm to swim to eggs."
+},
+{
+  id: 5,
+  question: "Which structure produces pollen in conifers?",
+  options: [
+    "Female cones",
+    "Male cones",
+    "Ovules",
+    "Seeds"
+  ],
+  correctAnswer: 1,
+  explanation: "Male cones (staminate cones) produce pollen grains that contain the male gametophytes in conifers."
+},
+{
+  id: 6,
+  question: "What is the function of resins in conifers?",
+  options: [
+    "Photosynthesis",
+    "Water absorption",
+    "Protection from predators and fire",
+    "Seed dispersal"
+  ],
+  correctAnswer: 2,
+  explanation: "Resins protect conifers from predators, pathogens, and fire by forming protective barriers and having antimicrobial properties."
+},
+{
+  id: 7,
+  question: "Which gymnosperm group has only one surviving species?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 2,
+  explanation: "Ginkgo biloba is the only surviving species in the division Ginkgophyta, preserved mainly in Chinese and Japanese gardens."
+},
+{
+  id: 8,
+  question: "What type of leaves do most conifers have?",
+  options: [
+    "Broad leaves",
+    "Needle-like or scale-like leaves",
+    "Palmate leaves",
+    "Compound leaves"
+  ],
+  correctAnswer: 1,
+  explanation: "Most conifers have needle-like or scale-like leaves that help conserve water and withstand harsh conditions."
+},
+{
+  id: 9,
+  question: "How are gymnosperm seeds different from angiosperm seeds?",
+  options: [
+    "They are always smaller",
+    "They lack a protective enclosure",
+    "They cannot germinate",
+    "They are produced in flowers"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperm seeds are 'naked' - not enclosed in an ovary or fruit, unlike angiosperm seeds which develop within fruits."
+},
+{
+  id: 10,
+  question: "What is the main method of pollen transfer in gymnosperms?",
+  options: [
+    "Water",
+    "Insects",
+    "Wind",
+    "Birds"
+  ],
+  correctAnswer: 2,
+  explanation: "Wind is the primary method of pollen transfer in most gymnosperms, carrying pollen from male to female cones."
+},
+{
+  id: 11,
+  question: "Which gymnosperm group resembles palm trees?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Cycads resemble palm trees with their stout, woody trunks and crown of large, hard leaves, though they are not closely related."
+},
+{
+  id: 12,
+  question: "What does 'dioccious' mean in gymnosperms?",
+  options: [
+    "Plants have both male and female cones",
+    "Individual plants produce only male OR female cones",
+    "Plants reproduce asexually",
+    "Plants have no cones"
+  ],
+  correctAnswer: 1,
+  explanation: "Dioccious species have separate male and female individuals - each plant produces either male cones or female cones, but not both."
+},
+{
+  id: 13,
+  question: "Which gymnosperm is known for its resilience to urban pollution?",
+  options: [
+    "Pine trees",
+    "Cycads",
+    "Ginkgo biloba",
+    "Ephedra"
+  ],
+  correctAnswer: 2,
+  explanation: "Ginkgo biloba is highly resistant to pollution and pests, making it popular for planting in urban environments and city streets."
+},
+{
+  id: 14,
+  question: "Where are seeds located in conifers?",
+  options: [
+    "Inside fruits",
+    "On open scales of female cones",
+    "In flowers",
+    "Underground"
+  ],
+  correctAnswer: 1,
+  explanation: "In conifers, seeds develop on the open scales of female (ovulate) cones, not enclosed in fruits like in angiosperms."
+},
+{
+  id: 15,
+  question: "What is secondary growth in gymnosperms?",
+  options: [
+    "Increase in length",
+    "Increase in girth or width",
+    "Production of leaves",
+    "Flower development"
+  ],
+  correctAnswer: 1,
+  explanation: "Secondary growth results from lateral meristems and increases the girth (width) of plants, producing wood and bark in trees."
+},
+{
+  id: 16,
+  question: "Which tissue forms the wood of gymnosperm trees?",
+  options: [
+    "Phloem",
+    "Xylem",
+    "Epidermis",
+    "Cortex"
+  ],
+  correctAnswer: 1,
+  explanation: "Xylem tissue forms the wood of trees, providing structural support and conducting water and minerals from roots to leaves."
+},
+{
+  id: 17,
+  question: "How old are the earliest gymnosperm fossils?",
+  options: [
+    "100 million years",
+    "360 million years",
+    "500 million years",
+    "1 billion years"
+  ],
+  correctAnswer: 1,
+  explanation: "The earliest gymnosperm fossils date back to approximately 360 million years ago in the Devonian period."
+},
+{
+  id: 18,
+  question: "What happens to male cones after they shed pollen?",
+  options: [
+    "They develop into seeds",
+    "They fall off the tree",
+    "They become female cones",
+    "They produce fruits"
+  ],
+  correctAnswer: 1,
+  explanation: "Male cones are temporary structures that fall off the tree after they have shed their pollen."
+},
+{
+  id: 19,
+  question: "Which gymnosperm group includes plants with the largest cones?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Some cycads produce cones that can grow as large as a football, making them among the largest cones in the plant kingdom."
+},
+{
+  id: 20,
+  question: "What is the economic importance of gymnosperm resins?",
+  options: [
+    "Food source",
+    "Wood production",
+    "Used in wood products and furniture",
+    "Ornamental plants"
+  ],
+  correctAnswer: 2,
+  explanation: "Resins from gymnosperms are used in various products including varnishes, adhesives, and for treating wood and furniture."
+},
+{
+  id: 21,
+  question: "Which group of plants are gymnosperms most closely related to in evolutionary history?",
+  options: [
+    "Fern-like ancestors",
+    "Mosses",
+    "Flowering plants",
+    "Algae"
+  ],
+  correctAnswer: 0,
+  explanation: "Gymnosperms evolved from fern-like ancestors, sharing vascular tissue but developing seeds as an advancement over spores."
+},
+{
+  id: 22,
+  question: "What is the main ecological importance of gymnosperms?",
+  options: [
+    "Producing fruits for human consumption",
+    "Providing food and habitat for wildlife",
+    "Fixing nitrogen in soil",
+    "Producing medicinal compounds"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperms provide essential food and habitat for wildlife, prevent soil erosion, and help reduce greenhouse gases through photosynthesis."
+},
+{
+  id: 23,
+  question: "Which gymnosperm group is most diverse and familiar?",
+  options: [
+    "Cycads",
+    "Conifers",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Conifers are the largest, most diverse, and most familiar group of gymnosperms, including pines, spruces, firs, and cedars."
+},
+{
+  id: 24,
+  question: "What happens to female cones as seeds mature?",
+  options: [
+    "They point upward",
+    "They point downward",
+    "They fall off immediately",
+    "They change color to blue"
+  ],
+  correctAnswer: 1,
+  explanation: "Female cones with mature seeds typically point downward, which aids in seed dispersal, while cones with immature seeds point upward."
+},
+{
+  id: 25,
+  question: "Which gymnosperm is known for its use in traditional medicine?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Spruce"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba extracts are widely used in traditional medicine and supplements for their potential cognitive and circulatory benefits."
+},
+{
+  id: 26,
+  question: "What type of vascular system do gymnosperms have?",
+  options: [
+    "Inefficient and simple",
+    "Very efficient and effective",
+    "No vascular system",
+    "Only phloem, no xylem"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperms have a very efficient and effective vascular system with well-developed xylem and phloem for transport."
+},
+{
+  id: 27,
+  question: "Where do gnetophytes typically grow?",
+  options: [
+    "Only in cold regions",
+    "Only in aquatic environments",
+    "Hot deserts and rainforests",
+    "Only in Europe"
+  ],
+  correctAnswer: 2,
+  explanation: "Gnetophytes are found in diverse habitats including hot deserts of southern Africa and western US, as well as tropical rainforests."
+},
+{
+  id: 28,
+  question: "What is the function of the wing on pine seeds?",
+  options: [
+    "Photosynthesis",
+    "Protection",
+    "Seed dispersal by wind",
+    "Water absorption"
+  ],
+  correctAnswer: 2,
+  explanation: "The wing-like structures on pine seeds help them disperse over longer distances by wind, increasing the plant's distribution range."
+},
+{
+  id: 29,
+  question: "Which gymnosperm group has species with oval leaves resembling dicot plants?",
+  options: [
+    "Conifers",
+    "Gnetum (gnetophytes)",
+    "Cycads",
+    "Ginkgo"
+  ],
+  correctAnswer: 1,
+  explanation: "Gnetum species in the gnetophyte group have large oval leaves that closely resemble those of dicotyledonous plants."
+},
+{
+  id: 30,
+  question: "What is the commercial importance of gymnosperms?",
+  options: [
+    "Source of rubber",
+    "Lumber for wood and paper",
+    "Production of cotton",
+    "Source of spices"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperms, particularly conifers, are major sources of lumber for construction, paper production, and various wood products."
+},
+{
+  id: 31,
+  question: "How do cycads differ from true palm trees?",
+  options: [
+    "They produce cones, not flowers",
+    "They have needle-like leaves",
+    "They are herbaceous plants",
+    "They lack vascular tissue"
+  ],
+  correctAnswer: 0,
+  explanation: "Cycads reproduce using cones rather than flowers, distinguishing them from true palms which are flowering plants (angiosperms)."
+},
+{
+  id: 32,
+  question: "What is the role of the pollen tube in gymnosperms?",
+  options: [
+    "Photosynthesis",
+    "Bringing sperm to the egg for fertilization",
+    "Seed dispersal",
+    "Water absorption"
+  ],
+  correctAnswer: 1,
+  explanation: "The pollen tube grows from the pollen grain and delivers sperm cells to the egg for fertilization within the ovule."
+},
+{
+  id: 33,
+  question: "Which gymnosperm group was dominant during the age of dinosaurs?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Cycads were particularly abundant and diverse during the Mesozoic era, often called the 'Age of Cycads' alongside dinosaurs."
+},
+{
+  id: 34,
+  question: "What is primary growth in plants?",
+  options: [
+    "Increase in width",
+    "Increase in length",
+    "Production of wood",
+    "Flower development"
+  ],
+  correctAnswer: 1,
+  explanation: "Primary growth occurs at apical meristems and results in increase in length of shoots and roots."
+},
+{
+  id: 35,
+  question: "Which of these is an example of a conifer?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycas",
+    "Welwitschia"
+  ],
+  correctAnswer: 0,
+  explanation: "Pine trees (Pinus species) are classic examples of conifers, the largest group of gymnosperms."
+},
+{
+  id: 36,
+  question: "How do gymnosperms contribute to reducing greenhouse gases?",
+  options: [
+    "By producing methane",
+    "Through photosynthesis absorbing CO2",
+    "By reflecting sunlight",
+    "Through nitrogen fixation"
+  ],
+  correctAnswer: 1,
+  explanation: "Like all green plants, gymnosperms perform photosynthesis, absorbing carbon dioxide and helping reduce greenhouse gases in the atmosphere."
+},
+{
+  id: 37,
+  question: "What is the sticky substance on female cones that traps pollen?",
+  options: [
+    "Resin",
+    "Nectar",
+    "Pollination drop",
+    "Sap"
+  ],
+  correctAnswer: 2,
+  explanation: "Many gymnosperms produce a pollination drop - a sticky fluid that traps pollen grains and helps draw them into the ovule."
+},
+{
+  id: 38,
+  question: "Which gymnosperm has fan-shaped leaves?",
+  options: [
+    "Pine",
+    "Spruce",
+    "Ginkgo biloba",
+    "Cycad"
+  ],
+  correctAnswer: 2,
+  explanation: "Ginkgo biloba is characterized by its unique fan-shaped leaves with dichotomous venation."
+},
+{
+  id: 39,
+  question: "What is the main adaptation of conifer leaves?",
+  options: [
+    "Large surface area for photosynthesis",
+    "Needle shape to conserve water",
+    "Bright colors to attract pollinators",
+    "Succulent tissue for water storage"
+  ],
+  correctAnswer: 1,
+  explanation: "The needle-like or scale-like leaves of conifers reduce surface area, minimizing water loss through transpiration in dry or cold conditions."
+},
+{
+  id: 40,
+  question: "Which gymnosperm group includes Ephedra?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 3,
+  explanation: "Ephedra belongs to the gnetophyte group, specifically in the family Ephedraceae."
+},
+{
+  id: 41,
+  question: "What is the function of the ovule in gymnosperms?",
+  options: [
+    "Produce pollen",
+    "Contain the egg cell",
+    "Photosynthesis",
+    "Seed dispersal"
+  ],
+  correctAnswer: 1,
+  explanation: "The ovule is the structure that contains the female gametophyte with the egg cell, which develops into a seed after fertilization."
+},
+{
+  id: 42,
+  question: "How are gymnosperms classified in the plant phylogeny?",
+  options: [
+    "Bryophytes",
+    "Pteridophytes",
+    "Spermatophytes",
+    "Algae"
+  ],
+  correctAnswer: 2,
+  explanation: "Gymnosperms are classified as spermatophytes (seed plants), along with angiosperms, distinguished by their production of seeds."
+},
+{
+  id: 43,
+  question: "Which characteristic is shared by all vascular plants?",
+  options: [
+    "Seeds",
+    "Flowers",
+    "Vascular tissue",
+    "Fruits"
+  ],
+  correctAnswer: 2,
+  explanation: "All vascular plants (tracheophytes), including gymnosperms, have specialized vascular tissues (xylem and phloem) for transport."
+},
+{
+  id: 44,
+  question: "What is the main difference between male and female cones?",
+  options: [
+    "Color",
+    "Size and function",
+    "Location on tree",
+    "Number of scales"
+  ],
+  correctAnswer: 1,
+  explanation: "Male cones are typically smaller and produce pollen, while female cones are larger and produce ovules that develop into seeds."
+},
+{
+  id: 45,
+  question: "Which gymnosperm is known for producing edible pine nuts?",
+  options: [
+    "Pine trees",
+    "Ginkgo",
+    "Cycads",
+    "Ephedra"
+  ],
+  correctAnswer: 0,
+  explanation: "Certain pine tree species produce edible seeds called pine nuts, which are used in various culinary applications including pesto."
+},
+{
+  id: 46,
+  question: "What is the evolutionary significance of seeds?",
+  options: [
+    "They allow plants to photosynthesize",
+    "They protect and nourish embryos",
+    "They attract pollinators",
+    "They help in water absorption"
+  ],
+  correctAnswer: 1,
+  explanation: "Seeds protect the embryo from environmental stress, provide nutrition, and enable dormancy and dispersal - key adaptations for land plant success."
+},
+{
+  id: 47,
+  question: "Which gymnosperm group has species with small, scale-like leaves?",
+  options: [
+    "Ginkgo",
+    "Cycads",
+    "Ephedra (gnetophytes)",
+    "Pines"
+  ],
+  correctAnswer: 2,
+  explanation: "Ephedra species in the gnetophyte group have small, scale-like leaves adapted to dry conditions."
+},
+{
+  id: 48,
+  question: "What is the role of the integument in gymnosperm seeds?",
+  options: [
+    "Photosynthesis",
+    "Protective covering of the ovule",
+    "Pollen production",
+    "Water transport"
+  ],
+  correctAnswer: 1,
+  explanation: "The integument forms the protective outer covering of the ovule, which becomes the seed coat after fertilization."
+},
+{
+  id: 49,
+  question: "Which gymnosperm is considered a living fossil?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Spruce"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is often called a 'living fossil' because it has remained virtually unchanged for millions of years and has no close living relatives."
+},
+{
+  id: 50,
+  question: "What is the main method of seed dispersal in conifers?",
+  options: [
+    "Water",
+    "Animals",
+    "Wind",
+    "Explosion"
+  ],
+  correctAnswer: 2,
+  explanation: "Wind is the primary method of seed dispersal in most conifers, aided by wing-like structures on the seeds."
+},
+{
+  id: 51,
+  question: "Which tissue forms the bark of trees?",
+  options: [
+    "Xylem",
+    "Phloem",
+    "Epidermis",
+    "Cortex"
+  ],
+  correctAnswer: 1,
+  explanation: "Phloem tissue forms part of the bark and is responsible for transporting organic nutrients throughout the plant."
+},
+{
+  id: 52,
+  question: "What is the advantage of needle-like leaves in conifers?",
+  options: [
+    "Increased photosynthesis",
+    "Reduced water loss",
+    "Better light absorption",
+    "More flower production"
+  ],
+  correctAnswer: 1,
+  explanation: "Needle-like leaves have reduced surface area, which minimizes water loss through transpiration, an adaptation for dry or cold environments."
+},
+{
+  id: 53,
+  question: "Which gymnosperm group includes Welwitschia?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 3,
+  explanation: "Welwitschia mirabilis is a unique gnetophyte that grows in the deserts of southern Africa and has only two leaves throughout its life."
+},
+{
+  id: 54,
+  question: "What is the function of the megaspore in gymnosperms?",
+  options: [
+    "Develops into male gametophyte",
+    "Develops into female gametophyte",
+    "Produces pollen",
+    "Forms the seed coat"
+  ],
+  correctAnswer: 1,
+  explanation: "The megaspore develops into the female gametophyte, which produces egg cells within the ovule."
+},
+{
+  id: 55,
+  question: "How do gymnosperms prevent self-fertilization?",
+  options: [
+    "By being dioccious",
+    "By having flowers",
+    "Through vegetative reproduction",
+    "By growing in water"
+  ],
+  correctAnswer: 0,
+  explanation: "Many gymnosperms are dioccious (separate male and female plants), which promotes cross-fertilization and genetic diversity."
+},
+{
+  id: 56,
+  question: "What is the significance of gymnosperms in forest ecosystems?",
+  options: [
+    "They fix atmospheric nitrogen",
+    "They prevent soil erosion",
+    "They produce fruits for animals",
+    "They repel insects"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperm forests help prevent soil erosion with their extensive root systems and provide stable habitats for numerous organisms."
+},
+{
+  id: 57,
+  question: "Which gymnosperm has the smallest number of species today?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 2,
+  explanation: "Ginkgo has only one surviving species (Ginkgo biloba), making it the gymnosperm group with the fewest species."
+},
+{
+  id: 58,
+  question: "What is the commercial use of gymnosperm wood?",
+  options: [
+    "Paper production",
+    "Rubber production",
+    "Cork production",
+    "Perfume manufacturing"
+  ],
+  correctAnswer: 0,
+  explanation: "Gymnosperm wood, particularly from conifers, is extensively used in paper production due to its long cellulose fibers."
+},
+{
+  id: 59,
+  question: "Which gymnosperm group is most adapted to cold temperatures?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers are well-adapted to cold temperate regions with their needle-like leaves, conical shape, and antifreeze compounds."
+},
+{
+  id: 60,
+  question: "What is the role of the microspore in gymnosperms?",
+  options: [
+    "Develops into female gametophyte",
+    "Develops into male gametophyte (pollen)",
+    "Forms the seed",
+    "Produces the egg cell"
+  ],
+  correctAnswer: 1,
+  explanation: "The microspore develops into the male gametophyte, which is the pollen grain containing sperm cells."
+},
+{
+  id: 61,
+  question: "Which gymnosperm is known for its tolerance to urban conditions?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Spruce"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is remarkably tolerant of urban pollution, pests, and compacted soil, making it ideal for city planting."
+},
+{
+  id: 62,
+  question: "What is the main difference between primary and secondary growth?",
+  options: [
+    "Primary increases length, secondary increases width",
+    "Primary increases width, secondary increases length",
+    "Both increase length",
+    "Both increase width"
+  ],
+  correctAnswer: 0,
+  explanation: "Primary growth occurs at apical meristems and increases length, while secondary growth occurs at lateral meristems and increases width/girth."
+},
+{
+  id: 63,
+  question: "Which gymnosperm group produces the largest trees?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers include some of the world's largest trees, such as giant sequoias and coastal redwoods."
+},
+{
+  id: 64,
+  question: "What is the function of the archegonium in gymnosperms?",
+  options: [
+    "Pollen production",
+    "Contains the egg cell",
+    "Photosynthesis",
+    "Seed dispersal"
+  ],
+  correctAnswer: 1,
+  explanation: "The archegonium is the female reproductive structure that contains the egg cell in gymnosperms and some other plants."
+},
+{
+  id: 65,
+  question: "Which gymnosperm has leaves that turn yellow in autumn?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Spruce"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is deciduous and its fan-shaped leaves turn bright yellow in autumn before falling."
+},
+{
+  id: 66,
+  question: "What is the economic importance of gymnosperms in landscaping?",
+  options: [
+    "As ornamental plants",
+    "As food crops",
+    "As medicinal plants",
+    "As fiber sources"
+  ],
+  correctAnswer: 0,
+  explanation: "Many gymnosperms are used as ornamental plants in landscaping for their aesthetic appeal, shade provision, and year-round greenery."
+},
+{
+  id: 67,
+  question: "Which gymnosperm group is most threatened today?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Many cycad species are endangered due to habitat loss, overcollection, and slow growth rates, making them one of the most threatened plant groups."
+},
+{
+  id: 68,
+  question: "What is the role of the suspensor in gymnosperm embryos?",
+  options: [
+    "Photosynthesis",
+    "Pushing the embryo into nutritive tissue",
+    "Pollen production",
+    "Seed dispersal"
+  ],
+  correctAnswer: 1,
+  explanation: "The suspensor helps push the developing embryo into the nutritive tissue of the female gametophyte for better access to nutrients."
+},
+{
+  id: 69,
+  question: "Which gymnosperm is known for its use in traditional Chinese medicine?",
+  options: [
+    "Pine",
+    "Ginkgo biloba",
+    "Cycad",
+    "Juniper"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba has been used in traditional Chinese medicine for centuries for various health conditions."
+},
+{
+  id: 70,
+  question: "What is the main adaptation that allows gymnosperms to succeed in dry environments?",
+  options: [
+    "Broad leaves",
+    "Reduced leaves and thick cuticles",
+    "Aquatic reproduction",
+    "Parasitic lifestyle"
+  ],
+  correctAnswer: 1,
+  explanation: "Reduced leaf surface area, thick cuticles, and sunken stomata help gymnosperms conserve water in dry environments."
+},
+{
+  id: 71,
+  question: "Which gymnosperm group includes plants with the longest lifespan?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Some conifers, like bristlecone pines, are among the longest-living organisms on Earth, with individuals over 5,000 years old."
+},
+{
+  id: 72,
+  question: "What is the function of the nucellus in gymnosperm ovules?",
+  options: [
+    "Protective covering",
+    "Nutritive tissue for developing gametophyte",
+    "Pollen production",
+    "Seed dispersal"
+  ],
+  correctAnswer: 1,
+  explanation: "The nucellus provides nutritive tissue that supports the development of the female gametophyte within the ovule."
+},
+{
+  id: 73,
+  question: "Which gymnosperm has separate male and female trees?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Spruce",
+    "Fir"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is dioccious, meaning individual trees are either male or female, not both."
+},
+{
+  id: 74,
+  question: "What is the main component of gymnosperm wood?",
+  options: [
+    "Xylem tissue",
+    "Phloem tissue",
+    "Epidermal tissue",
+    "Meristematic tissue"
+  ],
+  correctAnswer: 0,
+  explanation: "Wood is primarily composed of xylem tissue, which provides structural support and conducts water and minerals."
+},
+{
+  id: 75,
+  question: "Which gymnosperm group is most important commercially?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers are the most commercially important gymnosperms due to their extensive use for timber, paper, and other wood products."
+},
+{
+  id: 76,
+  question: "What is the advantage of wind pollination in gymnosperms?",
+  options: [
+    "It requires less energy than animal pollination",
+    "It allows reproduction without water",
+    "It ensures precise pollen transfer",
+    "It attracts beneficial insects"
+  ],
+  correctAnswer: 1,
+  explanation: "Wind pollination allows gymnosperms to reproduce in diverse environments without depending on water or animal pollinators."
+},
+{
+  id: 77,
+  question: "Which gymnosperm has the most primitive characteristics?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Cycads are considered among the most primitive living gymnosperms, with characteristics similar to early seed plants."
+},
+{
+  id: 78,
+  question: "What is the role of the generative cell in pollen grains?",
+  options: [
+    "Tube formation",
+    "Sperm production",
+    "Nutrient storage",
+    "Protection"
+  ],
+  correctAnswer: 1,
+  explanation: "The generative cell in pollen grains divides to produce sperm cells for fertilization."
+},
+{
+  id: 79,
+  question: "Which gymnosperm is known for its resistance to insects and diseases?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Spruce"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is highly resistant to insects, diseases, and environmental stressors, contributing to its longevity."
+},
+{
+  id: 80,
+  question: "What is the main function of tracheids in gymnosperm xylem?",
+  options: [
+    "Sugar transport",
+    "Water conduction and support",
+    "Food storage",
+    "Photosynthesis"
+  ],
+  correctAnswer: 1,
+  explanation: "Tracheids are the main water-conducting cells in gymnosperm xylem, also providing structural support."
+},
+{
+  id: 81,
+  question: "Which gymnosperm group has the widest geographic distribution?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers have the widest distribution, found from the Arctic Circle to tropical mountains, across all continents except Antarctica."
+},
+{
+  id: 82,
+  question: "What is the significance of the seed coat?",
+  options: [
+    "Photosynthesis",
+    "Protection and dormancy",
+    "Pollen production",
+    "Water absorption"
+  ],
+  correctAnswer: 1,
+  explanation: "The seed coat protects the embryo from mechanical damage, desiccation, and pathogens, and can enforce dormancy until conditions are favorable."
+},
+{
+  id: 83,
+  question: "Which gymnosperm has the most efficient water transport system?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers have highly efficient vascular systems with specialized tracheids that allow effective water transport even in freezing conditions."
+},
+{
+  id: 84,
+  question: "What is the function of the tube cell in pollen grains?",
+  options: [
+    "Sperm production",
+    "Pollen tube formation",
+    "Nutrient storage",
+    "Protection"
+  ],
+  correctAnswer: 1,
+  explanation: "The tube cell is responsible for forming the pollen tube that grows toward the egg cell to deliver sperm."
+},
+{
+  id: 85,
+  question: "Which gymnosperm is considered a 'living fossil'?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Welwitschia"
+  ],
+  correctAnswer: 1,
+  explanation: "Ginkgo biloba is often called a living fossil because it has existed virtually unchanged for over 200 million years."
+},
+{
+  id: 86,
+  question: "What is the main adaptation of gymnosperm roots?",
+  options: [
+    "Shallow spreading",
+    "Deep growing systems",
+    "Aerial roots",
+    "Buttress roots"
+  ],
+  correctAnswer: 1,
+  explanation: "Most gymnosperms have deep-growing root systems that provide stability and access to deep water sources."
+},
+{
+  id: 87,
+  question: "Which gymnosperm group has species with the largest seeds?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 1,
+  explanation: "Some cycads produce very large seeds, with certain species having seeds the size of chicken eggs."
+},
+{
+  id: 88,
+  question: "What is the role of the prothallial cells in gymnosperm pollen?",
+  options: [
+    "Sperm production",
+    "Nutritive function",
+    "Tube formation",
+    "Protection"
+  ],
+  correctAnswer: 1,
+  explanation: "Prothallial cells are vestigial structures in gymnosperm pollen that represent remnants of the vegetative tissue of the gametophyte."
+},
+{
+  id: 89,
+  question: "Which gymnosperm is known for its use in Christmas traditions?",
+  options: [
+    "Pine tree",
+    "Ginkgo biloba",
+    "Cycad",
+    "Ephedra"
+  ],
+  correctAnswer: 0,
+  explanation: "Various conifers, particularly firs, pines, and spruces, are used as Christmas trees in many cultures."
+},
+{
+  id: 90,
+  question: "What is the main difference between gymnosperm and angiosperm seeds?",
+  options: [
+    "Size",
+    "Presence of endosperm",
+    "Number of cotyledons",
+    "Development location"
+  ],
+  correctAnswer: 3,
+  explanation: "Gymnosperm seeds develop on the surface of scales, while angiosperm seeds develop within enclosed ovaries that become fruits."
+},
+{
+  id: 91,
+  question: "Which gymnosperm group has the fastest growth rate?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Some conifers, particularly certain pine species, have relatively fast growth rates compared to other gymnosperms."
+},
+{
+  id: 92,
+  question: "What is the function of the micropyle in gymnosperm ovules?",
+  options: [
+    "Pollen entry",
+    "Seed dispersal",
+    "Water absorption",
+    "Photosynthesis"
+  ],
+  correctAnswer: 0,
+  explanation: "The micropyle is a small opening in the integument through which pollen tubes enter to reach the egg cell."
+},
+{
+  id: 93,
+  question: "Which gymnosperm is known for its tolerance to fire?",
+  options: [
+    "Pine trees",
+    "Ginkgo biloba",
+    "Cycads",
+    "Ephedra"
+  ],
+  correctAnswer: 0,
+  explanation: "Many pine species have adaptations like thick bark and serotinous cones that open after fire, making them fire-tolerant."
+},
+{
+  id: 94,
+  question: "What is the main component of gymnosperm resin?",
+  options: [
+    "Cellulose",
+    "Terpenes",
+    "Starch",
+    "Protein"
+  ],
+  correctAnswer: 1,
+  explanation: "Gymnosperm resins are primarily composed of terpenes and related compounds that provide protection and sealing functions."
+},
+{
+  id: 95,
+  question: "Which gymnosperm group has the most species?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers have the highest species diversity among gymnosperms, with over 600 species worldwide."
+},
+{
+  id: 96,
+  question: "What is the role of the cotyledons in gymnosperm seeds?",
+  options: [
+    "Photosynthesis",
+    "Nutrient absorption and storage",
+    "Protection",
+    "Water conduction"
+  ],
+  correctAnswer: 1,
+  explanation: "Cotyledons (seed leaves) absorb and store nutrients from the female gametophyte for use by the developing embryo."
+},
+{
+  id: 97,
+  question: "Which gymnosperm is known for its use in naval stores?",
+  options: [
+    "Pine trees",
+    "Ginkgo biloba",
+    "Cycads",
+    "Spruce"
+  ],
+  correctAnswer: 0,
+  explanation: "Pine trees are sources of naval stores - products like turpentine and rosin historically used in shipbuilding and maintenance."
+},
+{
+  id: 98,
+  question: "What is the main adaptation of gymnosperms to seasonal climates?",
+  options: [
+    "Deciduous leaves",
+    "Evergreen habit",
+    "Underground stems",
+    "Aquatic reproduction"
+  ],
+  correctAnswer: 1,
+  explanation: "Most gymnosperms are evergreen, retaining their leaves year-round to maximize photosynthesis during brief favorable periods."
+},
+{
+  id: 99,
+  question: "Which gymnosperm has the most efficient seed dispersal mechanism?",
+  options: [
+    "Conifers",
+    "Cycads",
+    "Ginkgo",
+    "Gnetophytes"
+  ],
+  correctAnswer: 0,
+  explanation: "Conifers have highly effective wind dispersal mechanisms with winged seeds that can travel long distances."
+},
+{
+  id: 100,
+  question: "What is the main evolutionary advancement of gymnosperms over pteridophytes?",
+  options: [
+    "Vascular tissue",
+    "Seeds",
+    "Roots",
+    "Leaves"
+  ],
+  correctAnswer: 1,
+  explanation: "The development of seeds represents the key evolutionary advancement of gymnosperms over pteridophytes, providing better protection and dispersal for embryos."
+}
+
+          
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+                 // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'BIO102';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

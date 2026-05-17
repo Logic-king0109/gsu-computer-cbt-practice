@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the basic unit of life?",
+  options: [
+    "Cell",
+    "Atom", 
+    "Molecule",
+    "Organ"
+  ],
+  correctAnswer: 0,
+  explanation: "The cell is the basic unit of life as it is the smallest structure that can perform all functions necessary for life, including metabolism, growth, and reproduction."
+},
+{
+  id: 2,
+  question: "Which organelle is responsible for cellular respiration?",
+  options: [
+    "Mitochondrion"
+    "Chloroplast",
+    "Nucleus",
+    "Ribosome"
+  ],
+  correctAnswer: 0,
+  explanation: "Mitochondria are often called the 'powerhouses' of the cell because they generate ATP through cellular respiration, converting chemical energy from food into usable energy for cellular activities."
+},
+{
+  : 3,
+  question: "What type of bond forms between water molecules?",
+  options: [
+    "Hydrogen bond",
+    "Covalent bond",
+    "Ionic bond",
+    "Peptide bond"
+  ],
+  correctAnswer: 0,
+  explanation: "Hydrogen bonds form between the slightly positive hydrogen atoms of one water molecule and the slightly negative oxygen atoms of adjacent water molecules, giving water its unique properties like high surface tension and cohesion."
+},
+{
+  id: 4,
+  question: "Which of the following is NOT a characteristic of living organisms?",
+  options: [
+    "Movement",
+    "Homeostasis",
+    "Reproduction",
+    "Response to stimuli"
+  ],
+  correctAnswer: 0,
+  explanation: "While many living organisms move, movement itself is not a defining characteristic of life. Some organisms like plants are alive but don't move from place to place. The key characteristics include organization, metabolism, homeostasis, growth, reproduction, response to stimuli, and evolution."
+},
+{
+  id: 5,
+  question: "What is the primary function of DNA?",
+  options: [
+    "Store genetic information",
+    "Provide cellular energy",
+    "Build cell membranes",
+    "Catalyze chemical reactions"
+  ],
+  correctAnswer: 0,
+  explanation: "DNA (deoxyribonucleic acid) serves as the primary storage molecule for genetic information in all living organisms. It contains the instructions needed for an organism to develop, survive, and reproduce."
+},
+{
+  id: 6,
+  question: "Which process describes the movement of water across a semipermeable membrane?",
+  options: [
+    "Osmosis",
+    "Diffusion",
+    "Active transport",
+    "Facilitated diffusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Osmosis is the specific type of diffusion that involves the movement of water molecules across a semipermeable membrane from an area of higher water concentration to an area of lower water concentration."
+},
+{
+  id: 7,
+  question: "What is the correct order of biological organization from simplest to most complex?",
+  options: [
+    "Cell → Tissue → Organ → Organ System → Organism",
+    "Organism → Organ System → Organ → Tissue → Cell",
+    "Tissue → Cell → Organ → Organ System → Organism",
+    "Organ → Tissue → Cell → Organ System → Organism"
+  ],
+  correctAnswer: 0,
+  explanation: "The correct hierarchy of biological organization begins with cells as the basic unit, which form tissues, then organs, then organ systems, and finally the complete organism."
+},
+{
+  id: 8,
+  question: "Which macromolecule is primarily responsible for storing genetic information?",
+  options: [
+    "Nucleic acids",
+    "Proteins",
+    "Carbohydrates",
+    "Lipids"
+  ],
+  correctAnswer: 0,
+  explanation: "Nucleic acids (DNA and RNA) are the macromolecules specifically designed to store and transmit genetic information, while proteins perform various structural and enzymatic functions, carbohydrates provide energy, and lipids store energy and form membranes."
+},
+{
+  id: 9,
+  question: "What is the role of enzymes in biological reactions?",
+  options: [
+    "Speed up reactions by lowering activation energy",
+    "Provide energy for reactions",
+    "Change the equilibrium of reactions",
+    "Create new reaction pathways"
+  ],
+  correctAnswer: 0,
+  explanation: "Enzymes are biological catalysts that speed up chemical reactions by lowering the activation energy required for the reaction to proceed, without being consumed in the process or altering the reaction equilibrium."
+},
+{
+  id: 10,
+  question: "Which cellular process produces the most ATP?",
+  options: [
+    "Aerobic respiration",
+    "Anaerobic respiration",
+    "Fermentation",
+    "Glycolysis"
+  ],
+  correctAnswer: 0,
+  explanation: "Aerobic respiration, which includes the Krebs cycle and electron transport chain, produces the most ATP (approximately 36-38 ATP per glucose molecule) compared to anaerobic processes like fermentation (2 ATP) or glycolysis alone (2 ATP)."
+},
+{
+  id: 11,
+  question: "In photosynthesis, what is the primary function of chlorophyll?",
+  options: [
+    "Absorb light energy",
+    "Convert CO₂ to glucose",
+    "Split water molecules",
+    "Release oxygen"
+  ],
+  correctAnswer: 0,
+  explanation: "Chlorophyll is the primary pigment that absorbs light energy from the sun, particularly in the blue and red wavelengths, which is then used to drive the light-dependent reactions of photosynthesis."
+},
+{
+  id: 12,
+  question: "What is the complementary DNA strand for 5'-AGTCCG-3'?",
+  options: [
+    "3'-TCAGGC-5'",
+    "5'-TCAGGC-3'",
+    "3'-AGTCCG-5'",
+    "5'-UCAGGC-3'"
+  ],
+  correctAnswer: 0,
+  explanation: "DNA strands are complementary and antiparallel. Adenine (A) pairs with Thymine (T), and Guanine (G) pairs with Cytosine (C). The complementary strand runs in the opposite direction, so 5'-AGTCCG-3' pairs with 3'-TCAGGC-5'."
+},
+{
+  id: 13,
+  question: "Which phase of mitosis is characterized by the alignment of chromosomes at the cell's equator?",
+  options: [
+    "Metaphase",
+    "Prophase",
+    "Anaphase",
+    "Telophase"
+  ],
+  correctAnswer: 0,
+  explanation: "During metaphase, chromosomes align at the metaphase plate (equator of the cell) and become attached to spindle fibers from opposite poles, preparing for separation in anaphase."
+},
+{
+  id: 14,
+  question: "A cell with 10 chromosomes undergoes mitosis. How many chromosomes will each daughter cell have?",
+  options: [
+    "10",
+    "5",
+    "20",
+    "40"
+  ],
+  correctAnswer: 0,
+  explanation: "Mitosis produces two genetically identical daughter cells, each with the same number of chromosomes as the parent cell. The chromosome number remains constant (10 chromosomes in each daughter cell)."
+},
+{
+  id: 15,
+  question: "Which of the following best describes the process of natural selection?",
+  options: [
+    "Individuals with advantageous traits are more likely to survive and reproduce",
+    "Organisms consciously adapt to their environment",
+    "All individuals in a population evolve simultaneously",
+    "Acquired characteristics are passed to offspring"
+  ],
+  correctAnswer: 0,
+  explanation: "Natural selection is the process where individuals with traits that provide a survival or reproductive advantage in a particular environment are more likely to survive, reproduce, and pass those advantageous traits to their offspring."
+},
+{
+  id: 16,
+  question: "What is the primary function of the ribosome?",
+  options: [
+    "Protein synthesis",
+    "Lipid synthesis",
+    "DNA replication",
+    "ATP production"
+  ],
+  correctAnswer: 0,
+  explanation: "Ribosomes are cellular structures responsible for protein synthesis (translation), where they read mRNA sequences and assemble amino acids into polypeptide chains according to the genetic code."
+},
+{
+  id: 17,
+  question: "Which blood type is considered the universal donor?",
+  options: [
+    "O negative",
+    "AB positive",
+    "A negative",
+    "B positive"
+  ],
+  correctAnswer: 0,
+  explanation: "O negative blood is considered the universal donor because it lacks A, B, and Rh antigens, making it less likely to trigger an immune response when transfused into recipients with different blood types."
+},
+{
+  id: 18,
+  question: "What is the net production of ATP from one molecule of glucose during glycolysis?",
+  options: [
+    "2 ATP",
+    "4 ATP",
+    "36 ATP",
+    "38 ATP"
+  ],
+  correctAnswer: 0,
+  explanation: "Glycolysis produces a net gain of 2 ATP molecules per glucose molecule. Although 4 ATP are produced, 2 ATP are consumed in the initial steps, resulting in a net gain of 2 ATP."
+},
+{
+  id: 19,
+  question: "Which organelle contains digestive enzymes for breaking down macromolecules?",
+  options: [
+    "Lysosome",
+    "Peroxisome",
+    "Golgi apparatus",
+    "Endoplasmic reticulum"
+  ],
+  correctAnswer: 0,
+  explanation: "Lysosomes are membrane-bound organelles containing hydrolytic enzymes that break down various macromolecules, including proteins, nucleic acids, carbohydrates, and lipids, as well as digesting worn-out organelles and foreign particles."
+},
+{
+  id: 20,
+  question: "In a DNA molecule, what type of bond connects the nitrogenous bases between the two strands?",
+  options: [
+    "Hydrogen bonds",
+    "Covalent bonds",
+    "Ionic bonds",
+    "Peptide bonds"
+  ],
+  correctAnswer: 0,
+  explanation: "Hydrogen bonds form between complementary nitrogenous bases in DNA: two between adenine and thymine, and three between guanine and cytosine. These relatively weak bonds allow the DNA strands to separate during replication and transcription."
+},
+{
+  id: 21,
+  question: "Which process describes the conversion of mRNA into a polypeptide chain?",
+  options: [
+    "Translation",
+    "Transcription",
+    "Replication",
+    "Transformation"
+  ],
+  correctAnswer: 0,
+  explanation: "Translation is the process where the genetic information in mRNA is decoded by ribosomes to synthesize a specific polypeptide chain. Transfer RNA (tRNA) molecules bring the appropriate amino acids to the ribosome based on the mRNA codons."
+},
+{
+  id: 22,
+  question: "What is the primary function of stomata in plant leaves?",
+  options: [
+    "Gas exchange",
+    "Photosynthesis",
+    "Water storage",
+    "Nutrient transport"
+  ],
+  correctAnswer: 0,
+  explanation: "Stomata are small openings in plant leaves surrounded by guard cells that regulate gas exchange, allowing carbon dioxide to enter for photosynthesis while permitting oxygen and water vapor to exit."
+},
+{
+  id: 23,
+  question: "Which of the following is an example of a homozygous genotype?",
+  options: [
+    "TT",
+    "Tt",
+    "TY",
+    "T"
+  ],
+  correctAnswer: 0,
+  explanation: "A homozygous genotype consists of two identical alleles for a particular gene. TT represents homozygous dominant, while tt would represent homozygous recessive. Tt is heterozygous, containing two different alleles."
+},
+{
+  id: 24,
+  question: "What is the role of tRNA in protein synthesis?",
+  options: [
+    "Bring amino acids to the ribosome",
+    "Carry genetic information from DNA",
+    "Form the structure of ribosomes",
+    "Unwind DNA during transcription"
+  ],
+  correctAnswer: 0,
+  explanation: "Transfer RNA (tRNA) molecules have two key functions: they carry specific amino acids to the ribosome, and they contain anticodons that base-pair with complementary codons on mRNA, ensuring the correct amino acid sequence in the growing polypeptide chain."
+},
+{
+  id: 25,
+  question: "Which phase of the cell cycle involves DNA replication?",
+  options: [
+    "S phase",
+    "G1 phase",
+    "G2 phase",
+    "M phase"
+  ],
+  correctAnswer: 0,
+  explanation: "The S phase (synthesis phase) of interphase is when DNA replication occurs, resulting in the duplication of the cell's genetic material. This ensures that each daughter cell will receive a complete set of chromosomes during cell division."
+},
+{
+  id: 26,
+  question: "What is the main function of the circulatory system?",
+  options: [
+    "Transport substances throughout the body",
+    "Break down food for absorption",
+    "Exchange gases with the environment",
+    "Coordinate body activities"
+  ],
+  correctAnswer: 0,
+  explanation: "The circulatory system, consisting of the heart, blood vessels, and blood, is primarily responsible for transporting oxygen, nutrients, hormones, and waste products throughout the body, as well as regulating body temperature and providing immune defense."
+},
+{
+  id: 27,
+  question: "Which cellular structure is unique to plant cells?",
+  options: [
+    "Cell wall",
+    "Mitochondrion",
+    "Endoplasmic reticulum",
+    "Ribosome"
+  ],
+  correctAnswer: 0,
+  explanation: "The cell wall is a rigid structure outside the plasma membrane that is unique to plant cells (and some other organisms like fungi and bacteria). It provides structural support, protection, and helps maintain cell shape."
+},
+{
+  id: 28,
+  question: "What is the primary product of the light-dependent reactions of photosynthesis?",
+  options: [
+    "ATP and NADPH",
+    "Glucose",
+    "Carbon dioxide",
+    "Oxygen only"
+  ],
+  correctAnswer: 0,
+  explanation: "The light-dependent reactions convert light energy into chemical energy, producing ATP and NADPH, which are then used in the light-independent reactions (Calvin cycle) to synthesize glucose. Oxygen is released as a byproduct."
+},
+{
+  id: 29,
+  question: "In Mendelian genetics, what is the phenotypic ratio of a heterozygous cross (Aa × Aa)?",
+  options: [
+    "3:1",
+    "1:2:1",
+    "9:3:3:1",
+    "1:1"
+  ],
+  correctAnswer: 0,
+  explanation: "In a monohybrid cross between two heterozygous individuals (Aa × Aa), the expected phenotypic ratio is 3:1, with three individuals showing the dominant phenotype for every one showing the recessive phenotype."
+},
+{
+  id: 30,
+  question: "Which process moves substances against their concentration gradient using energy?",
+  options: [
+    "Active transport",
+    "Diffusion",
+    "Osmosis",
+    "Facilitated diffusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Active transport requires energy (usually ATP) to move substances across membranes against their concentration gradient, from areas of lower concentration to areas of higher concentration, unlike passive transport processes like diffusion and osmosis."
+},
+{
+  id: 31,
+  question: "What is the function of the nucleolus?",
+  options: [
+    "Produce ribosomal RNA",
+    "Store DNA",
+    "Control cell division",
+    "Synthesize proteins"
+  ],
+  correctAnswer: 0,
+  explanation: "The nucleolus is a specialized region within the nucleus where ribosomal RNA (rRNA) is synthesized and ribosomal subunits are assembled before being exported to the cytoplasm for final ribosome formation."
+},
+{
+  id: 32,
+  question: "Which biome is characterized by permafrost, low temperatures, and limited vegetation?",
+  options: [
+    "Tundra",
+    "Taiga",
+    "Desert",
+    "Tropical rainforest"
+  ],
+  correctAnswer: 0,
+  explanation: "The tundra biome is characterized by permanently frozen soil (permafrost), extremely cold temperatures, short growing seasons, and vegetation limited to low-growing plants like mosses, lichens, and dwarf shrubs due to the harsh environmental conditions."
+},
+{
+  id: 33,
+  question: "What is the role of DNA polymerase in DNA replication?",
+  options: [
+    "Add nucleotides to growing DNA strand",
+    "Unwind DNA double helix",
+    "Join Okazaki fragments",
+    "Proofread DNA sequence"
+  ],
+  correctAnswer: 0,
+  explanation: "DNA polymerase is the primary enzyme that catalyzes the addition of nucleotides to the 3' end of a growing DNA strand during replication, using the existing strand as a template. It also has proofreading capability to maintain replication fidelity."
+},
+{
+  id: 34,
+  question: "Which blood vessels carry blood away from the heart?",
+  options: [
+    "Arteries",
+    "Veins",
+    "Capillaries",
+    "Venules"
+  ],
+  correctAnswer: 0,
+  explanation: "Arteries are blood vessels that carry oxygenated blood away from the heart to various tissues (except pulmonary arteries, which carry deoxygenated blood to the lungs). Veins carry blood toward the heart, and capillaries facilitate exchange between blood and tissues."
+},
+{
+  id: 35,
+  question: "What is the primary function of the large intestine?",
+  options: [
+    "Absorb water and electrolytes",
+    "Digest proteins",
+    "Absorb nutrients",
+    "Produce digestive enzymes"
+  ],
+  correctAnswer: 0,
+  explanation: "The large intestine's main functions are to absorb water and electrolytes from undigested food material, form and store feces, and house beneficial bacteria that produce certain vitamins (like vitamin K)."
+},
+{
+  id: 36,
+  question: "In the hierarchy of biological classification, which level is most inclusive?",
+  options: [
+    "Domain",
+    "Kingdom",
+    "Phylum",
+    "Species"
+  ],
+  correctAnswer: 0,
+  explanation: "Domain is the highest and most inclusive level in modern biological classification, with three domains: Bacteria, Archaea, and Eukarya. The classification hierarchy from most to least inclusive is: Domain, Kingdom, Phylum, Class, Order, Family, Genus, Species."
+},
+{
+  id: 37,
+  question: "Which process describes the movement of molecules from high to low concentration without energy input?",
+  options: [
+    "Diffusion",
+    "Active transport",
+    "Endocytosis",
+    "Exocytosis"
+  ],
+  correctAnswer: 0,
+  explanation: "Diffusion is the passive movement of molecules or particles from an area of higher concentration to an area of lower concentration, driven by random molecular motion and continuing until equilibrium is reached, without requiring energy input."
+},
+{
+  id: 38,
+  question: "What is the main function of the nervous system?",
+  options: [
+    "Coordinate and control body activities",
+    "Transport oxygen and nutrients",
+    "Produce hormones",
+    "Filter blood and produce urine"
+  ],
+  correctAnswer: 0,
+  explanation: "The nervous system is responsible for receiving sensory input, processing information, and generating responses to coordinate and control bodily activities. It enables communication between different parts of the body through electrical and chemical signals."
+},
+{
+  id: 39,
+  question: "Which cellular process converts glucose into pyruvate?",
+  options: [
+    "Glycolysis",
+    "Krebs cycle",
+    "Electron transport chain",
+    "Fermentation"
+  ],
+  correctAnswer: 0,
+  explanation: "Glycolysis is the metabolic pathway that breaks down one molecule of glucose (6 carbons) into two molecules of pyruvate (3 carbons each), producing a net gain of 2 ATP and 2 NADH in the process."
+},
+{
+  id: 40,
+  question: "What is the role of insulin in the human body?",
+  options: [
+    "Lower blood glucose levels",
+    "Raise blood glucose levels",
+    "Stimulate gastric secretion",
+    "Regulate calcium metabolism"
+  ],
+  correctAnswer: 0,
+  explanation: "Insulin is a hormone produced by the pancreas that lowers blood glucose levels by promoting the uptake of glucose into cells, stimulating glycogen synthesis in the liver and muscles, and inhibiting glucose production by the liver."
+},
+{
+  id: 41,
+  question: "Which structure is responsible for protein modification and packaging?",
+  options: [
+    "Golgi apparatus",
+    "Rough endoplasmic reticulum",
+    "Smooth endoplasmic reticulum",
+    "Lysosome"
+  ],
+  correctAnswer: 0,
+  explanation: "The Golgi apparatus modifies, sorts, and packages proteins and lipids into vesicles for transport to specific destinations. It receives proteins from the rough ER and modifies them by adding carbohydrates (glycosylation) or other functional groups."
+},
+{
+  id: 42,
+  question: "What is the primary function of the kidneys?",
+  options: [
+    "Filter blood and produce urine",
+    "Produce digestive enzymes",
+    "Store bile",
+    "Pump blood throughout the body"
+  ],
+  correctAnswer: 0,
+  explanation: "The kidneys filter blood to remove waste products, excess ions, and water, which are excreted as urine. They also help regulate blood pressure, electrolyte balance, and red blood cell production through erythropoietin secretion."
+},
+{
+  id: 43,
+  question: "In ecological terms, what is a population?",
+  options: [
+    "Group of individuals of the same species in an area",
+    "All living organisms in an ecosystem",
+    "Different species living together",
+    "The physical environment and its organisms"
+  ],
+  correctAnswer: 0,
+  explanation: "A population is defined as a group of individuals of the same species that live in the same geographic area and can potentially interbreed. This is different from a community (multiple populations of different species) or an ecosystem (community plus physical environment)."
+},
+{
+  id: 44,
+  question: "Which process describes the conversion of light energy to chemical energy in plants?",
+  options: [
+    "Photosynthesis",
+    "Cellular respiration",
+    "Chemosynthesis",
+    "Fermentation"
+  ],
+  correctAnswer: 0,
+  explanation: "Photosynthesis is the process by which plants, algae, and some bacteria convert light energy, carbon dioxide, and water into chemical energy stored in glucose, with oxygen released as a byproduct."
+},
+{
+  id: 45,
+  question: "What is the function of the plasma membrane?",
+  options: [
+    "Regulate movement of substances in and out of cell",
+    "Provide structural support to the cell",
+    "Produce energy for cellular activities",
+    "Store genetic information"
+  ],
+  correctAnswer: 0,
+  explanation: "The plasma membrane is a selectively permeable barrier that regulates the passage of substances into and out of the cell, maintains cell shape, and facilitates communication with other cells through receptor proteins."
+},
+{
+  id: 46,
+  question: "Which type of RNA carries genetic information from DNA to the ribosome?",
+  options: [
+    "mRNA",
+    "tRNA",
+    "rRNA",
+    "snRNA"
+  ],
+  correctAnswer: 0,
+  explanation: "Messenger RNA (mRNA) carries the genetic code from DNA in the nucleus to the ribosomes in the cytoplasm, where it serves as a template for protein synthesis during translation."
+},
+{
+  id: 47,
+  question: "What is the role of pollinators in plant reproduction?",
+  options: [
+    "Transfer pollen between flowers",
+    "Produce seeds",
+    "Disperse fruits",
+    "Provide nutrients to plants"
+  ],
+  correctAnswer: 0,
+  explanation: "Pollinators such as bees, butterflies, birds, and bats transfer pollen from the anthers (male parts) to the stigma (female part) of flowers, enabling fertilization and subsequent seed and fruit production in flowering plants."
+},
+{
+  id: 48,
+  question: "Which process describes the division of the cytoplasm following mitosis?",
+  options: [
+    "Cytokinesis",
+    "Karyokinesis",
+    "Binary fission",
+    "Meiosis"
+  ],
+  correctAnswer: 0,
+  explanation: "Cytokinesis is the process that divides the cytoplasm and organelles between the two daughter cells following nuclear division (mitosis). In animal cells, this occurs through the formation of a cleavage furrow, while plant cells form a cell plate."
+},
+{
+  id: 49,
+  question: "What is the primary function of the skeletal system?",
+  options: [
+    "Provide support and protection",
+    "Transport nutrients",
+    "Produce hormones",
+    "Filter blood"
+  ],
+  correctAnswer: 0,
+  explanation: "The skeletal system provides structural support for the body, protects internal organs (like the brain, heart, and lungs), facilitates movement through attachment points for muscles, stores minerals, and produces blood cells in bone marrow."
+},
+{
+  id: 50,
+  question: "In a food chain, what trophic level do primary consumers occupy?",
+  options: [
+    "Second trophic level",
+    "First trophic level",
+    "Third trophic level",
+    "Fourth trophic level"
+  ],
+  correctAnswer: 0,
+  explanation: "Primary consumers (herbivores) occupy the second trophic level, feeding directly on producers (plants and other autotrophs) at the first trophic level. Secondary consumers (carnivores that eat herbivores) occupy the third trophic level."
+},
+{
+  id: 51,
+  question: "A plant cell is placed in a hypertonic solution. What will happen to the cell?",
+  options: [
+    "It will plasmolyze",
+    "It will become turgid",
+    "It will burst",
+    "It will remain unchanged"
+  ],
+  correctAnswer: 0,
+  explanation: "In a hypertonic solution (higher solute concentration outside the cell), water will move out of the plant cell by osmosis, causing the plasma membrane to pull away from the cell wall, a process called plasmolysis."
+},
+{
+  id: 52,
+  question: "Which of the following represents an example of analogous structures?",
+  options: [
+    "Wings of birds and insects",
+    "Human arm and whale flipper",
+    "Bat wing and human hand",
+    "Legs of dogs and cats"
+  ],
+  correctAnswer: 0,
+  explanation: "Analogous structures perform similar functions but have different evolutionary origins and underlying structures. Bird wings (modified forelimbs) and insect wings (outgrowths of exoskeleton) both enable flight but evolved independently, representing convergent evolution."
+},
+{
+  id: 53,
+  question: "During protein synthesis, what is the function of the start codon AUG?",
+  options: [
+    "Initiate translation and code for methionine",
+    "Terminate translation",
+    "Code for alanine",
+    "Signal RNA splicing"
+  ],
+  correctAnswer: 0,
+  explanation: "The AUG codon serves as the start codon in mRNA, signaling the beginning of translation and coding for the amino acid methionine, which is usually the first amino acid in most polypeptide chains."
+},
+{
+  id: 54,
+  question: "What is the primary role of decomposers in an ecosystem?",
+  options: [
+    "Break down dead organic matter",
+    "Produce oxygen through photosynthesis",
+    "Consume herbivores",
+    "Fix atmospheric nitrogen"
+  ],
+  correctAnswer: 0,
+  explanation: "Decomposers such as bacteria and fungi break down dead organisms and waste products, releasing nutrients back into the environment for reuse by producers, thus playing a crucial role in nutrient cycling within ecosystems."
+},
+{
+  id: 55,
+  question: "Which process describes the production of gametes in sexually reproducing organisms?",
+  options: [
+    "Meiosis",
+    "Mitosis",
+    "Binary fission",
+    "Budding"
+  ],
+  correctAnswer: 0,
+  explanation: "Meiosis is a specialized type of cell division that reduces the chromosome number by half to produce haploid gametes (sperm and egg cells) in sexually reproducing organisms, ensuring genetic diversity through crossing over and independent assortment."
+},
+{
+  id: 56,
+  question: "What is the function of the endocrine system?",
+  options: [
+    "Produce and secrete hormones",
+    "Transport oxygen to cells",
+    "Filter blood and remove wastes",
+    "Provide structural support"
+  ],
+  correctAnswer: 0,
+  explanation: "The endocrine system consists of glands that produce and secrete hormones directly into the bloodstream to regulate various bodily functions including growth, metabolism, reproduction, and response to stress."
+},
+{
+  id: 57,
+  question: "In a DNA molecule, if 20% of the bases are adenine, what percentage are guanine?",
+  options: [
+    "30%",
+    "20%",
+    "40%",
+    "10%"
+  ],
+  correctAnswer: 0,
+  explanation: "According to Chargaff's rules, adenine pairs with thymine (A=T) and guanine pairs with cytosine (G=C). If A=20%, then T=20%, leaving 60% for G+C. Since G=C, guanine must be 30% of the bases."
+},
+{
+  id: 58,
+  question: "Which cellular structure is responsible for intracellular transport?",
+  options: [
+    "Endoplasmic reticulum",
+    "Nucleolus",
+    "Centriole",
+    "Vacuole"
+  ],
+  correctAnswer: 0,
+  explanation: "The endoplasmic reticulum, particularly the smooth ER, forms a network of membranes throughout the cytoplasm that serves as a transport system for molecules within the cell, in addition to its roles in lipid synthesis and detoxification."
+},
+{
+  id: 59,
+  question: "What is the primary function of the respiratory system?",
+  options: [
+    "Exchange gases with the environment",
+    "Pump blood throughout the body",
+    "Digest and absorb nutrients",
+    "Filter blood and produce urine"
+  ],
+  correctAnswer: 0,
+  explanation: "The respiratory system is responsible for gas exchange, taking in oxygen from the environment and releasing carbon dioxide waste. This occurs primarily in the alveoli of the lungs where oxygen diffuses into the blood and carbon dioxide diffuses out."
+},
+{
+  id: 60,
+  question: "Which process describes the evolution of similar characteristics in unrelated species?",
+  options: [
+    "Convergent evolution",
+    "Divergent evolution",
+    "Adaptive radiation",
+    "Coevolution"
+  ],
+  correctAnswer: 0,
+  explanation: "Convergent evolution occurs when unrelated species develop similar traits or adaptations in response to similar environmental pressures, resulting in analogous structures like the wings of birds and insects or the streamlined bodies of dolphins and sharks."
+},
+{
+  id: 61,
+  question: "What is the role of the spindle fibers during cell division?",
+  options: [
+    "Separate chromosomes",
+    "Replicate DNA",
+    "Form the nuclear envelope",
+    "Divide the cytoplasm"
+  ],
+  correctAnswer: 0,
+  explanation: "Spindle fibers, composed of microtubules, attach to chromosomes at their centromeres during cell division and pull sister chromatids apart to opposite poles of the cell, ensuring each daughter cell receives the correct number of chromosomes."
+},
+{
+  id: 62,
+  question: "In a dihybrid cross between two heterozygous individuals (RrYy × RrYy), what is the expected phenotypic ratio?",
+  options: [
+    "9:3:3:1",
+    "3:1",
+    "1:2:1",
+    "1:1:1:1"
+  ],
+  correctAnswer: 0,
+  explanation: "A dihybrid cross between two heterozygous individuals (RrYy × RrYy) produces a 9:3:3:1 phenotypic ratio in the offspring: 9 with both dominant traits, 3 with first dominant and second recessive, 3 with first recessive and second dominant, and 1 with both recessive traits."
+},
+{
+  id: 63,
+  question: "What is the primary function of the liver?",
+  options: [
+    "Detoxification and metabolism",
+    "Pump blood",
+    "Filter urine",
+    "Absorb nutrients"
+  ],
+  correctAnswer: 0,
+  explanation: "The liver performs numerous vital functions including detoxification of harmful substances, metabolism of nutrients, production of bile for fat digestion, storage of glycogen and vitamins, and synthesis of blood proteins like albumin and clotting factors."
+},
+{
+  id: 64,
+  question: "Which process describes the uptake of large particles by a cell through membrane invagination?",
+  options: [
+    "Phagocytosis",
+    "Pinocytosis",
+    "Osmosis",
+    "Facilitated diffusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Phagocytosis is a type of endocytosis where cells engulf large particles such as bacteria or cellular debris by extending their plasma membrane around the particle and forming a phagocytic vesicle, which is then internalized."
+},
+{
+  id: 65,
+  question: "What is the role of anticodons in protein synthesis?",
+  options: [
+    "Base pair with mRNA codons",
+    "Carry amino acids",
+    "Form peptide bonds",
+    "Initiate transcription"
+  ],
+  correctAnswer: 0,
+  explanation: "Anticodons are three-nucleotide sequences on tRNA molecules that base-pair with complementary codons on mRNA during translation, ensuring that the correct amino acid is incorporated into the growing polypeptide chain at the ribosome."
+},
+{
+  id: 66,
+  question: "Which biome has the highest biodiversity?",
+  options: [
+    "Tropical rainforest",
+    "Temperate forest",
+    "Desert",
+    "Tundra"
+  ],
+  correctAnswer: 0,
+  explanation: "Tropical rainforests have the highest biodiversity of any terrestrial biome due to stable year-round temperatures, high rainfall, and complex habitat structure, supporting an enormous variety of plant and animal species, many of which are endemic."
+},
+{
+  id: 67,
+  question: "What is the function of the contractile vacuole in freshwater protists?",
+  options: [
+    "Regulate water balance",
+    "Store food",
+    "Perform photosynthesis",
+    "Reproduce asexually"
+  ],
+  correctAnswer: 0,
+  explanation: "Contractile vacuoles in freshwater protists actively pump excess water out of the cell to maintain osmotic balance, preventing the cell from bursting in hypotonic environments where water constantly enters by osmosis."
+},
+{
+  id: 68,
+  question: "In cellular respiration, where does the Krebs cycle occur?",
+  options: [
+    "Mitochondrial matrix",
+    "Cytoplasm",
+    "Inner mitochondrial membrane",
+    "Nucleus"
+  ],
+  correctAnswer: 0,
+  explanation: "The Krebs cycle (citric acid cycle) takes place in the mitochondrial matrix, where it completes the oxidation of acetyl-CoA derived from pyruvate, producing ATP, NADH, FADH2, and carbon dioxide as waste products."
+},
+{
+  id: 69,
+  question: "What is the primary function of the small intestine?",
+  options: [
+    "Nutrient absorption",
+    "Water absorption",
+    "Food storage",
+    "Waste elimination"
+  ],
+  correctAnswer: 0,
+  explanation: "The small intestine is specialized for nutrient absorption, with its extensive length, circular folds, villi, and microvilli dramatically increasing surface area for efficient absorption of digested carbohydrates, proteins, lipids, vitamins, and minerals."
+},
+{
+  id: 70,
+  question: "Which process describes the random change in allele frequencies in a population?",
+  options: [
+    "Genetic drift",
+    "Natural selection",
+    "Gene flow",
+    "Mutation"
+  ],
+  correctAnswer: 0,
+  explanation: "Genetic drift is the random fluctuation of allele frequencies in a population from generation to generation due to chance events, which has a greater effect in small populations and can lead to the loss of genetic variation."
+},
+{
+  id: 71,
+  question: "What is the role of helicase in DNA replication?",
+  options: [
+    "Unwind DNA double helix",
+    "Add nucleotides to growing strand",
+    "Join Okazaki fragments",
+    "Proofread DNA sequence"
+  ],
+  correctAnswer: 0,
+  explanation: "Helicase is the enzyme that unwinds the DNA double helix by breaking hydrogen bonds between complementary bases, creating two single-stranded templates for replication and forming a replication fork where DNA synthesis can occur."
+},
+{
+  id: 72,
+  question: "In photosynthesis, what is the primary function of the Calvin cycle?",
+  options: [
+    "Fix carbon dioxide into organic molecules",
+    "Capture light energy",
+    "Split water molecules",
+    "Produce oxygen"
+  ],
+  correctAnswer: 0,
+  explanation: "The Calvin cycle (light-independent reactions) uses ATP and NADPH from the light-dependent reactions to fix carbon dioxide into organic molecules, ultimately producing glucose and other carbohydrates through carbon fixation, reduction, and regeneration phases."
+},
+{
+  id: 73,
+  question: "Which blood cells are responsible for immune defense?",
+  options: [
+    "White blood cells",
+    "Red blood cells",
+    "Platelets",
+    "Plasma cells"
+  ],
+  correctAnswer: 0,
+  explanation: "White blood cells (leukocytes) are responsible for immune defense, including phagocytosis of pathogens, production of antibodies, and coordination of immune responses. Red blood cells carry oxygen, platelets aid clotting, and plasma is the liquid component of blood."
+},
+{
+  id: 74,
+  question: "What is the primary function of the pancreas?",
+  options: [
+    "Produce digestive enzymes and hormones",
+    "Filter blood",
+    "Store bile",
+    "Pump blood"
+  ],
+  correctAnswer: 0,
+  explanation: "The pancreas has both exocrine functions (producing digestive enzymes like amylase, lipase, and proteases that are secreted into the small intestine) and endocrine functions (producing hormones like insulin and glucagon that regulate blood sugar levels)."
+},
+{
+  id: 75,
+  question: "In ecology, what does carrying capacity refer to?",
+  options: [
+    "Maximum population size an environment can sustain",
+    "Rate of population growth",
+    "Number of species in an ecosystem",
+    "Amount of resources available"
+  ],
+  correctAnswer: 0,
+  explanation: "Carrying capacity is the maximum number of individuals of a species that an environment can support indefinitely based on available resources like food, water, space, and shelter, without causing environmental degradation."
+},
+{
+  id: 76,
+  question: "Which process describes the movement of substances into a cell via vesicles?",
+  options: [
+    "Endocytosis",
+    "Exocytosis",
+    "Osmosis",
+    "Facilitated diffusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Endocytosis is an active transport process where cells take in substances by engulfing them with their plasma membrane, forming vesicles that move the materials into the cell. This includes phagocytosis (solids) and pinocytosis (liquids)."
+},
+{
+  id: 77,
+  question: "What is the role of DNA ligase in DNA replication?",
+  options: [
+    "Join Okazaki fragments",
+    "Unwind DNA double helix",
+    "Add nucleotides to growing strand",
+    "Proofread DNA sequence"
+  ],
+  correctAnswer: 0,
+  explanation: "DNA ligase joins the Okazaki fragments on the lagging strand by catalyzing the formation of phosphodiester bonds between adjacent nucleotides, creating a continuous DNA strand after the RNA primers have been removed and replaced."
+},
+{
+  id: 78,
+  question: "In a population genetics context, what is the Hardy-Weinberg equilibrium?",
+  options: [
+    "Stable allele frequencies in non-evolving population",
+    "Constant population growth rate",
+    "Balance between mutation and selection",
+    "Equal distribution of genotypes"
+  ],
+  correctAnswer: 0,
+  explanation: "The Hardy-Weinberg principle states that allele and genotype frequencies in a population will remain constant from generation to generation in the absence of evolutionary influences (mutation, selection, gene flow, genetic drift, and non-random mating)."
+},
+{
+  id: 79,
+  question: "What is the primary function of the thyroid gland?",
+  options: [
+    "Regulate metabolism",
+    "Control blood calcium levels",
+    "Produce insulin",
+    "Regulate sleep cycles"
+  ],
+  correctAnswer: 0,
+  explanation: "The thyroid gland produces thyroid hormones (T3 and T4) that regulate metabolic rate, body temperature, growth, development, and energy production throughout the body, playing a crucial role in overall metabolic control."
+},
+{
+  id: 80,
+  question: "Which process describes the conversion of nitrogen gas to ammonia?",
+  options: [
+    "Nitrogen fixation",
+    "Nitrification",
+    "Denitrification",
+    "Ammonification"
+  ],
+  correctAnswer: 0,
+  explanation: "Nitrogen fixation is the process where certain bacteria (and some archaea) convert atmospheric nitrogen gas (N2) into ammonia (NH3), making nitrogen available to plants and ultimately entering the food chain. This can occur through symbiotic relationships (like Rhizobium with legumes) or free-living bacteria."
+},
+{
+  id: 81,
+  question: "A cell has 8 chromosomes during G1 phase. After mitosis and cytokinesis, how many chromosomes will each daughter cell have?",
+  options: [
+    "8",
+    "4",
+    "16",
+    "32"
+  ],
+  correctAnswer: 0,
+  explanation: "During mitosis, chromosomes replicate during S phase but the sister chromatids are separated during anaphase, resulting in each daughter cell receiving the same number of chromosomes as the original parent cell (8 chromosomes in each daughter cell)."
+},
+{
+  id: 82,
+  question: "Which of the following represents a density-dependent limiting factor in population ecology?",
+  options: [
+    "Competition for resources",
+    "Natural disaster",
+    "Climate change",
+    "Pollution"
+  ],
+  correctAnswer: 0,
+  explanation: "Density-dependent factors intensify as population density increases, including competition for limited resources, predation, disease transmission, and parasitism. Density-independent factors like natural disasters affect populations regardless of their density."
+},
+{
+  id: 83,
+  question: "What is the function of the centromere in chromosome structure?",
+  options: [
+    "Attachment site for spindle fibers",
+    "Code for specific proteins",
+    "Initiate DNA replication",
+    "Protect chromosome ends"
+  ],
+  correctAnswer: 0,
+  explanation: "The centromere is the specialized region of a chromosome where sister chromatids are joined and where spindle fibers attach during cell division, enabling proper chromosome segregation to daughter cells."
+},
+{
+  id: 84,
+  question: "In protein structure, what level involves the sequence of amino acids?",
+  options: [
+    "Primary structure",
+    "Secondary structure",
+    "Tertiary structure",
+    "Quaternary structure"
+  ],
+  correctAnswer: 0,
+  explanation: "Primary structure refers to the linear sequence of amino acids in a polypeptide chain, determined by the genetic code. This sequence ultimately dictates how the protein will fold into its functional three-dimensional shape."
+},
+{
+  id: 85,
+  question: "What is the role of bile in digestion?",
+  options: [
+    "Emulsify fats",
+    "Break down proteins",
+    "Digest carbohydrates",
+    "Neutralize stomach acid"
+  ],
+  correctAnswer: 0,
+  explanation: "Bile, produced by the liver and stored in the gallbladder, emulsifies fats by breaking large fat globules into smaller droplets, increasing the surface area for lipase enzymes to act upon, thereby enhancing fat digestion and absorption."
+},
+{
+  id: 86,
+  question: "Which process describes the movement of genes between populations?",
+  options: [
+    "Gene flow",
+    "Genetic drift",
+    "Mutation",
+    "Natural selection"
+  ],
+  correctAnswer: 0,
+  explanation: "Gene flow is the transfer of genetic material from one population to another through migration or gamete dispersal, which can introduce new alleles into populations and reduce genetic differences between populations over time."
+},
+{
+  id: 87,
+  question: "What is the function of the myelin sheath in nerve cells?",
+  options: [
+    "Increase speed of nerve impulse conduction",
+    "Produce neurotransmitters",
+    "Store genetic information",
+    "Provide structural support"
+  ],
+  correctAnswer: 0,
+  explanation: "The myelin sheath is a fatty insulating layer around axons that speeds up nerve impulse conduction through saltatory conduction, where the action potential jumps between nodes of Ranvier rather than traveling continuously along the axon."
+},
+{
+  id: 88,
+  question: "In ecological succession, what are pioneer species?",
+  options: [
+    "First organisms to colonize barren area",
+    "Top predators in food chain",
+    "Species that indicate environmental quality",
+    "Longest-lived species in community"
+  ],
+  correctAnswer: 0,
+  explanation: "Pioneer species are the first organisms to colonize a previously barren or disturbed area in primary succession. They are typically hardy species like lichens and mosses that can tolerate harsh conditions and begin soil formation."
+},
+{
+  id: 89,
+  question: "What is the role of restriction enzymes in genetic engineering?",
+  options: [
+    "Cut DNA at specific sequences",
+    "Join DNA fragments together",
+    "Amplify DNA sequences",
+    "Sequence DNA molecules"
+  ],
+  correctAnswer: 0,
+  explanation: "Restriction enzymes (restriction endonucleases) recognize specific DNA sequences and cut the DNA at or near these sites, creating fragments with sticky ends that can be joined with other DNA fragments, making them essential tools for recombinant DNA technology."
+},
+{
+  id: 90,
+  question: "Which process describes the production of RNA from DNA?",
+  options: [
+    "Transcription",
+    "Translation",
+    "Replication",
+    "Transformation"
+  ],
+  correctAnswer: 0,
+  explanation: "Transcription is the process where RNA polymerase synthesizes an RNA molecule complementary to a DNA template strand, producing messenger RNA (mRNA), transfer RNA (tRNA), or ribosomal RNA (rRNA) depending on the gene being transcribed."
+},
+{
+  id: 91,
+  question: "What is the primary function of the adrenal glands?",
+  options: [
+    "Produce stress hormones",
+    "Regulate blood sugar",
+    "Control calcium levels",
+    "Produce digestive enzymes"
+  ],
+  correctAnswer: 0,
+  explanation: "The adrenal glands produce hormones involved in stress response (cortisol, epinephrine), salt and water balance (aldosterone), and secondary sexual characteristics (androgens), playing key roles in the body's adaptation to physical and emotional stress."
+},
+{
+  id: 92,
+  question: "In a predator-prey relationship, what typically happens when prey population increases?",
+  options: [
+    "Predator population increases after a time lag",
+    "Predator population decreases immediately",
+    "Prey population continues increasing indefinitely",
+    "Predator population remains unchanged"
+  ],
+  correctAnswer: 0,
+  explanation: "In classic predator-prey cycles, an increase in prey population provides more food for predators, leading to a subsequent increase in predator population after a time lag. This increased predation then causes the prey population to decline, followed by a decline in predators."
+},
+{
+  id: 93,
+  question: "What is the function of the Casparian strip in plant roots?",
+  options: [
+    "Control water and mineral entry into vascular tissue",
+    "Store starch",
+    "Provide structural support",
+    "Produce root hairs"
+  ],
+  correctAnswer: 0,
+  explanation: "The Casparian strip is a waterproof band of suberin in the endodermal cell walls of plant roots that forces water and dissolved minerals to pass through the cells rather than between them, allowing selective control of substances entering the vascular tissue."
+},
+{
+  id: 94,
+  question: "Which process describes the conversion of ammonia to nitrate?",
+  options: [
+    "Nitrification",
+    "Nitrogen fixation",
+    "Denitrification",
+    "Ammonification"
+  ],
+  correctAnswer: 0,
+  explanation: "Nitrification is the two-step process where soil bacteria convert ammonia (NH3) first to nitrite (NO2-) and then to nitrate (NO3-), which is the form most readily absorbed by plant roots for protein synthesis."
+},
+{
+  id: 95,
+  question: "What is the role of the sarcoplasmic reticulum in muscle cells?",
+  options: [
+    "Store and release calcium ions",
+    "Produce ATP",
+    "Synthesize muscle proteins",
+    "Conduct nerve impulses"
+  ],
+  correctAnswer: 0,
+  explanation: "The sarcoplasmic reticulum is a specialized type of endoplasmic reticulum in muscle cells that stores calcium ions and releases them in response to neural stimulation, triggering muscle contraction by allowing calcium to bind to troponin."
+},
+{
+  id: 96,
+  question: "In molecular biology, what is a plasmid?",
+  options: [
+    "Small circular DNA molecule in bacteria",
+    "Protein that cuts DNA",
+    "Enzyme that joins DNA fragments",
+    "Virus that infects bacteria"
+  ],
+  correctAnswer: 0,
+  explanation: "Plasmids are small, circular, double-stranded DNA molecules that exist independently of the bacterial chromosome. They often carry genes for antibiotic resistance or other advantageous traits and are widely used as vectors in genetic engineering."
+},
+{
+  id: 97,
+  question: "What is the primary function of the cuticle in plants?",
+  options: [
+    "Reduce water loss",
+    "Capture light energy",
+    "Exchange gases",
+    "Absorb minerals"
+  ],
+  correctAnswer: 0,
+  explanation: "The cuticle is a waxy, waterproof layer covering the epidermis of aerial plant parts that reduces water loss through transpiration and provides protection against pathogens, UV radiation, and physical damage."
+},
+{
+  id: 98,
+  question: "Which process describes the conversion of nitrate to nitrogen gas?",
+  options: [
+    "Denitrification",
+    "Nitrogen fixation",
+    "Nitrification",
+    "Ammonification"
+  ],
+  correctAnswer: 0,
+  explanation: "Denitrification is the process where certain bacteria convert nitrate (NO3-) back to nitrogen gas (N2), which returns to the atmosphere and completes the nitrogen cycle. This occurs under anaerobic conditions in waterlogged soils or sediments."
+},
+{
+  id: 99,
+  question: "What is the function of the corpus callosum in the brain?",
+  options: [
+    "Connect left and right cerebral hemispheres",
+    "Control balance and coordination",
+    "Regulate body temperature",
+    "Process visual information"
+  ],
+  correctAnswer: 0,
+  explanation: "The corpus callosum is a thick bundle of nerve fibers that connects the left and right cerebral hemispheres, allowing communication and coordination between the two sides of the brain and integration of sensory and motor functions."
+},
+{
+  id: 100,
+  question: "In ecology, what is a keystone species?",
+  options: [
+    "Species with disproportionate effect on ecosystem",
+    "Most abundant species",
+    "Largest species in community",
+    "Species at top of food chain"
+  ],
+  correctAnswer: 0,
+  explanation: "A keystone species has a disproportionately large effect on its ecosystem relative to its abundance, often playing a critical role in maintaining community structure and biodiversity, such as sea stars that prey on mussels or beavers that create wetlands."
+},
+{
+  id: 101,
+  question: "What is the primary function of the nephron in the kidney?",
+  options: [
+    "Filter blood and form urine",
+    "Produce hormones",
+    "Store urine",
+    "Regulate blood pressure"
+  ],
+  correctAnswer: 0,
+  explanation: "Nephrons are the functional units of the kidney that filter blood, reabsorb essential substances, and secrete waste products to form urine. Each nephron consists of a glomerulus and renal tubule where filtration, reabsorption, and secretion occur."
+},
+{
+  id: 102,
+  question: "Which process describes the movement of sucrose in phloem?",
+  options: [
+    "Translocation",
+    "Transpiration",
+    "Translation",
+    "Transformation"
+  ],
+  correctAnswer: 0,
+  explanation: "Translocation is the process of transporting organic nutrients (primarily sucrose) through the phloem from sources (like mature leaves) to sinks (like growing roots, fruits, and storage organs) according to the pressure flow hypothesis."
+},
+{
+  id: 103,
+  question: "What is the role of reverse transcriptase in retroviruses?",
+  options: [
+    "Synthesize DNA from RNA template",
+    "Translate mRNA into protein",
+    "Replicate viral DNA",
+    "Integrate viral DNA into host genome"
+  ],
+  correctAnswer: 0,
+  explanation: "Reverse transcriptase is an enzyme used by retroviruses (like HIV) to synthesize DNA from an RNA template, creating a DNA copy of the viral genome that can then integrate into the host cell's chromosomes and be transcribed."
+},
+{
+  id: 104,
+  question: "In population genetics, what does the term 'fitness' refer to?",
+  options: [
+    "Relative reproductive success",
+    "Physical strength and health",
+    "Life span of individuals",
+    "Resistance to disease"
+  ],
+  correctAnswer: 0,
+  explanation: "In evolutionary biology, fitness refers to an organism's relative ability to survive, reproduce, and pass its genes to the next generation in a specific environment. It is measured by reproductive success, not physical condition."
+},
+{
+  id: 105,
+  question: "What is the function of the thylakoid membranes in chloroplasts?",
+  options: [
+    "Site of light-dependent reactions",
+    "Storage of starch",
+    "Site of Calvin cycle",
+    "Production of ATP through respiration"
+  ],
+  correctAnswer: 0,
+  explanation: "Thylakoid membranes in chloroplasts contain chlorophyll and other pigments that capture light energy during photosynthesis. They house the photosystems and electron transport chain where light-dependent reactions occur, producing ATP and NADPH."
+},
+{
+  id: 106,
+  question: "Which process describes the development of similar characteristics in related species?",
+  options: [
+    "Divergent evolution",
+    "Convergent evolution",
+    "Parallel evolution",
+    "Coevolution"
+  ],
+  correctAnswer: 0,
+  explanation: "Divergent evolution occurs when related species evolve different traits, often due to adaptation to different environments, resulting in homologous structures that share a common evolutionary origin but may serve different functions."
+},
+{
+  id: 107,
+  question: "What is the role of the notochord in chordate development?",
+  options: [
+    "Provide axial support",
+    "Form the nervous system",
+    "Develop into digestive system",
+    "Create circulatory system"
+  ],
+  correctAnswer: 0,
+  explanation: "The notochord is a flexible, rod-like structure that provides axial support in all chordate embryos and plays a crucial role in organizing the development of the nervous system. In vertebrates, it is largely replaced by the vertebral column during development."
+},
+{
+  id: 108,
+  question: "In molecular biology, what is a promoter?",
+  options: [
+    "DNA sequence where transcription begins",
+    "Enzyme that initiates replication",
+    "Protein that enhances transcription",
+    "Sequence that terminates translation"
+  ],
+  correctAnswer: 0,
+  explanation: "A promoter is a specific DNA sequence where RNA polymerase binds to initiate transcription. It determines which DNA strand will be transcribed, the direction of transcription, and often regulates the rate of gene expression."
+},
+{
+  id: 109,
+  question: "What is the primary function of the semicircular canals in the ear?",
+  options: [
+    "Detect rotational movement and balance",
+    "Amplify sound vibrations",
+    "Convert sound to nerve impulses",
+    "Maintain air pressure equilibrium"
+  ],
+  correctAnswer: 0,
+  explanation: "The semicircular canals in the inner ear contain fluid and hair cells that detect rotational movements of the head, providing information about balance and spatial orientation to help maintain equilibrium and coordinate eye movements."
+},
+{
+  id: 110,
+  question: "Which process describes the evolution of two species in response to each other?",
+  options: [
+    "Coevolution",
+    "Convergent evolution",
+    "Adaptive radiation",
+    "Divergent evolution"
+  ],
+  correctAnswer: 0,
+  explanation: "Coevolution occurs when two or more species reciprocally affect each other's evolution through close ecological relationships, such as predator-prey interactions, host-parasite relationships, or mutualistic partnerships like flowers and their pollinators."
+},
+{
+  id: 111,
+  question: "What is the function of the alveoli in the respiratory system?",
+  options: [
+    "Site of gas exchange",
+    "Warm and humidify air",
+    "Produce surfactant",
+    "Trap foreign particles"
+  ],
+  correctAnswer: 0,
+  explanation: "Alveoli are tiny, thin-walled air sacs in the lungs where gas exchange occurs between air and blood. Their enormous surface area, thin membranes, and rich capillary network facilitate efficient diffusion of oxygen into the blood and carbon dioxide out."
+},
+{
+  id: 112,
+  question: "In genetics, what is epistasis?",
+  options: [
+    "Interaction where one gene affects expression of another",
+    "Gene with multiple effects",
+    "Presence of multiple alleles",
+    "Inheritance of linked genes"
+  ],
+  correctAnswer: 0,
+  explanation: "Epistasis occurs when the expression of one gene is affected by another gene at a different locus. For example, in Labrador retrievers, one gene determines pigment color while another determines whether pigment is deposited in the hair."
+},
+{
+  id: 113,
+  question: "What is the role of the zona pellucida in mammalian reproduction?",
+  options: [
+    "Protective layer around egg cell",
+    "Site of sperm production",
+    "Hormone-producing structure",
+    "Implantation site for embryo"
+  ],
+  correctAnswer: 0,
+  explanation: "The zona pellucida is a glycoprotein layer surrounding the mammalian egg that plays crucial roles in sperm binding during fertilization, preventing polyspermy, and protecting the early embryo until implantation occurs."
+},
+{
+  id: 114,
+  question: "Which process describes the movement of water through a plant from roots to leaves?",
+  options: [
+    "Transpiration",
+    "Translocation",
+    "Translation",
+    "Transformation"
+  ],
+  correctAnswer: 0,
+  explanation: "Transpiration is the process where water is absorbed by roots, moves upward through xylem vessels, and evaporates from leaf surfaces, driven primarily by cohesion-tension forces created by water evaporation from stomata."
+},
+{
+  id: 115,
+  question: "What is the function of the hypocotyl in plant embryo development?",
+  options: [
+    "Develop into lower stem and roots",
+    "Form the seed leaves",
+    "Become the shoot tip",
+    "Store food reserves"
+  ],
+  correctAnswer: 0,
+  explanation: "The hypocotyl is the embryonic region between the cotyledons (seed leaves) and the radicle (embryonic root) that develops into the lower part of the stem and connects the root system to the shoot system in germinating seedlings."
+},
+{
+  id: 116,
+  question: "In immunology, what is the primary function of antibodies?",
+  options: [
+    "Recognize and bind to specific antigens",
+    "Engulf and destroy pathogens",
+    "Produce inflammatory responses",
+    "Coordinate immune cell communication"
+  ],
+  correctAnswer: 0,
+  explanation: "Antibodies (immunoglobulins) are proteins produced by B cells that specifically recognize and bind to antigens on pathogens, marking them for destruction by other immune cells through neutralization, opsonization, or complement activation."
+},
+{
+  id: 117,
+  question: "What is the role of the endosperm in angiosperm seeds?",
+  options: [
+    "Provide nutrition for developing embryo",
+    "Protect the embryo",
+    "Facilitate seed dispersal",
+    "Produce hormones for germination"
+  ],
+  correctAnswer: 0,
+  explanation: "The endosperm is a nutrient-rich tissue formed during double fertilization in angiosperms that provides nourishment for the developing embryo, typically containing starch, proteins, and lipids that support early seedling growth."
+},
+{
+  id: 118,
+  question: "Which process describes the formation of new species?",
+  options: [
+    "Speciation",
+    "Evolution",
+    "Adaptation",
+    "Diversification"
+  ],
+  correctAnswer: 0,
+  explanation: "Speciation is the evolutionary process by which populations evolve to become distinct species, typically through reproductive isolation that prevents gene flow between populations, allowing them to diverge genetically over time."
+},
+{
+  id: 119,
+  question: "What is the function of the pyloric sphincter in the digestive system?",
+  options: [
+    "Control passage of chyme from stomach to small intestine",
+    "Regulate food entry into stomach",
+    "Control bile release into duodenum",
+    "Prevent reflux from esophagus"
+  ],
+  correctAnswer: 0,
+  explanation: "The pyloric sphincter is a muscular valve between the stomach and duodenum that regulates the controlled release of partially digested food (chyme) from the stomach into the small intestine for further digestion and absorption."
+},
+{
+  id: 120,
+  question: "In molecular biology, what is a operon?",
+  options: [
+    "Cluster of genes with related functions under common control",
+    "Enzyme that cuts DNA",
+    "Protein that regulates gene expression",
+    "Sequence that terminates transcription"
+  ],
+  correctAnswer: 0,
+  explanation: "An operon is a functional unit of DNA containing a cluster of genes under the control of a single promoter, allowing coordinated expression of related genes. The lac operon in E. coli is a classic example that regulates lactose metabolism."
+},
+{
+  id: 121,
+  question: "What is the primary function of the corpus luteum?",
+  options: [
+    "Produce progesterone to maintain pregnancy",
+    "Produce eggs",
+    "Secrete estrogen",
+    "Form the placenta"
+  ],
+  correctAnswer: 0,
+  explanation: "The corpus luteum is a temporary endocrine structure formed from the ovarian follicle after ovulation that secretes progesterone and some estrogen to prepare and maintain the uterine lining for potential pregnancy."
+},
+{
+  id: 122,
+  question: "Which process describes the uptake of water and minerals by plant roots?",
+  options: [
+    "Absorption",
+    "Transpiration",
+    "Translocation",
+    "Assimilation"
+  ],
+  correctAnswer: 0,
+  explanation: "Absorption is the process where plant roots take up water and dissolved minerals from the soil, primarily through root hairs, which greatly increase the surface area for efficient uptake of these essential resources."
+},
+{
+  id: 123,
+  question: "What is the role of telomeres in chromosome structure?",
+  options: [
+    "Protect chromosome ends from deterioration",
+    "Initiate DNA replication",
+    "Attach spindle fibers during division",
+    "Code for essential proteins"
+  ],
+  correctAnswer: 0,
+  explanation: "Telomeres are repetitive DNA sequences at the ends of chromosomes that protect them from deterioration, fusion with other chromosomes, and being recognized as broken DNA. They shorten with each cell division and play a role in cellular aging."
+},
+{
+  id: 124,
+  question: "In ecology, what is primary productivity?",
+  options: [
+    "Rate at which producers create organic matter",
+    "Total biomass of producers",
+    "Energy transferred between trophic levels",
+    "Rate of nutrient cycling"
+  ],
+  correctAnswer: 0,
+  explanation: "Primary productivity is the rate at which producers (mainly plants and photosynthetic organisms) convert solar energy into chemical energy through photosynthesis, producing organic compounds that form the base of the food web."
+},
+{
+  id: 125,
+  question: "What is the function of the vestibular system in the inner ear?",
+  options: [
+    "Maintain balance and spatial orientation",
+    "Detect sound vibrations",
+    "Amplify sound waves",
+    "Produce ear wax"
+  ],
+  correctAnswer: 0,
+  explanation: "The vestibular system in the inner ear, consisting of the semicircular canals and otolith organs, detects head position, movement, and acceleration, providing crucial information for maintaining balance, posture, and spatial orientation."
+},
+{
+  id: 126,
+  question: "Which process describes the development of an individual from egg to adult?",
+  options: [
+    "Ontogeny",
+    "Phylogeny",
+    "Evolution",
+    "Metamorphosis"
+  ],
+  correctAnswer: 0,
+  explanation: "Ontogeny refers to the developmental history of an individual organism from fertilization through its life stages to maturity, encompassing embryonic development, growth, differentiation, and maturation processes."
+},
+{
+  id: 127,
+  question: "What is the role of the acrosome in sperm cells?",
+  options: [
+    "Contains enzymes to penetrate egg",
+    "Provides energy for movement",
+    "Contains genetic material",
+    "Controls sperm direction"
+  ],
+  correctAnswer: 0,
+  explanation: "The acrosome is a cap-like structure at the head of sperm cells containing hydrolytic enzymes that are released during the acrosomal reaction to digest the outer layers of the egg, enabling sperm to penetrate and fertilize the egg."
+},
+{
+  id: 128,
+  question: "In plant physiology, what is phototropism?",
+  options: [
+    "Growth response to light",
+    "Growth response to gravity",
+    "Growth response to touch",
+    "Growth response to water"
+  ],
+  correctAnswer: 0,
+  explanation: "Phototropism is the directional growth of plants in response to light, typically toward light sources (positive phototropism) to maximize light capture for photosynthesis, mediated by the hormone auxin."
+},
+{
+  id: 129,
+  question: "What is the function of the medulla oblongata in the brain?",
+  options: [
+    "Control vital autonomic functions",
+    "Coordinate voluntary movements",
+    "Process sensory information",
+    "Regulate emotions"
+  ],
+  correctAnswer: 0,
+  explanation: "The medulla oblongata is the lowest part of the brainstem that controls essential autonomic functions including heart rate, breathing, blood pressure, and reflexes like swallowing, vomiting, and coughing."
+},
+{
+  id: 130,
+  question: "Which process describes the conversion of light energy to nerve impulses in the eye?",
+  options: [
+    "Phototransduction",
+    "Visual accommodation",
+    "Sensory adaptation",
+    "Neural integration"
+  ],
+  correctAnswer: 0,
+  explanation: "Phototransduction is the process where photoreceptor cells in the retina (rods and cones) convert light energy into electrical signals (nerve impulses) through biochemical reactions involving visual pigments like rhodopsin."
+},
+{
+  id: 131,
+  question: "What is the role of the spindle apparatus in cell division?",
+  options: [
+    "Ensure proper chromosome segregation",
+    "Replicate DNA",
+    "Divide cytoplasm",
+    "Form nuclear envelope"
+  ],
+  correctAnswer: 0,
+  explanation: "The spindle apparatus, composed of microtubules and associated proteins, forms during cell division to attach to chromosomes, align them at the metaphase plate, and separate sister chromatids to opposite poles, ensuring accurate chromosome distribution."
+},
+{
+  id: 132,
+  question: "In genetics, what is a test cross used for?",
+  options: [
+    "Determine genotype of individual with dominant phenotype",
+    "Identify recessive alleles",
+    "Test for genetic disorders",
+    "Determine sex of organism"
+  ],
+  correctAnswer: 0,
+  explanation: "A test cross involves crossing an individual with a dominant phenotype but unknown genotype with a homozygous recessive individual to determine whether the dominant individual is homozygous or heterozygous based on the offspring ratio."
+},
+{
+  id: 133,
+  question: "What is the function of the troponin-tropomyosin complex in muscle contraction?",
+  options: [
+    "Regulate actin-myosin interaction",
+    "Produce ATP for contraction",
+    "Transmit nerve impulses",
+    "Store calcium ions"
+  ],
+  correctAnswer: 0,
+  explanation: "The troponin-tropomyosin complex regulates muscle contraction by blocking myosin binding sites on actin filaments in relaxed muscle. When calcium binds to troponin, the complex moves, exposing binding sites and allowing cross-bridge formation."
+},
+{
+  id: 134,
+  question: "Which process describes the formation of gametes in plants?",
+  options: [
+    "Gametogenesis",
+    "Sporogenesis",
+    "Fertilization",
+    "Pollination"
+  ],
+  correctAnswer: 0,
+  explanation: "Gametogenesis is the process of gamete formation, which in plants occurs within the gametophyte generation through mitosis, producing sperm cells in pollen grains and egg cells within the ovule."
+},
+{
+  id: 135,
+  question: "What is the role of the juxtaglomerular apparatus in kidney function?",
+  options: [
+    "Regulate blood pressure and filtration rate",
+    "Filter blood plasma",
+    "Reabsorb water",
+    "Secrete waste products"
+  ],
+  correctAnswer: 0,
+  explanation: "The juxtaglomerular apparatus, located where the distal convoluted tubule contacts the afferent arteriole, regulates blood pressure and glomerular filtration rate through the renin-angiotensin-aldosterone system and tubuloglomerular feedback."
+},
+{
+  id: 136,
+  question: "In developmental biology, what is induction?",
+  options: [
+    "Process where one cell group influences development of another",
+    "Formation of germ layers",
+    "Cell specialization",
+    "Pattern formation"
+  ],
+  correctAnswer: 0,
+  explanation: "Induction is a developmental process where one group of cells (the inducer) influences the development of adjacent cells (the responder) through chemical signals, playing a crucial role in embryonic patterning and tissue differentiation."
+},
+{
+  id: 137,
+  question: "What is the function of the chorion in embryonic development?",
+  options: [
+    "Form fetal part of placenta",
+    "Protect embryo physically",
+    "Store nutrients",
+    "Produce amniotic fluid"
+  ],
+  correctAnswer: 0,
+  explanation: "The chorion is the outermost extraembryonic membrane that forms the fetal portion of the placenta, facilitating gas exchange, nutrient transport, and waste removal between maternal and fetal circulatory systems."
+},
+{
+  id: 138,
+  question: "Which process describes the movement of ions against their electrochemical gradient?",
+  options: [
+    "Active transport",
+    "Facilitated diffusion",
+    "Osmosis",
+    "Simple diffusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Active transport uses energy (usually ATP) to move ions or molecules against their electrochemical gradient, from areas of lower concentration to higher concentration, maintaining concentration differences crucial for cellular function."
+},
+{
+  id: 139,
+  question: "What is the role of the cambium in plant growth?",
+  options: [
+    "Produce secondary vascular tissue",
+    "Protect the plant",
+    "Store food reserves",
+    "Absorb water and minerals"
+  ],
+  correctAnswer: 0,
+  explanation: "The vascular cambium is a lateral meristem that produces secondary xylem (wood) toward the inside and secondary phloem toward the outside, responsible for secondary growth that increases stem and root diameter in woody plants."
+},
+{
+  id: 140,
+  question: "In population ecology, what is the Allee effect?",
+  options: [
+    "Reduced fitness at low population density",
+    "Increased competition at high density",
+    "Exponential population growth",
+    "Carrying capacity limitation"
+  ],
+  correctAnswer: 0,
+  explanation: "The Allee effect describes a phenomenon where individuals in small populations have reduced fitness and reproductive success due to difficulties in finding mates, cooperative defense, or other positive density-dependent factors."
+},
+{
+  id: 141,
+  question: "What is the function of the foramen ovale in fetal circulation?",
+  options: [
+    "Bypass pulmonary circulation",
+    "Connect aorta and pulmonary artery",
+    "Carry oxygenated blood from placenta",
+    "Return blood to placenta"
+  ],
+  correctAnswer: 0,
+  explanation: "The foramen ovale is an opening between the right and left atria in the fetal heart that allows blood to bypass the non-functional fetal lungs, shunting oxygenated blood directly to the systemic circulation."
+},
+{
+  id: 142,
+  question: "Which process describes the conversion of pyruvate to acetyl-CoA?",
+  options: [
+    "Pyruvate decarboxylation",
+    "Glycolysis",
+    "Krebs cycle",
+    "Fermentation"
+  ],
+  correctAnswer: 0,
+  explanation: "Pyruvate decarboxylation, catalyzed by the pyruvate dehydrogenase complex, converts pyruvate to acetyl-CoA in the mitochondrial matrix, releasing CO2 and producing NADH, linking glycolysis to the Krebs cycle in aerobic respiration."
+},
+{
+  id: 143,
+  question: "What is the role of the zona glomerulosa in the adrenal gland?",
+  options: [
+    "Produce mineralocorticoids",
+    "Produce glucocorticoids",
+    "Produce sex hormones",
+    "Produce catecholamines"
+  ],
+  correctAnswer: 0,
+  explanation: "The zona glomerulosa is the outermost layer of the adrenal cortex that produces mineralocorticoids, primarily aldosterone, which regulates sodium and potassium balance and consequently blood pressure and fluid volume."
+},
+{
+  id: 144,
+  question: "In evolutionary biology, what is sexual selection?",
+  options: [
+    "Selection based on mating advantages",
+    "Selection for survival traits",
+    "Selection by environmental factors",
+    "Selection for cooperative behavior"
+  ],
+  correctAnswer: 0,
+  explanation: "Sexual selection is a form of natural selection based on advantages in mating success rather than survival, leading to traits like elaborate plumage, courtship displays, or weapons that enhance an individual's ability to attract mates or compete for them."
+},
+{
+  id: 145,
+  question: "What is the function of the Haversian system in compact bone?",
+  options: [
+    "Provide structural unit for bone strength",
+    "Produce blood cells",
+    "Store calcium",
+    "Facilitate bone growth"
+  ],
+  correctAnswer: 0,
+  explanation: "Haversian systems (osteons) are the structural units of compact bone, consisting of concentric layers of bone matrix around a central canal containing blood vessels and nerves, providing strength and nutrient delivery to bone tissue."
+},
+{
+  id: 146,
+  question: "Which process describes the movement of phloem sap from source to sink?",
+  options: [
+    "Pressure flow",
+    "Cohesion-tension",
+    "Active transport",
+    "Cytoisis"
+  ],
+  correctAnswer: 0,
+  explanation: "The pressure flow hypothesis explains phloem transport: sugars are actively loaded into sieve tubes at sources, creating high osmotic pressure that drives flow to sinks where sugars are unloaded, with water recycling via xylem."
+},
+{
+  id: 147,
+  question: "What is the role of the mesolimbic pathway in the brain?",
+  options: [
+    "Mediate reward and motivation",
+    "Control motor function",
+    "Process sensory information",
+    "Regulate sleep cycles"
+  ],
+  correctAnswer: 0,
+  explanation: "The mesolimbic pathway, particularly involving dopamine transmission from the ventral tegmental area to the nucleus accumbens, plays a key role in reward, motivation, reinforcement learning, and emotional processing."
+},
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'BIO 101';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

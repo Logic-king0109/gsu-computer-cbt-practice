@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            
+
+{
+  id: 1,
+  question: "The Hausa people are predominantly found in which region of Nigeria?",
+  options: [
+    "Southwest",
+    "Southeast", 
+    "Northwest",
+    "Northeast"
+  ],
+  correctAnswer: 2,
+  explanation: "The Hausa are primarily located in northwestern Nigeria and southern Niger."
+},
+{
+  id: 2,
+  question: "What is the traditional occupation of the Fulani people?",
+  options: [
+    "Fishing",
+    "Trading",
+    "Pastoralism",
+    "Farming"
+  ],
+  correctAnswer: 2,
+  explanation: "The Fulani are traditionally nomadic pastoralists known for cattle herding."
+},
+{
+  id: 3,
+  question: "The Yoruba are mainly found in which Nigerian region?",
+  options: [
+    "North Central",
+    "South West",
+    "South South",
+    "North East"
+  ],
+  correctAnswer: 1,
+  explanation: "The Yoruba ethnic group predominantly inhabits southwestern Nigeria."
+},
+{
+  id: 4,
+  question: "Igbo people are primarily located in which area?",
+  options: [
+    "South East",
+    "South West",
+    "North West",
+    "North East"
+  ],
+  correctAnswer: 0,
+  explanation: "The Igbo people are mainly found in southeastern Nigeria."
+},
+{
+  id: 5,
+  question: "Nigeria was amalgamated in which year?",
+  options: [
+    "1900",
+    "1914",
+    "1960",
+    "1963"
+  ],
+  correctAnswer: 1,
+  explanation: "The amalgamation of Northern and Southern Nigeria occurred in 1914."
+},
+{
+  id: 6,
+  question: "Which British official oversaw Nigeria's amalgamation?",
+  options: [
+    "Lord Lugard",
+    "Sir Arthur Richards",
+    "Sir Hugh Clifford",
+    "Sir John Macpherson"
+  ],
+  correctAnswer: 0,
+  explanation: "Lord Frederick Lugard executed the amalgamation of Nigeria in 1914."
+},
+{
+  id: 7,
+  question: "Colonial rule in Nigeria lasted for about how many years?",
+  options: [
+    "44 years",
+    "60 years",
+    "100 years",
+    "25 years"
+  ],
+  correctAnswer: 0,
+  explanation: "British colonial rule in Nigeria lasted approximately from 1914 to 1960 (46 years)."
+},
+{
+  id: 8,
+  question: "What does the concept of 'people' primarily refer to?",
+  options: [
+    "Population count",
+    "Shared identity and culture",
+    "Geographical location",
+    "Political boundaries"
+  ],
+  correctAnswer: 1,
+  explanation: "The concept of 'people' emphasizes shared identity, culture, and common heritage."
+},
+{
+  id: 9,
+  question: "Culture includes all EXCEPT:",
+  options: [
+    "Language",
+    "Traditions",
+    "Biological traits",
+    "Beliefs"
+  ],
+  correctAnswer: 2,
+  explanation: "Culture encompasses learned behaviors like language and traditions, not biological traits."
+},
+{
+  id: 10,
+  question: "Socialization is the process of:",
+  options: [
+    "Learning cultural norms",
+    "Economic development",
+    "Political campaigning",
+    "Urban planning"
+  ],
+  correctAnswer: 0,
+  explanation: "Socialization involves learning and internalizing societal norms and values."
+},
+{
+  id: 11,
+  question: "Cultism in universities often leads to:",
+  options: [
+    "Academic excellence",
+    "Violence and intimidation",
+    "Cultural festivals",
+    "Sports development"
+  ],
+  correctAnswer: 1,
+  explanation: "Cultism is associated with violence, intimidation and criminal activities on campuses."
+},
+{
+  id: 12,
+  question: "Child abuse does NOT include:",
+  options: [
+    "Proper education",
+    "Physical harm",
+    "Neglect",
+    "Sexual exploitation"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper education is a right, not a form of abuse. Abuse involves harm or neglect."
+},
+{
+  id: 13,
+  question: "Drug abuse typically leads to:",
+  options: [
+    "Improved health",
+    "Addiction and health problems",
+    "Better academic performance",
+    "Stronger family bonds"
+  ],
+  correctAnswer: 1,
+  explanation: "Drug abuse causes addiction, health issues and social problems."
+},
+{
+  id: 14,
+  question: "Political thuggery involves:",
+  options: [
+    "Peaceful protests",
+    "Violence for political goals",
+    "Democratic debates",
+    "Voter education"
+  ],
+  correctAnswer: 1,
+  explanation: "Political thuggery uses violence and intimidation for political objectives."
+},
+{
+  id: 15,
+  question: "Examination malpractice is:",
+  options: [
+    "Cheating in exams",
+    "Proper preparation",
+    "Fair assessment",
+    "Academic excellence"
+  ],
+  correctAnswer: 0,
+  explanation: "Examination malpractice involves cheating or unethical behavior during exams."
+},
+{
+  id: 16,
+  question: "National unity requires:",
+  options: [
+    "Shared values",
+    "Ethnic conflict",
+    "Regional separation",
+    "Cultural elimination"
+  ],
+  correctAnswer: 0,
+  explanation: "National unity thrives on shared values, tolerance and common goals."
+},
+{
+  id: 17,
+  question: "The Nigerian flag has how many colors?",
+  options: [
+    "Two",
+    "Three",
+    "Four",
+    "Five"
+  ],
+  correctAnswer: 0,
+  explanation: "The Nigerian flag has two colors: green and white."
+},
+{
+  id: 18,
+  question: "Nigeria's first constitution was created in:",
+  options: [
+    "1914",
+    "1922",
+    "1960",
+    "1963"
+  ],
+  correctAnswer: 2,
+  explanation: "The Clifford Constitution of 1922 was Nigeria's first constitution."
+},
+{
+  id: 19,
+  question: "Which is a national symbol?",
+  options: [
+    "Coat of Arms",
+    "Ethnic flag",
+    "Regional anthem",
+    "State emblem"
+  ],
+  correctAnswer: 0,
+  explanation: "The Coat of Arms is an official national symbol of Nigeria."
+},
+{
+  id: 20,
+  question: "Socio-political developments include:",
+  options: [
+    "Democratic transitions",
+    "Weather patterns",
+    "Agricultural seasons",
+    "Natural disasters"
+  ],
+  correctAnswer: 0,
+  explanation: "Socio-political developments involve changes in political and social systems."
+},
+{
+  id: 21,
+  question: "Moral reorientation aims to promote:",
+  options: [
+    "Ethical values",
+    "Corruption",
+    "Tribalism",
+    "Violence"
+  ],
+  correctAnswer: 0,
+  explanation: "Moral reorientation focuses on restoring ethical values in society."
+},
+{
+  id: 22,
+  question: "Citizenship can be acquired by:",
+  options: [
+    "Birth",
+    "Travel",
+    "Tourism",
+    "Shopping"
+  ],
+  correctAnswer: 0,
+  explanation: "Citizenship is typically acquired by birth, registration or naturalization."
+},
+{
+  id: 23,
+  question: "Civic responsibilities include:",
+  options: [
+    "Paying taxes",
+    "Avoiding voting",
+    "Breaking laws",
+    "Ignoring community"
+  ],
+  correctAnswer: 0,
+  explanation: "Paying taxes is a fundamental civic responsibility of citizens."
+},
+{
+  id: 24,
+  question: "Nigeria is located in:",
+  options: [
+    "West Africa",
+    "East Africa",
+    "Southern Africa",
+    "North Africa"
+  ],
+  correctAnswer: 0,
+  explanation: "Nigeria is situated in West Africa, bordering the Atlantic Ocean."
+},
+{
+  id: 25,
+  question: "The major river in Nigeria is:",
+  options: [
+    "Niger River",
+    "Congo River",
+    "Nile River",
+    "Zambezi River"
+  ],
+  correctAnswer: 0,
+  explanation: "The Niger River is the principal river flowing through Nigeria."
+},
+{
+  id: 26,
+  question: "Peopling of Nigeria involved:",
+  options: [
+    "Human migrations",
+    "Volcanic eruptions",
+    "Meteor impacts",
+    "Climate change only"
+  ],
+  correctAnswer: 0,
+  explanation: "The peopling of Nigeria occurred through various human migration patterns over centuries."
+},
+{
+  id: 27,
+  question: "Nok culture is known for:",
+  options: [
+    "Terracotta sculptures",
+    "Pyramid building",
+    "Silk production",
+    "Marble architecture"
+  ],
+  correctAnswer: 0,
+  explanation: "The Nok culture is famous for its early terracotta sculptures and iron working."
+},
+{
+  id: 28,
+  question: "Ife Kingdom was renowned for:",
+  options: [
+    "Bronze art",
+    "Salt mining",
+    "Ship building",
+    "Diamond trading"
+  ],
+  correctAnswer: 0,
+  explanation: "The Ife Kingdom is celebrated for its sophisticated bronze and terracotta sculptures."
+},
+{
+  id: 29,
+  question: "Benin Kingdom excelled in:",
+  options: [
+    "Brass casting",
+    "Textile weaving",
+    "Pottery making",
+    "Wood carving"
+  ],
+  correctAnswer: 0,
+  explanation: "The Benin Kingdom was famous for its intricate brass plaques and sculptures."
+},
+{
+  id: 30,
+  question: "Colonial administration used:",
+  options: [
+    "Indirect Rule",
+    "Direct Democracy",
+    "Military Dictatorship",
+    "Communist System"
+  ],
+  correctAnswer: 0,
+  explanation: "The British employed Indirect Rule, governing through local traditional rulers."
+},
+{
+  id: 31,
+  question: "The main Hausa traditional ruler title is:",
+  options: [
+    "Emir",
+    "Oba",
+    "Eze",
+    "Ooni"
+  ],
+  correctAnswer: 0,
+  explanation: "Hausa traditional rulers are called Emirs, heading emirates."
+},
+{
+  id: 32,
+  question: "Fulani traditional leaders are called:",
+  options: [
+    "Lamido",
+    "Oba",
+    "Eze",
+    "Obong"
+  ],
+  correctAnswer: 0,
+  explanation: "Fulani rulers are known as Lamidos in some regions."
+},
+{
+  id: 33,
+  question: "Yoruba traditional rulers are titled:",
+  options: [
+    "Oba",
+    "Emir",
+    "Eze",
+    "Ochi"
+  ],
+  correctAnswer: 0,
+  explanation: "Yoruba traditional rulers are generally called Obas."
+},
+{
+  id: 34,
+  question: "Igbo traditional rulers are known as:",
+  options: [
+    "Eze",
+    "Oba",
+    "Emir",
+    "Sarki"
+  ],
+  correctAnswer: 0,
+  explanation: "Igbo traditional rulers are typically called Ezes."
+},
+{
+  id: 35,
+  question: "The Fulani are also called:",
+  options: [
+    "Fulbe",
+    "Hausa-Fulani",
+    "Fula people",
+    "All of the above"
+  ],
+  correctAnswer: 3,
+  explanation: "The Fulani are known by various names including Fulbe, Fula, and Hausa-Fulani."
+},
+{
+  id: 36,
+  question: "The Yoruba language belongs to which language family?",
+  options: [
+    "Niger-Congo",
+    "Afro-Asiatic",
+    "Nilo-Saharan",
+    "Khoisan"
+  ],
+  correctAnswer: 0,
+  explanation: "Yoruba is part of the Niger-Congo language family, specifically the Volta-Niger branch."
+},
+{
+  id: 37,
+  question: "Igbo language is part of:",
+  options: [
+    "Volta-Niger family",
+    "Afro-Asiatic family",
+    "Nilo-Saharan family",
+    "Kwa family"
+  ],
+  correctAnswer: 0,
+  explanation: "Igbo language belongs to the Volta-Niger branch of the Niger-Congo language family."
+},
+{
+  id: 38,
+  question: "Before amalgamation, Nigeria was divided into:",
+  options: [
+    "2 protectorates",
+    "3 regions",
+    "4 districts",
+    "5 colonies"
+  ],
+  correctAnswer: 0,
+  explanation: "Before 1914, Nigeria consisted of the Northern Protectorate and Southern Protectorate."
+},
+{
+  id: 39,
+  question: "The first military coup in Nigeria occurred in:",
+  options: [
+    "1966",
+    "1960",
+    "1970",
+    "1983"
+  ],
+  correctAnswer: 0,
+  explanation: "Nigeria's first military coup took place on January 15, 1966."
+},
+{
+  id: 40,
+  question: "Nigeria gained independence in:",
+  options: [
+    "1960",
+    "1963",
+    "1914",
+    "1970"
+  ],
+  correctAnswer: 0,
+  explanation: "Nigeria gained independence from Britain on October 1, 1960."
+},
+{
+  id: 41,
+  question: "The concept of culture includes:",
+  options: [
+    "Material and non-material aspects",
+    "Only physical artifacts",
+    "Only ideas and beliefs",
+    "Only language"
+  ],
+  correctAnswer: 0,
+  explanation: "Culture encompasses both material (objects, artifacts) and non-material (beliefs, values) aspects."
+},
+{
+  id: 42,
+  question: "Primary socialization occurs in:",
+  options: [
+    "Family",
+    "School",
+    "Workplace",
+    "Media"
+  ],
+  correctAnswer: 0,
+  explanation: "Primary socialization happens within the family during early childhood."
+},
+{
+  id: 43,
+  question: "Secondary socialization happens through:",
+  options: [
+    "Schools and peers",
+    "Family only",
+    "Genetic inheritance",
+    "Biological development"
+  ],
+  correctAnswer: 0,
+  explanation: "Secondary socialization occurs through schools, peers, media and other social institutions."
+},
+{
+  id: 44,
+  question: "Cultism is characterized by:",
+  options: [
+    "Secrecy and initiation",
+    "Open membership",
+    "Public meetings",
+    "Government support"
+  ],
+  correctAnswer: 0,
+  explanation: "Cultism typically involves secret rituals, initiation ceremonies and exclusive membership."
+},
+{
+  id: 45,
+  question: "Child abuse can be:",
+  options: [
+    "Physical, emotional, or sexual",
+    "Only physical",
+    "Only emotional",
+    "Only sexual"
+  ],
+  correctAnswer: 0,
+  explanation: "Child abuse encompasses physical, emotional, sexual abuse and neglect."
+},
+{
+  id: 46,
+  question: "Drug abuse affects:",
+  options: [
+    "Individuals and society",
+    "Only individuals",
+    "Only families",
+    "Only government"
+  ],
+  correctAnswer: 0,
+  explanation: "Drug abuse has negative impacts on individuals, families, and society as a whole."
+},
+{
+  id: 47,
+  question: "Political thuggery undermines:",
+  options: [
+    "Democratic process",
+    "Economic growth only",
+    "Cultural heritage only",
+    "Educational system only"
+  ],
+  correctAnswer: 0,
+  explanation: "Political thuggery undermines democratic processes through violence and intimidation."
+},
+{
+  id: 48,
+  question: "Rape is a form of:",
+  options: [
+    "Sexual violence",
+    "Cultural practice",
+    "Traditional ritual",
+    "Social celebration"
+  ],
+  correctAnswer: 0,
+  explanation: "Rape is a criminal act of sexual violence and a violation of human rights."
+},
+{
+  id: 49,
+  question: "Indecent dressing refers to:",
+  options: [
+    "Clothing that offends cultural norms",
+    "Traditional attire",
+    "Formal wear",
+    "Religious garments"
+  ],
+  correctAnswer: 0,
+  explanation: "Indecent dressing typically refers to clothing that violates societal or cultural standards of modesty."
+},
+{
+  id: 50,
+  question: "Examination malpractice can involve:",
+  options: [
+    "Leakage of questions",
+    "Proper preparation",
+    "Independent work",
+    "Time management"
+  ],
+  correctAnswer: 0,
+  explanation: "Examination malpractice includes question leakage, impersonation, and other forms of cheating."
+},
+{
+  id: 51,
+  question: "Social justice promotes:",
+  options: [
+    "Fair treatment for all",
+    "Discrimination",
+    "Inequality",
+    "Tribal favoritism"
+  ],
+  correctAnswer: 0,
+  explanation: "Social justice advocates for fair and equitable treatment of all members of society."
+},
+{
+  id: 52,
+  question: "National development requires:",
+  options: [
+    "Stable political system",
+    "Constant conflict",
+    "Ethnic division",
+    "Regional separation"
+  ],
+  correctAnswer: 0,
+  explanation: "Sustainable national development requires political stability, unity, and good governance."
+},
+{
+  id: 53,
+  question: "National unity is symbolized by:",
+  options: [
+    "National anthem",
+    "Ethnic flags",
+    "Regional songs",
+    "Tribal dances"
+  ],
+  correctAnswer: 0,
+  explanation: "The national anthem is a symbol of national unity and patriotism."
+},
+{
+  id: 54,
+  question: "The Nigerian constitution is:",
+  options: [
+    "Supreme law of the land",
+    "A suggestion guide",
+    "Regional document",
+    "Colonial agreement"
+  ],
+  correctAnswer: 0,
+  explanation: "The constitution is the supreme legal document that governs Nigeria."
+},
+{
+  id: 55,
+  question: "National authority is exercised by:",
+  options: [
+    "Government institutions",
+    "Private companies",
+    "Foreign powers",
+    "Religious organizations"
+  ],
+  correctAnswer: 0,
+  explanation: "National authority is legitimately exercised through government institutions and agencies."
+},
+{
+  id: 56,
+  question: "The National Register contains:",
+  options: [
+    "Citizens' records",
+    "Business contracts",
+    "Foreign policies",
+    "International treaties"
+  ],
+  correctAnswer: 0,
+  explanation: "The National Register maintains official records of citizens and vital statistics."
+},
+{
+  id: 57,
+  question: "Socio-political developments include:",
+  options: [
+    "Electoral reforms",
+    "Weather changes",
+    "Seasonal festivals",
+    "Agricultural cycles"
+  ],
+  correctAnswer: 0,
+  explanation: "Electoral reforms are examples of socio-political developments in a nation."
+},
+{
+  id: 58,
+  question: "Socio-cultural developments involve:",
+  options: [
+    "Arts and education",
+    "Climate patterns",
+    "Geological changes",
+    "Astronomical events"
+  ],
+  correctAnswer: 0,
+  explanation: "Socio-cultural developments encompass changes in arts, education, and cultural practices."
+},
+{
+  id: 59,
+  question: "Moral reorientation programs aim to:",
+  options: [
+    "Fight corruption",
+    "Promote tribalism",
+    "Encourage violence",
+    "Support discrimination"
+  ],
+  correctAnswer: 0,
+  explanation: "Moral reorientation initiatives target corruption and promote ethical values in society."
+},
+{
+  id: 60,
+  question: "Citizenship by registration applies to:",
+  options: [
+    "Foreign spouses",
+    "Tourists",
+    "Diplomats",
+    "Refugees"
+  ],
+  correctAnswer: 0,
+  explanation: "Foreign spouses of Nigerian citizens can acquire citizenship through registration."
+},
+{
+  id: 61,
+  question: "Civic duties include:",
+  options: [
+    "Obeying laws",
+    "Breaking rules",
+    "Avoiding taxes",
+    "Ignoring community"
+  ],
+  correctAnswer: 0,
+  explanation: "Obeying laws is a fundamental civic duty of every citizen."
+},
+{
+  id: 62,
+  question: "Nigeria's climate zones include:",
+  options: [
+    "Tropical and arid",
+    "Arctic and temperate",
+    "Desert only",
+    "Tropical only"
+  ],
+  correctAnswer: 0,
+  explanation: "Nigeria has tropical climate in the south and arid conditions in the north."
+},
+{
+  id: 63,
+  question: "The Niger Delta is rich in:",
+  options: [
+    "Crude oil",
+    "Diamonds",
+    "Gold",
+    "Uranium"
+  ],
+  correctAnswer: 0,
+  explanation: "The Niger Delta region contains Nigeria's major crude oil reserves."
+},
+{
+  id: 64,
+  question: "Early settlers in Nigeria were:",
+  options: [
+    "Hunters and gatherers",
+    "Industrial workers",
+    "Space explorers",
+    "Marine biologists"
+  ],
+  correctAnswer: 0,
+  explanation: "The earliest inhabitants of Nigeria were hunter-gatherer communities."
+},
+{
+  id: 65,
+  question: "The Nok culture existed around:",
+  options: [
+    "1000 BC - 300 AD",
+    "1000 AD - 1500 AD",
+    "500 AD - 1000 AD",
+    "1500 AD - 1800 AD"
+  ],
+  correctAnswer: 0,
+  explanation: "The Nok culture flourished between approximately 1000 BC and 300 AD."
+},
+{
+  id: 66,
+  question: "Ife art dates back to:",
+  options: [
+    "12th century",
+    "18th century",
+    "20th century",
+    "5th century"
+  ],
+  correctAnswer: 0,
+  explanation: "Ife artistic traditions date back to around the 12th century AD."
+},
+{
+  id: 67,
+  question: "Benin Kingdom peaked in:",
+  options: [
+    "15th-17th centuries",
+    "10th-11th centuries",
+    "18th-19th centuries",
+    "5th-6th centuries"
+  ],
+  correctAnswer: 0,
+  explanation: "The Benin Kingdom reached its peak between the 15th and 17th centuries."
+},
+{
+  id: 68,
+  question: "Colonial conquest began with:",
+  options: [
+    "Lagos annexation",
+    "Northern invasion",
+    "Eastern capture",
+    "Western takeover"
+  ],
+  correctAnswer: 0,
+  explanation: "British colonial expansion began with the annexation of Lagos in 1861."
+},
+{
+  id: 69,
+  question: "Indirect Rule utilized:",
+  options: [
+    "Traditional rulers",
+    "Foreign governors",
+    "Military commanders",
+    "Religious leaders only"
+  ],
+  correctAnswer: 0,
+  explanation: "Indirect Rule governed through existing traditional rulers and institutions."
+},
+{
+  id: 70,
+  question: "The Hausa language uses:",
+  options: [
+    "Ajami script",
+    "Latin alphabet",
+    "Hieroglyphics",
+    "Cuneiform"
+  ],
+  correctAnswer: 0,
+  explanation: "Hausa has been written in Ajami (Arabic-based script) and now primarily uses Latin alphabet."
+},
+{
+  id: 71,
+  question: "Fulani are known for:",
+  options: [
+    "Transhumance",
+    "Fixed settlement",
+    "Urban dwelling only",
+    "Maritime trade"
+  ],
+  correctAnswer: 0,
+  explanation: "Fulani practice transhumance - seasonal movement with livestock."
+},
+{
+  id: 72,
+  question: "Yoruba traditional religion includes:",
+  options: [
+    "Orisha worship",
+    "Ancestor veneration only",
+    "Monotheism only",
+    "Polytheism only"
+  ],
+  correctAnswer: 0,
+  explanation: "Yoruba traditional religion involves worship of Orishas (deities) with both monotheistic and polytheistic elements."
+},
+{
+  id: 73,
+  question: "Igbo traditional society is:",
+  options: [
+    "Egalitarian",
+    "Feudal",
+    "Monarchical",
+    "Autocratic"
+  ],
+  correctAnswer: 0,
+  explanation: "Traditional Igbo society emphasized egalitarian principles with decentralized authority."
+},
+{
+  id: 74,
+  question: "The Richards Constitution created:",
+  options: [
+    "Regional councils",
+    "Unitary system",
+    "Military government",
+    "One-party state"
+  ],
+  correctAnswer: 0,
+  explanation: "The 1946 Richards Constitution established regional councils for North, West and East."
+},
+{
+  id: 75,
+  question: "The Macpherson Constitution:",
+  options: [
+    "Increased Nigerian participation",
+    "Reduced local input",
+    "Abolished regions",
+    "Created monarchy"
+  ],
+  correctAnswer: 0,
+  explanation: "The 1951 Macpherson Constitution increased Nigerian participation in governance."
+},
+{
+  id: 76,
+  question: "The Lyttleton Constitution established:",
+  options: [
+    "Federal system",
+    "Unitary government",
+    "Military rule",
+    "Colonial direct rule"
+  ],
+  correctAnswer: 0,
+  explanation: "The 1954 Lyttleton Constitution formally established a federal system in Nigeria."
+},
+{
+  id: 77,
+  question: "Culture is transmitted through:",
+  options: [
+    "Socialization",
+    "Genetic inheritance",
+    "Biological evolution",
+    "Climate adaptation"
+  ],
+  correctAnswer: 0,
+  explanation: "Culture is learned and transmitted through socialization processes."
+},
+{
+  id: 78,
+  question: "Socialization agents include:",
+  options: [
+    "Family and school",
+    "Weather and climate",
+    "Geography only",
+    "Biology only"
+  ],
+  correctAnswer: 0,
+  explanation: "Family, schools, peers, and media are primary agents of socialization."
+},
+{
+  id: 79,
+  question: "Cultism originated from:",
+  options: [
+    "Secret societies",
+    "Government programs",
+    "Educational reforms",
+    "Religious movements"
+  ],
+  correctAnswer: 0,
+  explanation: "Campus cultism in Nigeria evolved from secret society traditions."
+},
+{
+  id: 80,
+  question: "Child rights include:",
+  options: [
+    "Education and protection",
+    "Labor exploitation",
+    "Abuse and neglect",
+    "Forced marriage"
+  ],
+  correctAnswer: 0,
+  explanation: "Children have rights to education, protection, and proper care."
+},
+{
+  id: 81,
+  question: "Common abused drugs include:",
+  options: [
+    "Cannabis and cocaine",
+    "Medicines only",
+    "Food substances",
+    "Water and juice"
+  ],
+  correctAnswer: 0,
+  explanation: "Commonly abused drugs in Nigeria include cannabis, cocaine, and prescription medicines."
+},
+{
+  id: 82,
+  question: "Political thuggery often occurs during:",
+  options: [
+    "Elections",
+    "Cultural festivals",
+    "Academic conferences",
+    "Religious ceremonies"
+  ],
+  correctAnswer: 0,
+  explanation: "Political thuggery is most prevalent during election periods."
+},
+{
+  id: 83,
+  question: "Sexual harassment includes:",
+  options: [
+    "Unwanted advances",
+    "Professional advice",
+    "Academic guidance",
+    "Proper conduct"
+  ],
+  correctAnswer: 0,
+  explanation: "Sexual harassment involves unwanted sexual advances or conduct."
+},
+{
+  id: 84,
+  question: "Indecent dressing controversies often involve:",
+  options: [
+    "Educational institutions",
+    "Government offices only",
+    "Private homes",
+    "Rural areas only"
+  ],
+  correctAnswer: 0,
+  explanation: "Debates about indecent dressing frequently occur in educational institutions."
+},
+{
+  id: 85,
+  question: "Examination malpractice methods include:",
+  options: [
+    "Impersonation",
+    "Studying hard",
+    "Time management",
+    "Proper preparation"
+  ],
+  correctAnswer: 0,
+  explanation: "Impersonation is a common form of examination malpractice."
+},
+{
+  id: 86,
+  question: "Social justice ensures:",
+  options: [
+    "Equal opportunities",
+    "Discrimination",
+    "Inequality",
+    "Privilege for few"
+  ],
+  correctAnswer: 0,
+  explanation: "Social justice promotes equal opportunities and fair treatment for all."
+},
+{
+  id: 87,
+  question: "National development indicators include:",
+  options: [
+    "GDP growth",
+    "Conflict increase",
+    "Division growth",
+    "Violence rise"
+  ],
+  correctAnswer: 0,
+  explanation: "GDP growth is a key indicator of national development."
+},
+{
+  id: 88,
+  question: "National symbols promote:",
+  options: [
+    "Patriotism",
+    "Tribalism",
+    "Division",
+    "Conflict"
+  ],
+  correctAnswer: 0,
+  explanation: "National symbols foster patriotism and national unity."
+},
+{
+  id: 89,
+  question: "The constitution provides for:",
+  options: [
+    "Fundamental rights",
+    "Discrimination",
+    "Inequality",
+    "Oppression"
+  ],
+  correctAnswer: 0,
+  explanation: "The Nigerian constitution guarantees fundamental human rights."
+},
+{
+  id: 90,
+  question: "Government institutions include:",
+  options: [
+    "Executive, Legislature, Judiciary",
+    "Private companies only",
+    "Foreign embassies only",
+    "Religious groups only"
+  ],
+  correctAnswer: 0,
+  explanation: "The three arms of government are Executive, Legislature, and Judiciary."
+},
+{
+  id: 91,
+  question: "Vital statistics include:",
+  options: [
+    "Births and deaths",
+    "Business profits",
+    "Stock prices",
+    "Weather data"
+  ],
+  correctAnswer: 0,
+  explanation: "Vital statistics cover births, deaths, marriages, and related data."
+},
+{
+  id: 92,
+  question: "Electoral reforms aim to:",
+  options: [
+    "Improve election credibility",
+    "Rig elections",
+    "Disenfranchise voters",
+    "Create confusion"
+  ],
+  correctAnswer: 0,
+  explanation: "Electoral reforms seek to enhance the credibility and fairness of elections."
+},
+{
+  id: 93,
+  question: "Cultural developments include:",
+  options: [
+    "Art exhibitions",
+    "Political rallies",
+    "Military parades",
+    "Economic policies"
+  ],
+  correctAnswer: 0,
+  explanation: "Art exhibitions and cultural festivals represent socio-cultural developments."
+},
+{
+  id: 94,
+  question: "Moral values include:",
+  options: [
+    "Honesty and integrity",
+    "Corruption",
+    "Dishonesty",
+    "Deception"
+  ],
+  correctAnswer: 0,
+  explanation: "Honesty and integrity are fundamental moral values."
+},
+{
+  id: 95,
+  question: "Citizenship by birth requires:",
+  options: [
+    "Being born in Nigeria",
+    "Foreign birth",
+    "Tourist visa",
+    "Work permit"
+  ],
+  correctAnswer: 0,
+  explanation: "Being born in Nigeria typically confers citizenship by birth."
+},
+{
+  id: 96,
+  question: "Civic responsibilities ensure:",
+  options: [
+    "Social order",
+    "Chaos",
+    "Disorder",
+    "Lawlessness"
+  ],
+  correctAnswer: 0,
+  explanation: "Civic responsibilities help maintain social order and stability."
+},
+{
+  id: 97,
+  question: "Nigeria's vegetation includes:",
+  options: [
+    "Savanna and forest",
+    "Desert only",
+    "Tundra only",
+    "Alpine only"
+  ],
+  correctAnswer: 0,
+  explanation: "Nigeria has diverse vegetation including savanna, forest, and mangrove."
+},
+{
+  id: 98,
+  question: "Economic activities vary by:",
+  options: [
+    "Geographical zone",
+    "Political party",
+    "Religious belief",
+    "Age group only"
+  ],
+  correctAnswer: 0,
+  explanation: "Economic activities differ across Nigeria's geographical zones."
+},
+{
+  id: 99,
+  question: "Human migration contributed to:",
+  options: [
+    "Cultural diversity",
+    "Uniformity",
+    "Homogeneity",
+    "Sameness"
+  ],
+  correctAnswer: 0,
+  explanation: "Migration patterns created Nigeria's rich cultural diversity."
+},
+{
+  id: 100,
+  question: "Nok terracottas represent:",
+  options: [
+    "Early African art",
+    "Modern sculpture",
+    "European influence",
+    "Asian art forms"
+  ],
+  correctAnswer: 0,
+  explanation: "Nok terracottas are significant examples of early African artistic tradition."
+}
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'GSTS 112';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>computer based text gsu</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/your_channel" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">40 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the primary focus of computing fundamentals?",
+  options: [
+    "Hardware manufacturing",
+    "Core concepts and principles of computing",
+    "Network configuration",
+    "Software marketing"
+  ],
+  correctAnswer: 1,
+  explanation: "Computing fundamentals cover the core concepts and principles that form the foundation of computer science and information technology."
+},
+{
+  id: 2,
+  question: "Which type of problem has established procedures and predictable solutions?",
+  options: [
+    "Non-routine problems",
+    "Complex problems",
+    "Routine problems",
+    "Unsolvable problems"
+  ],
+  correctAnswer: 2,
+  explanation: "Routine problems have established procedures and predictable solutions that can be applied systematically."
+},
+{
+  id: 3,
+  question: "What characterizes non-routine problems in computing?",
+  options: [
+    "They have predefined solutions",
+    "They require creative and novel approaches",
+    "They can be solved using standard algorithms",
+    "They are always unsolvable"
+  ],
+  correctAnswer: 1,
+  explanation: "Non-routine problems require creative thinking and novel approaches as they lack established solution procedures."
+},
+{
+  id: 4,
+  question: "What is an algorithm in computing?",
+  options: [
+    "A programming language",
+    "A step-by-step procedure for solving problems",
+    "A type of computer hardware",
+    "A user interface design"
+  ],
+  correctAnswer: 1,
+  explanation: "An algorithm is a precise, step-by-step procedure or formula for solving a problem or accomplishing a task."
+},
+{
+  id: 5,
+  question: "Heuristics in problem-solving refer to:",
+  options: [
+    "Exact mathematical formulas",
+    "Rules of thumb or practical approximations",
+    "Computer hardware components",
+    "Programming language syntax"
+  ],
+  correctAnswer: 1,
+  explanation: "Heuristics are practical problem-solving approaches that may not be perfect but are sufficient for reaching immediate goals."
+},
+{
+  id: 6,
+  question: "Which of the following is an example of an unsolvable problem in computing?",
+  options: [
+    "Sorting a list of numbers",
+    "The Halting Problem",
+    "Finding the largest number in an array",
+    "Calculating average of numbers"
+  ],
+  correctAnswer: 1,
+  explanation: "The Halting Problem is a classic example of an unsolvable problem - it's impossible to create a program that can determine whether any given program will halt or run forever."
+},
+{
+  id: 7,
+  question: "What does the problem-solving technique 'abstraction' involve?",
+  options: [
+    "Adding more details to a problem",
+    "Focusing on irrelevant aspects",
+    "Simplifying by hiding unnecessary details",
+    "Making problems more complex"
+  ],
+  correctAnswer: 2,
+  explanation: "Abstraction involves simplifying complex systems by hiding unnecessary details and focusing on essential characteristics."
+},
+{
+  id: 8,
+  question: "The problem-solving method 'analogy' involves:",
+  options: [
+    "Solving problems from scratch",
+    "Using solutions from similar problems",
+    "Ignoring previous solutions",
+    "Creating entirely new methods"
+  ],
+  correctAnswer: 1,
+  explanation: "Analogy involves solving new problems by applying knowledge and solutions from similar problems encountered previously."
+},
+{
+  id: 9,
+  question: "What is the main purpose of brainstorming in problem-solving?",
+  options: [
+    "To criticize existing solutions",
+    "To generate many ideas without judgment",
+    "To implement final solutions",
+    "To test completed programs"
+  ],
+  correctAnswer: 1,
+  explanation: "Brainstorming is a creative technique for generating a large quantity of ideas without initial criticism or evaluation."
+},
+{
+  id: 10,
+  question: "The trial and error method is characterized by:",
+  options: [
+    "Systematic mathematical proofs",
+    "Trying different solutions until one works",
+    "Using only proven methods",
+    "Avoiding experimentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Trial and error involves experimenting with various approaches until a successful solution is found."
+},
+{
+  id: 11,
+  question: "Hypothesis testing in problem-solving involves:",
+  options: [
+    "Making random guesses",
+    "Forming and testing educated guesses",
+    "Avoiding all assumptions",
+    "Using only proven facts"
+  ],
+  correctAnswer: 1,
+  explanation: "Hypothesis testing involves forming educated guesses about solutions and systematically testing them through experimentation."
+},
+{
+  id: 12,
+  question: "What does the 'reduction' technique involve in problem-solving?",
+  options: [
+    "Making problems more complex",
+    "Transforming problems into simpler ones",
+    "Increasing problem size",
+    "Adding more constraints"
+  ],
+  correctAnswer: 1,
+  explanation: "Reduction involves breaking down complex problems into simpler, more manageable sub-problems."
+},
+{
+  id: 13,
+  question: "Literal thinking in problem-solving means:",
+  options: [
+    "Thinking creatively and abstractly",
+    "Interpreting information exactly as presented",
+    "Ignoring the actual problem statement",
+    "Adding metaphorical interpretations"
+  ],
+  correctAnswer: 1,
+  explanation: "Literal thinking involves interpreting information exactly as stated without looking for hidden meanings or creative interpretations."
+},
+{
+  id: 14,
+  question: "Means-End Analysis focuses on:",
+  options: [
+    "The starting point only",
+    "Reducing differences between current state and goal state",
+    "Ignoring the end goal",
+    "Maintaining the current state"
+  ],
+  correctAnswer: 1,
+  explanation: "Means-End Analysis involves identifying differences between the current situation and desired goal, then finding ways to reduce those differences."
+},
+{
+  id: 15,
+  question: "The Method of Focal Objects involves:",
+  options: [
+    "Focusing on one object only",
+    "Combining features of different objects",
+    "Eliminating all objects",
+    "Studying objects in isolation"
+  ],
+  correctAnswer: 1,
+  explanation: "This creative technique involves combining features of different objects or concepts to generate new ideas and solutions."
+},
+{
+  id: 16,
+  question: "Morphological Analysis is used for:",
+  options: [
+    "Studying word origins",
+    "Analyzing all possible solutions systematically",
+    "Eliminating solution options",
+    "Focusing on single solutions"
+  ],
+  correctAnswer: 1,
+  explanation: "Morphological Analysis systematically explores all possible combinations of parameters to generate comprehensive solution sets."
+},
+{
+  id: 17,
+  question: "What is the primary goal of research in problem-solving?",
+  options: [
+    "To avoid previous work",
+    "To gather information and existing knowledge",
+    "To implement solutions immediately",
+    "To ignore historical solutions"
+  ],
+  correctAnswer: 1,
+  explanation: "Research involves gathering existing information, knowledge, and previous solutions related to the current problem."
+},
+{
+  id: 18,
+  question: "Root Cause Analysis aims to:",
+  options: [
+    "Treat symptoms only",
+    "Identify underlying causes of problems",
+    "Ignore problem origins",
+    "Focus on superficial issues"
+  ],
+  correctAnswer: 1,
+  explanation: "Root Cause Analysis seeks to identify the fundamental underlying causes of problems rather than just addressing symptoms."
+},
+{
+  id: 19,
+  question: "In problem-solving, 'proof' refers to:",
+  options: [
+    "Making assumptions without verification",
+    "Demonstrating that a solution is correct",
+    "Guessing possible solutions",
+    "Ignoring solution validation"
+  ],
+  correctAnswer: 1,
+  explanation: "Proof involves formally demonstrating that a proposed solution correctly solves the problem according to specified requirements."
+},
+{
+  id: 20,
+  question: "The 'Divide and Conquer' strategy involves:",
+  options: [
+    "Making problems larger",
+    "Breaking problems into smaller sub-problems",
+    "Avoiding problem decomposition",
+    "Solving everything at once"
+  ],
+  correctAnswer: 1,
+  explanation: "Divide and Conquer breaks complex problems into smaller, more manageable sub-problems that can be solved independently."
+},
+{
+  id: 21,
+  question: "What is the first step in the general problem-solving process?",
+  options: [
+    "Implementation",
+    "Problem identification",
+    "Solution testing",
+    "Programming"
+  ],
+  correctAnswer: 1,
+  explanation: "The first step is always problem identification - clearly understanding and defining what problem needs to be solved."
+},
+{
+  id: 22,
+  question: "A flowchart is primarily used for:",
+  options: [
+    "Writing code syntax",
+    "Visualizing solution steps and logic flow",
+    "Hardware design",
+    "Network configuration"
+  ],
+  correctAnswer: 1,
+  explanation: "Flowcharts provide visual representations of solution steps, decision points, and logical flow of processes."
+},
+{
+  id: 23,
+  question: "Pseudocode is best described as:",
+  options: [
+    "A programming language",
+    "An informal high-level description of algorithm",
+    "Machine code",
+    "Binary representation"
+  ],
+  correctAnswer: 1,
+  explanation: "Pseudocode is an informal, human-readable description of an algorithm that doesn't use specific programming language syntax."
+},
+{
+  id: 24,
+  question: "What is the purpose of a decision table?",
+  options: [
+    "To store database records",
+    "To systematically represent complex business rules",
+    "To display graphical images",
+    "To write program code"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision tables systematically represent complex business rules and decision logic in a tabular format."
+},
+{
+  id: 25,
+  question: "A decision tree is useful for:",
+  options: [
+    "Representing linear processes only",
+    "Visualizing decisions and their possible consequences",
+    "Storing large data sets",
+    "Writing programming syntax"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision trees visually represent decisions, chance events, and their possible consequences in a tree-like structure."
+},
+{
+  id: 26,
+  question: "During solution implementation, the main focus is on:",
+  options: [
+    "Problem identification",
+    "Turning designs into executable programs",
+    "Eliminating all testing",
+    "Avoiding documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Implementation involves translating designed solutions into actual working programs or systems."
+},
+{
+  id: 27,
+  question: "Solution evaluation primarily involves:",
+  options: [
+    "Ignoring user feedback",
+    "Assessing how well the solution works",
+    "Only checking syntax errors",
+    "Avoiding performance testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Evaluation involves systematically assessing the solution's effectiveness, efficiency, and meeting of requirements."
+},
+{
+  id: 28,
+  question: "Refinement in problem-solving means:",
+  options: [
+    "Keeping solutions unchanged",
+    "Improving solutions based on feedback",
+    "Ignoring all criticisms",
+    "Starting over completely"
+  ],
+  correctAnswer: 1,
+  explanation: "Refinement involves making improvements to solutions based on evaluation results and user feedback."
+},
+{
+  id: 29,
+  question: "Which programming language is known for its low-level capabilities and efficiency?",
+  options: [
+    "Python",
+    "Java",
+    "C",
+    "HTML"
+  ],
+  correctAnswer: 2,
+  explanation: "C is known for its low-level capabilities, efficiency, and close-to-hardware programming features."
+},
+{
+  id: 30,
+  question: "Python is particularly valued for:",
+  options: [
+    "Complex syntax",
+    "Readability and rapid development",
+    "Low-level memory management",
+    "Hardware programming"
+  ],
+  correctAnswer: 1,
+  explanation: "Python is renowned for its clean syntax, readability, and support for rapid application development."
+},
+{
+  id: 31,
+  question: "In computing, a 'problem' is best defined as:",
+  options: [
+    "A situation with no solution",
+    "A gap between current and desired state",
+    "Any computer hardware failure",
+    "A programming language error"
+  ],
+  correctAnswer: 1,
+  explanation: "A problem represents a gap or difference between the current situation and the desired goal state that needs to be resolved."
+},
+{
+  id: 32,
+  question: "Which problem type typically has multiple valid solutions?",
+  options: [
+    "Routine problems",
+    "Well-defined problems",
+    "Ill-structured problems",
+    "Simple arithmetic problems"
+  ],
+  correctAnswer: 2,
+  explanation: "Ill-structured problems often have multiple valid solutions and require judgment to determine the most appropriate approach."
+},
+{
+  id: 33,
+  question: "The main advantage of using algorithms is:",
+  options: [
+    "They always find optimal solutions",
+    "They provide systematic, reproducible procedures",
+    "They require no testing",
+    "They work for all problem types"
+  ],
+  correctAnswer: 1,
+  explanation: "Algorithms provide systematic, step-by-step procedures that are reproducible and can be consistently applied to solve specific types of problems."
+},
+{
+  id: 34,
+  question: "Heuristics are particularly useful when:",
+  options: [
+    "Exact solutions are required",
+    "Problems are too complex for algorithms",
+    "Mathematical precision is needed",
+    "All parameters are known exactly"
+  ],
+  correctAnswer: 1,
+  explanation: "Heuristics are valuable for complex problems where finding exact solutions is impractical or computationally expensive."
+},
+{
+  id: 35,
+  question: "The Church-Turing thesis relates to:",
+  options: [
+    "Hardware design principles",
+    "Limits of computability",
+    "Network protocols",
+    "User interface design"
+  ],
+  correctAnswer: 1,
+  explanation: "The Church-Turing thesis concerns the fundamental limits of what can be computed algorithmically."
+},
+{
+  id: 36,
+  question: "Abstraction helps problem-solving by:",
+  options: [
+    "Adding unnecessary complexity",
+    "Reducing cognitive load",
+    "Eliminating all details",
+    "Making problems larger"
+  ],
+  correctAnswer: 1,
+  explanation: "Abstraction reduces cognitive load by hiding irrelevant details and focusing on essential aspects of the problem."
+},
+{
+  id: 37,
+  question: "In analogy-based problem solving, the key is to:",
+  options: [
+    "Ignore all previous solutions",
+    "Identify relevant similarities",
+    "Focus only on differences",
+    "Create entirely new methods"
+  ],
+  correctAnswer: 1,
+  explanation: "The effectiveness of analogy depends on identifying relevant similarities between the current problem and previously solved problems."
+},
+{
+  id: 38,
+  question: "Brainstorming sessions should:",
+  options: [
+    "Critique every idea immediately",
+    "Encourage free idea generation",
+    "Limit the number of ideas",
+    "Focus only on practical ideas"
+  ],
+  correctAnswer: 1,
+  explanation: "Brainstorming emphasizes quantity over quality initially, encouraging free generation of ideas without immediate criticism."
+},
+{
+  id: 39,
+  question: "The main limitation of trial and error is:",
+  options: [
+    "It always finds optimal solutions",
+    "It can be time-consuming and inefficient",
+    "It requires extensive planning",
+    "It works only for simple problems"
+  ],
+  correctAnswer: 1,
+  explanation: "Trial and error can be inefficient and time-consuming, especially for complex problems with many possible solutions."
+},
+{
+  id: 40,
+  question: "A good hypothesis should be:",
+  options: [
+    "Vague and general",
+    "Testable and specific",
+    "Based on no evidence",
+    "Impossible to verify"
+  ],
+  correctAnswer: 1,
+  explanation: "Effective hypotheses are specific, testable statements that can be verified or refuted through experimentation."
+},
+{
+  id: 41,
+  question: "Problem reduction is similar to:",
+  options: [
+    "Making problems more complex",
+    "Mathematical induction",
+    "Increasing problem scope",
+    "Adding more variables"
+  ],
+  correctAnswer: 1,
+  explanation: "Problem reduction often works recursively, similar to mathematical induction, by solving smaller instances of the same problem."
+},
+{
+  id: 42,
+  question: "Literal thinking is most appropriate when:",
+  options: [
+    "Solving creative design problems",
+    "Interpreting precise specifications",
+    "Brainstorming new ideas",
+    "Developing innovative solutions"
+  ],
+  correctAnswer: 1,
+  explanation: "Literal thinking is valuable when working with precise specifications, requirements, or technical documentation."
+},
+{
+  id: 43,
+  question: "Means-End Analysis is particularly effective for:",
+  options: [
+    "Problems with no clear goal",
+    "Goal-oriented problems with clear states",
+    "Completely random situations",
+    "Problems with undefined starting points"
+  ],
+  correctAnswer: 1,
+  explanation: "This method works well for problems with clearly defined current and goal states, and identifiable operations to bridge the gap."
+},
+{
+  id: 44,
+  question: "The Method of Focal Objects encourages:",
+  options: [
+    "Conventional thinking",
+    "Creative combination of concepts",
+    "Sticking to familiar solutions",
+    "Avoiding innovation"
+  ],
+  correctAnswer: 1,
+  explanation: "This technique stimulates creativity by forcing combinations of unrelated concepts or objects to generate novel ideas."
+},
+{
+  id: 45,
+  question: "Morphological Analysis ensures:",
+  options: [
+    "Only obvious solutions are considered",
+    "Comprehensive exploration of solution space",
+    "Quick elimination of options",
+    "Focus on single approaches"
+  ],
+  correctAnswer: 1,
+  explanation: "This systematic approach ensures that all possible combinations of parameters are considered, preventing oversight of potential solutions."
+},
+{
+  id: 46,
+  question: "Effective research in problem-solving involves:",
+  options: [
+    "Ignoring existing solutions",
+    "Systematic information gathering",
+    "Random information collection",
+    "Avoiding documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Effective research requires systematic gathering and evaluation of relevant information from credible sources."
+},
+{
+  id: 47,
+  question: "The '5 Whys' technique is used in:",
+  options: [
+    "Root Cause Analysis",
+    "Brainstorming sessions",
+    "Programming syntax",
+    "Hardware design"
+  ],
+  correctAnswer: 0,
+  explanation: "The '5 Whys' technique is a simple but powerful method used in Root Cause Analysis to drill down to fundamental causes."
+},
+{
+  id: 48,
+  question: "Mathematical proof in computing ensures:",
+  options: [
+    "Programs will run fast",
+    "Algorithms are correct under specified conditions",
+    "User interfaces are attractive",
+    "Hardware is reliable"
+  ],
+  correctAnswer: 1,
+  explanation: "Mathematical proofs demonstrate that algorithms will produce correct results for all valid inputs under specified conditions."
+},
+{
+  id: 49,
+  question: "Divide and Conquer is the basis for:",
+  options: [
+    "Linear search algorithms",
+    "Recursive algorithms like merge sort",
+    "Simple sequential processing",
+    "Basic input/output operations"
+  ],
+  correctAnswer: 1,
+  explanation: "Many efficient algorithms like merge sort and quick sort are based on the Divide and Conquer paradigm."
+},
+{
+  id: 50,
+  question: "The final step in problem-solving is typically:",
+  options: [
+    "Problem identification",
+    "Solution refinement and documentation",
+    "Ignoring results",
+    "Starting a new problem"
+  ],
+  correctAnswer: 1,
+  explanation: "The process concludes with refining the solution based on feedback and documenting the approach for future reference."
+},
+
+{
+  id: 51,
+  question: "What is the primary purpose of problem identification in computing?",
+  options: [
+    "To write code immediately",
+    "To clearly understand what needs to be solved",
+    "To skip the planning phase",
+    "To focus on implementation only"
+  ],
+  correctAnswer: 1,
+  explanation: "Problem identification ensures a clear understanding of what needs to be solved before attempting any solution, preventing wasted effort on wrong approaches."
+},
+{
+  id: 52,
+  question: "Which problem-solving technique involves breaking down complex problems into smaller, manageable parts?",
+  options: [
+    "Brainstorming",
+    "Divide and Conquer",
+    "Trial and Error",
+    "Literal Thinking"
+  ],
+  correctAnswer: 1,
+  explanation: "Divide and Conquer systematically breaks complex problems into smaller sub-problems that are easier to solve individually."
+},
+{
+  id: 53,
+  question: "In flowchart design, what shape typically represents a decision point?",
+  options: [
+    "Rectangle",
+    "Diamond",
+    "Oval",
+    "Parallelogram"
+  ],
+  correctAnswer: 1,
+  explanation: "Diamond shapes represent decision points where the flow can take different paths based on conditions."
+},
+{
+  id: 54,
+  question: "What is the main advantage of using pseudocode over actual programming code during design?",
+  options: [
+    "It executes faster",
+    "It focuses on logic without syntax constraints",
+    "It requires compilation",
+    "It is machine-readable"
+  ],
+  correctAnswer: 1,
+  explanation: "Pseudocode allows developers to focus on algorithmic logic and problem-solving without being constrained by specific programming language syntax."
+},
+{
+  id: 55,
+  question: "Which programming language is particularly suitable for beginners due to its readable syntax?",
+  options: [
+    "Assembly",
+    "C",
+    "Python",
+    "Binary"
+  ],
+  correctAnswer: 2,
+  explanation: "Python's clean, readable syntax and high-level abstractions make it particularly suitable for beginners learning programming concepts."
+},
+{
+  id: 56,
+  question: "What does the term 'algorithm complexity' refer to?",
+  options: [
+    "Code readability",
+    "Computational resource requirements",
+    "Program file size",
+    "Number of comments in code"
+  ],
+  correctAnswer: 1,
+  explanation: "Algorithm complexity analyzes how computational resources (time and space) requirements grow with input size."
+},
+{
+  id: 57,
+  question: "In decision tables, what do the columns typically represent?",
+  options: [
+    "Different programming languages",
+    "Various test conditions and actions",
+    "Hardware components",
+    "User interface elements"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision table columns represent different combinations of conditions and their corresponding actions or outcomes."
+},
+{
+  id: 58,
+  question: "What is the primary goal of solution evaluation?",
+  options: [
+    "To prove the solution is perfect",
+    "To assess effectiveness and identify improvements",
+    "To eliminate all testing",
+    "To hide any flaws"
+  ],
+  correctAnswer: 1,
+  explanation: "Solution evaluation systematically assesses how well the solution meets requirements and identifies areas for improvement."
+},
+{
+  id: 59,
+  question: "Which problem-solving approach is most appropriate when dealing with completely new and unfamiliar problems?",
+  options: [
+    "Routine procedures",
+    "Heuristic methods",
+    "Standard algorithms",
+    "Predefined templates"
+  ],
+  correctAnswer: 1,
+  explanation: "Heuristic methods provide practical approaches for solving novel problems where established algorithms don't exist."
+},
+{
+  id: 60,
+  question: "What is the key characteristic of ill-structured problems?",
+  options: [
+    "Clear solution paths",
+    "Ambiguous requirements and multiple solutions",
+    "Single correct answer",
+    "Well-defined parameters"
+  ],
+  correctAnswer: 1,
+  explanation: "Ill-structured problems have ambiguous requirements, unclear solution paths, and often multiple valid solutions."
+},
+{
+  id: 61,
+  question: "In the context of problem-solving, what does 'reduction' typically involve?",
+  options: [
+    "Making problems more complex",
+    "Transforming to previously solved problems",
+    "Increasing problem scope",
+    "Adding more constraints"
+  ],
+  correctAnswer: 1,
+  explanation: "Reduction involves transforming a current problem into one that has already been solved, leveraging existing solutions."
+},
+{
+  id: 62,
+  question: "Which technique is particularly useful for generating creative solutions to design problems?",
+  options: [
+    "Literal thinking",
+    "Method of Focal Objects",
+    "Mathematical proof",
+    "Standard algorithms"
+  ],
+  correctAnswer: 1,
+  explanation: "The Method of Focal Objects stimulates creativity by combining features from unrelated objects or concepts."
+},
+{
+  id: 63,
+  question: "What is the main purpose of morphological analysis?",
+  options: [
+    "To study biological systems",
+    "To systematically explore all solution combinations",
+    "To eliminate solution options",
+    "To focus on single approaches"
+  ],
+  correctAnswer: 1,
+  explanation: "Morphological analysis ensures comprehensive exploration of all possible solution combinations across multiple parameters."
+},
+{
+  id: 64,
+  question: "In root cause analysis, the 'fishbone diagram' is used to:",
+  options: [
+    "Design user interfaces",
+    "Identify and categorize potential causes",
+    "Write program code",
+    "Test software performance"
+  ],
+  correctAnswer: 1,
+  explanation: "Fishbone diagrams (Ishikawa diagrams) help systematically identify and categorize potential root causes of problems."
+},
+{
+  id: 65,
+  question: "What is the primary benefit of using flowcharts in solution design?",
+  options: [
+    "They automatically generate code",
+    "They provide visual logic representation",
+    "They eliminate testing needs",
+    "They replace documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Flowcharts visually represent logic flow, making it easier to understand, communicate, and debug solution designs."
+},
+{
+  id: 66,
+  question: "Which problem-solving step involves translating design into actual code?",
+  options: [
+    "Problem identification",
+    "Implementation",
+    "Evaluation",
+    "Brainstorming"
+  ],
+  correctAnswer: 1,
+  explanation: "Implementation is the phase where designed solutions are translated into working programs using programming languages."
+},
+{
+  id: 67,
+  question: "What distinguishes routine problems from non-routine problems?",
+  options: [
+    "Routine problems require creative thinking",
+    "Routine problems have established procedures",
+    "Non-routine problems are always simpler",
+    "Non-routine problems have single solutions"
+  ],
+  correctAnswer: 1,
+  explanation: "Routine problems can be solved using established procedures and methods, while non-routine problems require novel approaches."
+},
+{
+  id: 68,
+  question: "In hypothesis testing, what is the purpose of the null hypothesis?",
+  options: [
+    "To prove the research hypothesis",
+    "To provide a default position to test against",
+    "To eliminate all testing",
+    "To confirm assumptions without evidence"
+  ],
+  correctAnswer: 1,
+  explanation: "The null hypothesis represents a default position that is tested against experimental evidence."
+},
+{
+  id: 69,
+  question: "What is the key advantage of the divide and conquer approach?",
+  options: [
+    "It solves problems in one step",
+    "It simplifies complex problems",
+    "It eliminates the need for testing",
+    "It works only for small problems"
+  ],
+  correctAnswer: 1,
+  explanation: "Divide and conquer makes complex problems manageable by breaking them into smaller, solvable sub-problems."
+},
+{
+  id: 70,
+  question: "Which programming language feature makes C suitable for system programming?",
+  options: [
+    "Automatic memory management",
+    "Low-level memory access",
+    "Built-in graphics libraries",
+    "Interpreted execution"
+  ],
+  correctAnswer: 1,
+  explanation: "C provides low-level memory access and hardware control, making it ideal for system programming and operating systems."
+},
+{
+  id: 71,
+  question: "In problem classification, what makes a problem 'well-defined'?",
+  options: [
+    "Vague requirements",
+    "Clear goals and constraints",
+    "Multiple ambiguous solutions",
+    "Unclear success criteria"
+  ],
+  correctAnswer: 1,
+  explanation: "Well-defined problems have clear goals, explicit constraints, and unambiguous success criteria."
+},
+{
+  id: 72,
+  question: "What is the primary purpose of decision trees in problem-solving?",
+  options: [
+    "To store large datasets",
+    "To visualize decision paths and outcomes",
+    "To write program code",
+    "To design user interfaces"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision trees visually map out decision paths, conditions, and their potential outcomes or consequences."
+},
+{
+  id: 73,
+  question: "Which problem-solving technique is most associated with systematic experimentation?",
+  options: [
+    "Brainstorming",
+    "Trial and Error",
+    "Mathematical proof",
+    "Literal thinking"
+  ],
+  correctAnswer: 1,
+  explanation: "Trial and error involves systematic experimentation with different approaches until a working solution is found."
+},
+{
+  id: 74,
+  question: "What is the main characteristic of a good algorithm?",
+  options: [
+    "It works for all problems",
+    "It is unambiguous and finite",
+    "It requires no testing",
+    "It is always the fastest"
+  ],
+  correctAnswer: 1,
+  explanation: "Good algorithms are unambiguous (clear steps), finite (eventually stops), and effective (solves the problem)."
+},
+{
+  id: 75,
+  question: "In solution refinement, what is the primary focus?",
+  options: [
+    "Starting over completely",
+    "Making incremental improvements",
+    "Ignoring user feedback",
+    "Eliminating all changes"
+  ],
+  correctAnswer: 1,
+  explanation: "Refinement focuses on making incremental improvements based on evaluation results and feedback."
+},
+{
+  id: 76,
+  question: "Which problem-solving approach is best for situations with limited information?",
+  options: [
+    "Complete mathematical analysis",
+    "Heuristic methods",
+    "Exact algorithms",
+    "Formal proofs"
+  ],
+  correctAnswer: 1,
+  explanation: "Heuristics provide practical approaches when complete information is unavailable or problems are too complex for exact solutions."
+},
+{
+  id: 77,
+  question: "What does 'computational thinking' primarily involve?",
+  options: [
+    "Only programming skills",
+    "Problem-solving using computer science concepts",
+    "Hardware maintenance",
+    "Network configuration"
+  ],
+  correctAnswer: 1,
+  explanation: "Computational thinking involves solving problems using fundamental computer science concepts like decomposition, pattern recognition, and algorithms."
+},
+{
+  id: 78,
+  question: "In the context of problem-solving, what is 'decomposition'?",
+  options: [
+    "Making problems larger",
+    "Breaking problems into smaller parts",
+    "Combining multiple problems",
+    "Ignoring problem structure"
+  ],
+  correctAnswer: 1,
+  explanation: "Decomposition involves breaking complex problems into smaller, more manageable components that can be solved independently."
+},
+{
+  id: 79,
+  question: "Which evaluation method is most useful for assessing algorithm efficiency?",
+  options: [
+    "User satisfaction surveys",
+    "Complexity analysis",
+    "Code readability scores",
+    "File size measurement"
+  ],
+  correctAnswer: 1,
+  explanation: "Complexity analysis (Big O notation) systematically evaluates how algorithm performance scales with input size."
+},
+{
+  id: 80,
+  question: "What is the primary benefit of using abstraction in software design?",
+  options: [
+    "Adding unnecessary complexity",
+    "Managing complexity through simplification",
+    "Making systems harder to understand",
+    "Eliminating all details"
+  ],
+  correctAnswer: 1,
+  explanation: "Abstraction manages complexity by hiding unnecessary details and focusing on essential features and interactions."
+},
+{
+  id: 81,
+  question: "In problem-solving, what is pattern recognition?",
+  options: [
+    "Ignoring similarities",
+    "Identifying similarities in problems",
+    "Creating random solutions",
+    "Eliminating all patterns"
+  ],
+  correctAnswer: 1,
+  explanation: "Pattern recognition involves identifying similarities, trends, or regularities that can inform solution approaches."
+},
+{
+  id: 82,
+  question: "Which programming paradigm is particularly suited for divide and conquer approaches?",
+  options: [
+    "Procedural programming",
+    "Object-oriented programming",
+    "Functional programming",
+    "Recursive programming"
+  ],
+  correctAnswer: 3,
+  explanation: "Recursive programming naturally implements divide and conquer by having functions call themselves with smaller sub-problems."
+},
+{
+  id: 83,
+  question: "What is the main purpose of validation in solution evaluation?",
+  options: [
+    "To check syntax errors only",
+    "To ensure the solution meets user needs",
+    "To eliminate all testing",
+    "To ignore requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Validation ensures the solution actually meets user requirements and solves the right problem."
+},
+{
+  id: 84,
+  question: "In brainstorming sessions, what is the 'quantity over quality' principle?",
+  options: [
+    "Focus only on perfect ideas",
+    "Generate many ideas initially",
+    "Critique every idea immediately",
+    "Limit idea generation"
+  ],
+  correctAnswer: 1,
+  explanation: "This principle encourages generating numerous ideas initially, with evaluation and refinement occurring later."
+},
+{
+  id: 85,
+  question: "What distinguishes solvable from unsolvable problems in computing?",
+  options: [
+    "Problem difficulty",
+    "Existence of algorithmic solution",
+    "Programming language used",
+    "Hardware capabilities"
+  ],
+  correctAnswer: 1,
+  explanation: "Solvable problems have algorithmic solutions, while unsolvable problems cannot be solved by any algorithm (e.g., Halting Problem)."
+},
+{
+  id: 86,
+  question: "Which problem-solving technique is most systematic for exploring all possibilities?",
+  options: [
+    "Random guessing",
+    "Morphological analysis",
+    "Trial and error",
+    "Brainstorming"
+  ],
+  correctAnswer: 1,
+  explanation: "Morphological analysis systematically explores all possible combinations across multiple solution dimensions."
+},
+{
+  id: 87,
+  question: "In flowchart symbols, what does a parallelogram represent?",
+  options: [
+    "Decision point",
+    "Input/output operation",
+    "Process step",
+    "Start/end point"
+  ],
+  correctAnswer: 1,
+  explanation: "Parallelograms represent input/output operations in flowcharts, indicating data entering or leaving the system."
+},
+{
+  id: 88,
+  question: "What is the primary advantage of using decision tables?",
+  options: [
+    "They execute code faster",
+    "They systematically handle complex business rules",
+    "They replace programming",
+    "They eliminate testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision tables provide a systematic way to represent and manage complex business rules and decision logic."
+},
+{
+  id: 89,
+  question: "Which Python feature makes it suitable for rapid prototyping?",
+  options: [
+    "Complex syntax",
+    "Interpreted nature and rich libraries",
+    "Low-level memory access",
+    "Compilation requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's interpreted execution and extensive standard libraries enable quick development and testing of ideas."
+},
+{
+  id: 90,
+  question: "What is the main goal of means-end analysis?",
+  options: [
+    "To maintain current state",
+    "To reduce gap to goal state",
+    "To ignore the goal",
+    "To complicate the problem"
+  ],
+  correctAnswer: 1,
+  explanation: "Means-end analysis systematically reduces the difference between the current situation and the desired goal state."
+},
+{
+  id: 91,
+  question: "In problem-solving, what does 'lateral thinking' involve?",
+  options: [
+    "Strict logical progression",
+    "Creative, non-linear approaches",
+    "Following established procedures",
+    "Mathematical proofs only"
+  ],
+  correctAnswer: 1,
+  explanation: "Lateral thinking involves creative, non-traditional approaches that may not follow strict logical progression."
+},
+{
+  id: 92,
+  question: "Which evaluation metric is most important for algorithm selection?",
+  options: [
+    "Code color scheme",
+    "Time and space complexity",
+    "Variable naming style",
+    "Comment quantity"
+  ],
+  correctAnswer: 1,
+  explanation: "Time and space complexity determine how efficiently algorithms use computational resources as input size grows."
+},
+{
+  id: 93,
+  question: "What is the primary purpose of testing in solution evaluation?",
+  options: [
+    "To prove perfection",
+    "To identify defects and verify functionality",
+    "To eliminate all documentation",
+    "To hide problems"
+  ],
+  correctAnswer: 1,
+  explanation: "Testing systematically identifies defects and verifies that the solution functions as intended under various conditions."
+},
+{
+  id: 94,
+  question: "In root cause analysis, what is the '5 Whys' technique?",
+  options: [
+    "Asking why five times to drill down",
+    "Ignoring causes",
+    "Focusing on symptoms only",
+    "Eliminating questions"
+  ],
+  correctAnswer: 0,
+  explanation: "The 5 Whys technique involves repeatedly asking 'why' to drill down from symptoms to fundamental root causes."
+},
+{
+  id: 95,
+  question: "Which problem characteristic makes it suitable for algorithmic solution?",
+  options: [
+    "Complete ambiguity",
+    "Well-defined structure",
+    "Constantly changing requirements",
+    "No clear success criteria"
+  ],
+  correctAnswer: 1,
+  explanation: "Well-defined problems with clear structure and success criteria are most suitable for algorithmic solutions."
+},
+{
+  id: 96,
+  question: "What is the main benefit of using pseudocode during design?",
+  options: [
+    "It executes directly",
+    "It facilitates logic planning",
+    "It replaces testing",
+    "It eliminates coding"
+  ],
+  correctAnswer: 1,
+  explanation: "Pseudocode facilitates logical planning and algorithm design without getting bogged down in programming syntax details."
+},
+{
+  id: 97,
+  question: "In computing, what does 'NP-complete' refer to?",
+  options: [
+    "Easy-to-solve problems",
+    "Computationally hard problems",
+    "Hardware specifications",
+    "Programming languages"
+  ],
+  correctAnswer: 1,
+  explanation: "NP-complete problems are computationally challenging problems for which no efficient solution is known."
+},
+{
+  id: 98,
+  question: "Which problem-solving phase involves gathering requirements?",
+  options: [
+    "Implementation",
+    "Problem identification",
+    "Testing",
+    "Deployment"
+  ],
+  correctAnswer: 1,
+  explanation: "Requirements gathering occurs during problem identification to understand what needs to be solved."
+},
+{
+  id: 99,
+  question: "What is the key advantage of iterative refinement?",
+  options: [
+    "Solving everything in one attempt",
+    "Continuous improvement through cycles",
+    "Eliminating all changes",
+    "Ignoring feedback"
+  ],
+  correctAnswer: 1,
+  explanation: "Iterative refinement allows continuous improvement through multiple cycles of implementation, evaluation, and enhancement."
+},
+{
+  id: 100,
+  question: "Which C language feature requires careful management to prevent errors?",
+  options: [
+    "Automatic garbage collection",
+    "Manual memory management",
+    "Built-in error handling",
+    "Dynamic typing"
+  ],
+  correctAnswer: 1,
+  explanation: "C's manual memory management through pointers requires careful handling to prevent memory leaks and segmentation faults."
+},
+
+{
+  id: 101,
+  question: "What is the primary purpose of a decision table in problem-solving?",
+  options: [
+    "To write programming code",
+    "To systematically represent business rules and conditions",
+    "To design user interfaces",
+    "To manage database connections"
+  ],
+  correctAnswer: 1,
+  explanation: "Decision tables provide a structured way to represent complex business rules, conditions, and their corresponding actions in a tabular format."
+},
+{
+  id: 102,
+  question: "Which problem-solving technique involves using solutions from similar problems as a starting point?",
+  options: [
+    "Brainstorming",
+    "Analogy",
+    "Trial and Error",
+    "Literal Thinking"
+  ],
+  correctAnswer: 1,
+  explanation: "Analogy involves adapting solutions from similar, previously solved problems to address current challenges."
+},
+{
+  id: 103,
+  question: "In flowchart design, what shape represents the start or end of a process?",
+  options: [
+    "Rectangle",
+    "Diamond",
+    "Oval",
+    "Parallelogram"
+  ],
+  correctAnswer: 2,
+  explanation: "Oval or rounded rectangle shapes represent the start and end points of a process in flowcharts."
+},
+{
+  id: 104,
+  question: "What is the main advantage of Python's dynamic typing for beginners?",
+  options: [
+    "It requires explicit type declarations",
+    "It simplifies code writing and prototyping",
+    "It provides better performance",
+    "It eliminates all errors"
+  ],
+  correctAnswer: 1,
+  explanation: "Dynamic typing allows beginners to write code without worrying about explicit type declarations, making prototyping and learning easier."
+},
+{
+  id: 105,
+  question: "Which problem-solving approach is most effective for well-defined mathematical problems?",
+  options: [
+    "Brainstorming",
+    "Algorithmic methods",
+    "Random guessing",
+    "Intuition only"
+  ],
+  correctAnswer: 1,
+  explanation: "Algorithmic methods provide systematic, precise solutions for well-defined mathematical problems with clear inputs and outputs."
+},
+{
+  id: 106,
+  question: "What does 'Big O notation' primarily describe in computing?",
+  options: [
+    "Code readability",
+    "Algorithm efficiency and scalability",
+    "Program file size",
+    "Variable naming conventions"
+  ],
+  correctAnswer: 1,
+  explanation: "Big O notation describes how algorithm performance (time and space) scales with input size, helping compare algorithm efficiency."
+},
+{
+  id: 107,
+  question: "In root cause analysis, what is the purpose of a Pareto chart?",
+  options: [
+    "To display program flow",
+    "To identify the most significant factors",
+    "To write code faster",
+    "To design user interfaces"
+  ],
+  correctAnswer: 1,
+  explanation: "Pareto charts help identify the most significant factors contributing to a problem, following the 80/20 principle."
+},
+{
+  id: 108,
+  question: "Which programming construct is essential for implementing divide and conquer algorithms?",
+  options: [
+    "Simple loops",
+    "Recursion",
+    "Global variables",
+    "Print statements"
+  ],
+  correctAnswer: 1,
+  explanation: "Recursion allows functions to call themselves with smaller sub-problems, making it ideal for divide and conquer implementations."
+},
+{
+  id: 109,
+  question: "What is the primary goal of solution documentation?",
+  options: [
+    "To make code longer",
+    "To facilitate maintenance and knowledge transfer",
+    "To eliminate testing",
+    "To hide implementation details"
+  ],
+  correctAnswer: 1,
+  explanation: "Proper documentation ensures solutions can be maintained, understood, and modified by others in the future."
+},
+{
+  id: 110,
+  question: "Which problem characteristic makes it suitable for heuristic solutions?",
+  options: [
+    "Exact solution required",
+    "Complexity and incomplete information",
+    "Simple arithmetic operations",
+    "Well-defined parameters only"
+  ],
+  correctAnswer: 1,
+  explanation: "Heuristics are particularly useful for complex problems with incomplete information where exact solutions are impractical."
+},
+{
+  id: 111,
+  question: "In morphological analysis, what does the term 'morphological box' refer to?",
+  options: [
+    "A physical container",
+    "A systematic matrix of all possible combinations",
+    "A type of computer case",
+    "A programming variable"
+  ],
+  correctAnswer: 1,
+  explanation: "A morphological box is a matrix that systematically explores all possible combinations of parameters and their values."
+},
+{
+  id: 112,
+  question: "What is the main benefit of using pseudocode before actual coding?",
+  options: [
+    "It executes faster",
+    "It helps plan logic without syntax constraints",
+    "It eliminates debugging",
+    "It replaces testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Pseudocode allows developers to focus on algorithmic logic and problem structure without being constrained by programming language syntax."
+},
+{
+  id: 113,
+  question: "Which evaluation technique is most useful for assessing user satisfaction?",
+  options: [
+    "Complexity analysis",
+    "User testing and feedback",
+    "Code review",
+    "Compiler optimization"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct user testing and feedback collection provide the most reliable assessment of user satisfaction with a solution."
+},
+{
+  id: 114,
+  question: "In problem classification, what distinguishes 'tame' from 'wicked' problems?",
+  options: [
+    "Problem size",
+    "Clear vs ambiguous boundaries and solutions",
+    "Programming language used",
+    "Hardware requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Tame problems have clear boundaries and solutions, while wicked problems have ambiguous requirements and no definitive solutions."
+},
+{
+  id: 115,
+  question: "What is the primary purpose of a Gantt chart in project management?",
+  options: [
+    "To write code",
+    "To visualize project timelines and dependencies",
+    "To design algorithms",
+    "To test software"
+  ],
+  correctAnswer: 1,
+  explanation: "Gantt charts provide visual representations of project schedules, task durations, and dependencies between activities."
+},
+{
+  id: 116,
+  question: "Which Python feature supports rapid application development?",
+  options: [
+    "Complex syntax",
+    "Extensive standard library",
+    "Manual memory management",
+    "Compilation requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's extensive standard library provides pre-built modules for common tasks, accelerating development."
+},
+{
+  id: 117,
+  question: "In means-end analysis, what are 'operators'?",
+  options: [
+    "Computer hardware",
+    "Actions that reduce differences to goals",
+    "Programming languages",
+    "User interfaces"
+  ],
+  correctAnswer: 1,
+  explanation: "Operators are actions or transformations that reduce the differences between the current state and the goal state."
+},
+{
+  id: 118,
+  question: "What is the main advantage of iterative development?",
+  options: [
+    "Completing everything in one phase",
+    "Early feedback and continuous improvement",
+    "Eliminating planning",
+    "Ignoring user requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Iterative development allows for early feedback and continuous refinement throughout the development process."
+},
+{
+  id: 119,
+  question: "Which problem-solving technique is most associated with creative innovation?",
+  options: [
+    "Standard procedures",
+    "Method of Focal Objects",
+    "Mathematical proofs",
+    "Literal interpretation"
+  ],
+  correctAnswer: 1,
+  explanation: "The Method of Focal Objects stimulates creative innovation by combining unrelated concepts to generate novel ideas."
+},
+{
+  id: 120,
+  question: "What does 'computational complexity' measure?",
+  options: [
+    "Code readability",
+    "Resource requirements for problem solving",
+    "Program documentation quality",
+    "User interface design"
+  ],
+  correctAnswer: 1,
+  explanation: "Computational complexity measures the resources (time, space) required to solve computational problems as input size increases."
+},
+{
+  id: 121,
+  question: "In decision trees, what do the leaf nodes represent?",
+  options: [
+    "Decision points",
+    "Final outcomes or classifications",
+    "Input data",
+    "Processing steps"
+  ],
+  correctAnswer: 1,
+  explanation: "Leaf nodes in decision trees represent the final outcomes, classifications, or decisions reached after following the decision path."
+},
+{
+  id: 122,
+  question: "Which C language feature enables low-level system programming?",
+  options: [
+    "Automatic garbage collection",
+    "Pointers and memory addresses",
+    "Dynamic typing",
+    "Built-in web frameworks"
+  ],
+  correctAnswer: 1,
+  explanation: "Pointers provide direct memory access, enabling low-level system programming and hardware interaction."
+},
+{
+  id: 123,
+  question: "What is the primary purpose of validation testing?",
+  options: [
+    "To check syntax errors",
+    "To ensure the solution meets user needs",
+    "To optimize performance",
+    "To write documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Validation testing verifies that the final solution actually meets user requirements and solves the intended problem."
+},
+{
+  id: 124,
+  question: "Which problem-solving approach is best for situations with multiple conflicting constraints?",
+  options: [
+    "Simple linear thinking",
+    "Multi-criteria decision analysis",
+    "Ignoring constraints",
+    "Random selection"
+  ],
+  correctAnswer: 1,
+  explanation: "Multi-criteria decision analysis provides systematic approaches for evaluating options against multiple, often conflicting constraints."
+},
+{
+  id: 125,
+  question: "In flowchart design, what do arrows represent?",
+  options: [
+    "Data storage",
+    "Flow of control between steps",
+    "User input",
+    "Output devices"
+  ],
+  correctAnswer: 1,
+  explanation: "Arrows in flowcharts represent the direction of flow and control transfer between different process steps."
+},
+{
+  id: 126,
+  question: "What is the main benefit of using functions in programming?",
+  options: [
+    "Making code longer",
+    "Code reuse and modularity",
+    "Eliminating variables",
+    "Hiding logic"
+  ],
+  correctAnswer: 1,
+  explanation: "Functions promote code reuse, modularity, and better organization by encapsulating specific functionality."
+},
+{
+  id: 127,
+  question: "Which evaluation metric is most important for real-time systems?",
+  options: [
+    "Code comments quality",
+    "Response time guarantees",
+    "Variable naming",
+    "File size"
+  ],
+  correctAnswer: 1,
+  explanation: "Real-time systems require guaranteed response times to meet critical timing constraints."
+},
+{
+  id: 128,
+  question: "In problem decomposition, what is the ideal size for sub-problems?",
+  options: [
+    "As large as possible",
+    "Small and manageable",
+    "The same size as original",
+    "No specific size"
+  ],
+  correctAnswer: 1,
+  explanation: "Sub-problems should be small enough to be easily understood and solved independently, yet meaningful in context."
+},
+{
+  id: 129,
+  question: "What is the primary purpose of a SWOT analysis in problem-solving?",
+  options: [
+    "To write code",
+    "To assess internal and external factors",
+    "To design algorithms",
+    "To test software"
+  ],
+  correctAnswer: 1,
+  explanation: "SWOT analysis systematically evaluates Strengths, Weaknesses, Opportunities, and Threats related to a problem or solution."
+},
+{
+  id: 130,
+  question: "Which Python characteristic supports scientific computing?",
+  options: [
+    "Limited library support",
+    "Rich ecosystem of scientific libraries",
+    "Slow execution speed",
+    "Complex syntax"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's rich ecosystem of scientific libraries (NumPy, SciPy, pandas) makes it ideal for scientific computing and data analysis."
+},
+{
+  id: 131,
+  question: "In root cause analysis, what is the 'iceberg model'?",
+  options: [
+    "A cooling system",
+    "A framework for looking beyond symptoms to underlying causes",
+    "A data storage method",
+    "A programming paradigm"
+  ],
+  correctAnswer: 1,
+  explanation: "The iceberg model suggests that visible problems (symptoms) are just the tip, with underlying systemic causes hidden below."
+},
+{
+  id: 132,
+  question: "What is the main advantage of using established design patterns?",
+  options: [
+    "Reinventing solutions",
+    "Leveraging proven solutions to common problems",
+    "Creating unique code",
+    "Eliminating documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Design patterns provide proven, reusable solutions to common software design problems, improving code quality and maintainability."
+},
+{
+  id: 133,
+  question: "Which problem-solving technique involves working backwards from the goal?",
+  options: [
+    "Forward chaining",
+    "Backward chaining",
+    "Lateral thinking",
+    "Random walk"
+  ],
+  correctAnswer: 1,
+  explanation: "Backward chaining starts from the goal and works backwards to determine the steps needed to achieve it."
+},
+{
+  id: 134,
+  question: "In algorithm design, what is 'precondition'?",
+  options: [
+    "The final output",
+    "Conditions that must be true before execution",
+    "Error messages",
+    "User interface"
+  ],
+  correctAnswer: 1,
+  explanation: "Preconditions specify the conditions or assumptions that must be satisfied before an algorithm can execute correctly."
+},
+{
+  id: 135,
+  question: "What is the primary purpose of version control in software development?",
+  options: [
+    "Making code run faster",
+    "Managing changes and collaboration",
+    "Eliminating testing",
+    "Designing algorithms"
+  ],
+  correctAnswer: 1,
+  explanation: "Version control systems manage code changes, enable collaboration, and maintain project history."
+},
+{
+  id: 136,
+  question: "Which C programming concept is crucial for dynamic memory allocation?",
+  options: [
+    "Printf statements",
+    "Pointers and malloc/free",
+    "For loops",
+    "Header files"
+  ],
+  correctAnswer: 1,
+  explanation: "Pointers combined with malloc/free functions enable dynamic memory allocation and management in C."
+},
+{
+  id: 137,
+  question: "In problem-solving, what does 'satisficing' mean?",
+  options: [
+    "Finding optimal solutions",
+    "Finding satisfactory rather than optimal solutions",
+    "Eliminating all options",
+    "Ignoring constraints"
+  ],
+  correctAnswer: 1,
+  explanation: "Satisficing involves finding solutions that are 'good enough' rather than optimal, often due to time or resource constraints."
+},
+{
+  id: 138,
+  question: "What is the main benefit of code reviews?",
+  options: [
+    "Making code longer",
+    "Improving code quality and knowledge sharing",
+    "Eliminating documentation",
+    "Hiding errors"
+  ],
+  correctAnswer: 1,
+  explanation: "Code reviews improve software quality, catch errors early, and facilitate knowledge sharing among team members."
+},
+{
+  id: 139,
+  question: "Which problem-solving approach is most systematic for quality improvement?",
+  options: [
+    "Random changes",
+    "PDCA (Plan-Do-Check-Act) cycle",
+    "Intuition only",
+    "Ignoring data"
+  ],
+  correctAnswer: 1,
+  explanation: "The PDCA cycle provides a systematic approach for continuous quality improvement through planned experimentation."
+},
+{
+  id: 140,
+  question: "In computational thinking, what is 'pattern generalization'?",
+  options: [
+    "Ignoring patterns",
+    "Abstracting patterns for broader application",
+    "Creating random solutions",
+    "Eliminating all patterns"
+  ],
+  correctAnswer: 1,
+  explanation: "Pattern generalization involves abstracting specific patterns to create more general solutions applicable to broader problem classes."
+},
+{
+  id: 141,
+  question: "What is the primary purpose of unit testing?",
+  options: [
+    "Testing entire systems",
+    "Verifying individual components work correctly",
+    "Eliminating integration testing",
+    "Writing documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Unit testing verifies that individual software components or units function correctly in isolation."
+},
+{
+  id: 142,
+  question: "Which Python feature supports functional programming?",
+  options: [
+    "Goto statements",
+    "First-class functions and lambdas",
+    "Pointer arithmetic",
+    "Manual memory management"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's support for first-class functions, lambdas, and higher-order functions enables functional programming paradigms."
+},
+{
+  id: 143,
+  question: "In problem analysis, what is 'scope creep'?",
+  options: [
+    "Staying within boundaries",
+    "Uncontrolled expansion of project scope",
+    "Reducing requirements",
+    "Eliminating features"
+  ],
+  correctAnswer: 1,
+  explanation: "Scope creep refers to uncontrolled expansion of project requirements beyond original boundaries, often leading to delays and cost overruns."
+},
+{
+  id: 144,
+  question: "What is the main advantage of using arrays in programming?",
+  options: [
+    "Making code complex",
+    "Efficient storage and access of related data",
+    "Eliminating variables",
+    "Hiding data"
+  ],
+  correctAnswer: 1,
+  explanation: "Arrays provide efficient storage and access for collections of related data elements through indexing."
+},
+{
+  id: 145,
+  question: "Which evaluation technique is most objective for algorithm performance?",
+  options: [
+    "Personal opinion",
+    "Empirical measurement and analysis",
+    "Guessing",
+    "Ignoring performance"
+  ],
+  correctAnswer: 1,
+  explanation: "Empirical measurement through benchmarking and performance analysis provides objective data about algorithm efficiency."
+},
+{
+  id: 146,
+  question: "In decision making, what is 'analysis paralysis'?",
+  options: [
+    "Quick decisions",
+    "Overthinking leading to decision delays",
+    "Systematic analysis",
+    "Ignoring data"
+  ],
+  correctAnswer: 1,
+  explanation: "Analysis paralysis occurs when over-analysis of options prevents timely decision-making and action."
+},
+{
+  id: 147,
+  question: "What is the primary purpose of exception handling in programming?",
+  options: [
+    "Ignoring errors",
+    "Gracefully handling unexpected conditions",
+    "Making programs crash",
+    "Eliminating testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Exception handling allows programs to gracefully manage and recover from unexpected errors or exceptional conditions."
+},
+{
+  id: 148,
+  question: "Which problem-solving technique involves visualizing the problem space?",
+  options: [
+    "Ignoring the problem",
+    "Mind mapping and diagramming",
+    "Random guessing",
+    "Eliminating visualization"
+  ],
+  correctAnswer: 1,
+  explanation: "Mind mapping and visual diagramming help understand problem structure, relationships, and potential solution paths."
+},
+{
+  id: 149,
+  question: "In software development, what does 'refactoring' mean?",
+  options: [
+    "Adding new features",
+    "Improving code structure without changing behavior",
+    "Writing documentation",
+    "Eliminating code"
+  ],
+  correctAnswer: 1,
+  explanation: "Refactoring involves restructuring existing code to improve internal structure without altering external behavior."
+},
+{
+  id: 150,
+  question: "What is the main benefit of using libraries in programming?",
+  options: [
+    "Reinventing functionality",
+    "Leveraging pre-written, tested code",
+    "Making programs larger",
+    "Eliminating learning"
+  ],
+  correctAnswer: 1,
+  explanation: "Libraries provide pre-written, tested functionality that developers can leverage, saving time and improving reliability."
+},
+{
+  id: 151,
+  question: "Which C feature is essential for data structures like linked lists?",
+  options: [
+    "Printf statements",
+    "Structures and pointers",
+    "Global variables",
+    "Macros"
+  ],
+  correctAnswer: 1,
+  explanation: "Structures define data types, and pointers enable dynamic connections between elements in data structures like linked lists."
+},
+{
+  id: 152,
+  question: "In problem-solving, what is 'confirmation bias'?",
+  options: [
+    "Seeking disconfirming evidence",
+    "Favoring information that confirms existing beliefs",
+    "Objective analysis",
+    "Systematic testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Confirmation bias is the tendency to search for, interpret, and remember information that confirms one's preexisting beliefs."
+},
+{
+  id: 153,
+  question: "What is the primary purpose of integration testing?",
+  options: [
+    "Testing individual units",
+    "Verifying components work together correctly",
+    "Eliminating unit testing",
+    "Writing code"
+  ],
+  correctAnswer: 1,
+  explanation: "Integration testing verifies that different software modules or components work together as intended when combined."
+},
+{
+  id: 154,
+  question: "Which Python characteristic supports cross-platform development?",
+  options: [
+    "Platform-specific code",
+    "Interpreted nature and portability",
+    "Hardware dependencies",
+    "Compilation requirements"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's interpreted nature and standardized implementation make it highly portable across different operating systems."
+},
+{
+  id: 155,
+  question: "In algorithm analysis, what does 'O(1)' represent?",
+  options: [
+    "Linear time complexity",
+    "Constant time complexity",
+    "Exponential complexity",
+    "Logarithmic complexity"
+  ],
+  correctAnswer: 1,
+  explanation: "O(1) represents constant time complexity, where execution time doesn't depend on input size."
+},
+{
+  id: 156,
+  question: "What is the main advantage of modular programming?",
+  options: [
+    "Creating monolithic code",
+    "Separation of concerns and maintainability",
+    "Hiding functionality",
+    "Eliminating functions"
+  ],
+  correctAnswer: 1,
+  explanation: "Modular programming separates concerns into independent modules, improving maintainability and code organization."
+},
+{
+  id: 157,
+  question: "Which problem-solving approach is most data-driven?",
+  options: [
+    "Intuition only",
+    "Evidence-based decision making",
+    "Random selection",
+    "Ignoring data"
+  ],
+  correctAnswer: 1,
+  explanation: "Evidence-based decision making relies on data analysis and empirical evidence to guide problem-solving approaches."
+},
+{
+  id: 158,
+  question: "In flowchart design, what does a rectangle represent?",
+  options: [
+    "Decision point",
+    "Process or operation step",
+    "Input/output",
+    "Start/end"
+  ],
+  correctAnswer: 1,
+  explanation: "Rectangles represent process steps or operations where some action is performed in the flowchart."
+},
+{
+  id: 159,
+  question: "What is the primary purpose of requirements gathering?",
+  options: [
+    "Writing code immediately",
+    "Understanding what needs to be built",
+    "Eliminating planning",
+    "Ignoring users"
+  ],
+  correctAnswer: 1,
+  explanation: "Requirements gathering ensures clear understanding of what the solution must accomplish before design and implementation begin."
+},
+{
+  id: 160,
+  question: "Which evaluation method is most effective for usability assessment?",
+  options: [
+    "Code review",
+    "User observation and testing",
+    "Compiler messages",
+    "Algorithm analysis"
+  ],
+  correctAnswer: 1,
+  explanation: "Direct observation of users interacting with the system provides the most reliable assessment of usability issues."
+},
+{
+  id: 161,
+  question: "In computational thinking, what is 'algorithmic thinking'?",
+  options: [
+    "Ignoring procedures",
+    "Developing step-by-step solutions",
+    "Random problem solving",
+    "Eliminating steps"
+  ],
+  correctAnswer: 1,
+  explanation: "Algorithmic thinking involves developing precise, step-by-step procedures for solving problems systematically."
+},
+{
+  id: 162,
+  question: "What is the main benefit of using constants in programming?",
+  options: [
+    "Making values change frequently",
+    "Improving code readability and maintainability",
+    "Hiding values",
+    "Eliminating variables"
+  ],
+  correctAnswer: 1,
+  explanation: "Constants improve code readability and maintainability by giving meaningful names to fixed values and preventing accidental changes."
+},
+{
+  id: 163,
+  question: "Which problem-solving technique involves group idea generation without criticism?",
+  options: [
+    "Critical analysis",
+    "Brainstorming",
+    "Mathematical proof",
+    "Individual thinking"
+  ],
+  correctAnswer: 1,
+  explanation: "Brainstorming encourages free idea generation in groups without initial criticism to maximize creative output."
+},
+{
+  id: 164,
+  question: "In software testing, what is 'regression testing'?",
+  options: [
+    "Testing new features only",
+    "Ensuring existing functionality still works after changes",
+    "Eliminating all testing",
+    "Writing documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Regression testing verifies that previously working functionality continues to work after software changes or additions."
+},
+{
+  id: 165,
+  question: "What is the primary advantage of Python's indentation-based syntax?",
+  options: [
+    "Making code harder to read",
+    "Enforcing consistent code structure",
+    "Allowing inconsistent formatting",
+    "Eliminating blocks"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's mandatory indentation enforces consistent code structure and readability across different developers."
+},
+{
+  id: 166,
+  question: "In problem analysis, what is 'assumption testing'?",
+  options: [
+    "Ignoring assumptions",
+    "Systematically verifying underlying assumptions",
+    "Making random guesses",
+    "Eliminating questions"
+  ],
+  correctAnswer: 1,
+  explanation: "Assumption testing involves systematically verifying the validity of underlying assumptions that guide problem-solving approaches."
+},
+{
+  id: 167,
+  question: "Which C programming concept is crucial for file handling?",
+  options: [
+    "Pointers only",
+    "File streams and pointers",
+    "Global variables",
+    "Macros"
+  ],
+  correctAnswer: 1,
+  explanation: "File streams (FILE pointers) and related functions enable reading from and writing to files in C programs."
+},
+{
+  id: 168,
+  question: "What is the main purpose of a proof of concept?",
+  options: [
+    "Building complete solution",
+    "Demonstrating feasibility of approach",
+    "Eliminating testing",
+    "Writing documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "A proof of concept demonstrates the practical feasibility of a proposed approach before full-scale implementation."
+},
+{
+  id: 169,
+  question: "In algorithm design, what is 'postcondition'?",
+  options: [
+    "Input requirements",
+    "Conditions guaranteed after execution",
+    "Error conditions",
+    "User interface"
+  ],
+  correctAnswer: 1,
+  explanation: "Postconditions specify what conditions or results are guaranteed to be true after an algorithm completes execution."
+},
+{
+  id: 170,
+  question: "Which problem-solving approach is most collaborative?",
+  options: [
+    "Individual work only",
+    "Team-based brainstorming and discussion",
+    "Ignoring others",
+    "Secret development"
+  ],
+  correctAnswer: 1,
+  explanation: "Team-based brainstorming and discussion leverage diverse perspectives and collective intelligence for problem-solving."
+},
+{
+  id: 171,
+  question: "What is the primary purpose of data validation in programming?",
+  options: [
+    "Ignoring input errors",
+    "Ensuring data meets specified criteria",
+    "Making programs crash",
+    "Eliminating variables"
+  ],
+  correctAnswer: 1,
+  explanation: "Data validation ensures that input data meets specified criteria before processing, preventing errors and security issues."
+},
+{
+  id: 172,
+  question: "Which Python feature supports object-oriented programming?",
+  options: [
+    "Procedural code only",
+    "Classes and inheritance",
+    "Global variables only",
+    "No OOP support"
+  ],
+  correctAnswer: 1,
+  explanation: "Python supports object-oriented programming through classes, objects, inheritance, polymorphism, and encapsulation."
+},
+{
+  id: 173,
+  question: "In problem-solving, what is 'premature optimization'?",
+  options: [
+    "Optimizing after testing",
+    "Optimizing before identifying bottlenecks",
+    "Systematic optimization",
+    "Ignoring performance"
+  ],
+  correctAnswer: 1,
+  explanation: "Premature optimization involves optimizing code before identifying actual performance bottlenecks, often wasting effort."
+},
+{
+  id: 174,
+  question: "What is the main benefit of using comments in code?",
+  options: [
+    "Making code longer",
+    "Improving understanding and maintainability",
+    "Slowing execution",
+    "Hiding logic"
+  ],
+  correctAnswer: 1,
+  explanation: "Comments improve code understanding, explain complex logic, and facilitate maintenance by other developers."
+},
+{
+  id: 175,
+  question: "Which evaluation technique is most comprehensive for software quality?",
+  options: [
+    "Single method only",
+    "Multiple methods and metrics",
+    "Ignoring quality",
+    "User opinion only"
+  ],
+  correctAnswer: 1,
+  explanation: "Comprehensive quality assessment requires multiple methods including testing, code review, metrics, and user feedback."
+},
+{
+  id: 176,
+  question: "In computational thinking, what is 'decomposition'?",
+  options: [
+    "Making problems larger",
+    "Breaking problems into smaller parts",
+    "Combining problems",
+    "Ignoring structure"
+  ],
+  correctAnswer: 1,
+  explanation: "Decomposition involves breaking complex problems into smaller, more manageable components for individual solution."
+},
+{
+  id: 177,
+  question: "What is the primary purpose of a software prototype?",
+  options: [
+    "Final product delivery",
+    "Exploring requirements and testing concepts",
+    "Eliminating development",
+    "Replacing documentation"
+  ],
+  correctAnswer: 1,
+  explanation: "Prototypes help explore requirements, test concepts, and gather feedback before full-scale development."
+},
+{
+  id: 178,
+  question: "Which C programming feature supports modular code organization?",
+  options: [
+    "Global variables only",
+    "Header files and separate compilation",
+    "Single file programs",
+    "No modular support"
+  ],
+  correctAnswer: 1,
+  explanation: "Header files and separate compilation enable modular code organization by separating interface from implementation."
+},
+{
+  id: 179,
+  question: "In problem analysis, what is 'stakeholder analysis'?",
+  options: [
+    "Ignoring stakeholders",
+    "Identifying and understanding affected parties",
+    "Technical analysis only",
+    "Eliminating users"
+  ],
+  correctAnswer: 1,
+  explanation: "Stakeholder analysis identifies all parties affected by a problem or solution and understands their interests and concerns."
+},
+{
+  id: 180,
+  question: "What is the main advantage of Python's dynamic data structures?",
+  options: [
+    "Fixed size limitations",
+    "Flexible size and type handling",
+    "Complex syntax",
+    "Slow performance"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's dynamic data structures automatically handle memory allocation and can grow/shrink as needed."
+},
+{
+  id: 181,
+  question: "Which problem-solving technique involves systematic elimination of options?",
+  options: [
+    "Random selection",
+    "Process of elimination",
+    "Keeping all options",
+    "Ignoring choices"
+  ],
+  correctAnswer: 1,
+  explanation: "Process of elimination systematically rules out incorrect or inferior options to identify the best solution."
+},
+{
+  id: 182,
+  question: "In software development, what is 'technical debt'?",
+  options: [
+    "Additional features",
+    "Future costs from quick but suboptimal solutions",
+    "Financial loans",
+    "Hardware costs"
+  ],
+  correctAnswer: 1,
+  explanation: "Technical debt represents future costs and effort required to fix suboptimal solutions implemented for short-term gains."
+},
+{
+  id: 183,
+  question: "What is the primary purpose of a test case?",
+  options: [
+    "Making programs fail",
+    "Systematically verifying specific functionality",
+    "Eliminating testing",
+    "Writing code"
+  ],
+  correctAnswer: 1,
+  explanation: "Test cases provide systematic procedures for verifying that specific functionality works as intended under various conditions."
+},
+{
+  id: 184,
+  question: "Which evaluation method is most reliable for performance assessment?",
+  options: [
+    "Theoretical analysis only",
+    "Empirical benchmarking",
+    "Developer intuition",
+    "User guesses"
+  ],
+  correctAnswer: 1,
+  explanation: "Empirical benchmarking through controlled testing provides the most reliable performance assessment data."
+},
+{
+  id: 185,
+  question: "In algorithm design, what is 'base case' in recursion?",
+  options: [
+    "The recursive call",
+    "The terminating condition",
+    "The main function",
+    "The output"
+  ],
+  correctAnswer: 1,
+  explanation: "The base case provides the terminating condition that stops the recursion in recursive algorithms."
+},
+{
+  id: 186,
+  question: "What is the main benefit of using version control systems?",
+  options: [
+    "Losing code history",
+    "Tracking changes and enabling collaboration",
+    "Eliminating backups",
+    "Making code private"
+  ],
+  correctAnswer: 1,
+  explanation: "Version control systems track changes, enable collaboration, and provide recovery points for software projects."
+},
+{
+  id: 187,
+  question: "Which Python feature supports rapid scripting?",
+  options: [
+    "Compilation requirements",
+    "Interpreted execution and dynamic typing",
+    "Complex syntax",
+    "Manual memory management"
+  ],
+  correctAnswer: 1,
+  explanation: "Python's interpreted execution and dynamic typing enable quick script writing and testing without compilation steps."
+},
+{
+  id: 188,
+  question: "In problem-solving, what is 'opportunity cost'?",
+  options: [
+    "Actual monetary cost",
+    "Value of next best alternative foregone",
+    "Development cost",
+    "Hardware cost"
+  ],
+  correctAnswer: 1,
+  explanation: "Opportunity cost represents the value of the next best alternative that is foregone when choosing a particular solution."
+},
+{
+  id: 189,
+  question: "What is the primary purpose of code documentation?",
+  options: [
+    "Making code longer",
+    "Explaining code purpose and usage",
+    "Hiding implementation",
+    "Eliminating comments"
+  ],
+  correctAnswer: 1,
+  explanation: "Code documentation explains the purpose, usage, and behavior of code to facilitate understanding and maintenance."
+},
+{
+  id: 190,
+  question: "Which C programming concept enables efficient array processing?",
+  options: [
+    "Printf statements",
+    "Pointer arithmetic",
+    "Global variables",
+    "Macros"
+  ],
+  correctAnswer: 1,
+  explanation: "Pointer arithmetic provides efficient ways to access and manipulate array elements through memory address calculations."
+},
+{
+  id: 191,
+  question: "In computational thinking, what is 'abstraction'?",
+  options: [
+    "Adding details",
+    "Simplifying by hiding complexity",
+    "Making things complex",
+    "Ignoring patterns"
+  ],
+  correctAnswer: 1,
+  explanation: "Abstraction simplifies complex systems by hiding unnecessary details and focusing on essential characteristics."
+},
+{
+  id: 192,
+  question: "What is the main advantage of using functions with parameters?",
+  options: [
+    "Making functions fixed",
+    "Creating flexible, reusable code",
+    "Eliminating returns",
+    "Hiding functionality"
+  ],
+  correctAnswer: 1,
+  explanation: "Parameters make functions flexible and reusable by allowing them to work with different input values."
+},
+{
+  id: 193,
+  question: "Which problem-solving approach is most systematic for risk management?",
+  options: [
+    "Ignoring risks",
+    "Risk identification and mitigation planning",
+    "Random decisions",
+    "Hope-based approach"
+  ],
+  correctAnswer: 1,
+  explanation: "Systematic risk management involves identifying potential risks and developing mitigation strategies in advance."
+},
+{
+  id: 194,
+  question: "In software testing, what is 'black box testing'?",
+  options: [
+    "Testing internal code structure",
+    "Testing functionality without knowing internals",
+    "Testing only UI",
+    "Ignoring testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Black box testing verifies functionality based on specifications without knowledge of internal code structure."
+},
+{
+  id: 195,
+  question: "What is the primary purpose of a software requirements specification?",
+  options: [
+    "Writing code",
+    "Clearly defining what the software must do",
+    "Eliminating planning",
+    "Designing UI only"
+  ],
+  correctAnswer: 1,
+  explanation: "A requirements specification clearly defines what the software must accomplish, serving as a contract between stakeholders."
+},
+{
+  id: 196,
+  question: "Which Python feature supports list processing?",
+  options: [
+    "Fixed arrays only",
+    "List comprehensions and built-in methods",
+    "Complex pointer arithmetic",
+    "Manual memory allocation"
+  ],
+  correctAnswer: 1,
+  explanation: "List comprehensions and built-in list methods provide powerful, concise ways to process and manipulate lists in Python."
+},
+{
+  id: 197,
+  question: "In problem-solving, what is 'bounded rationality'?",
+  options: [
+    "Perfect decision making",
+    "Decision making within cognitive limits",
+    "Infinite analysis",
+    "Ignoring constraints"
+  ],
+  correctAnswer: 1,
+  explanation: "Bounded rationality recognizes that decision making occurs within limits of available information, time, and cognitive capacity."
+},
+{
+  id: 198,
+  question: "What is the main benefit of using meaningful variable names?",
+  options: [
+    "Making code cryptic",
+    "Improving code readability and understanding",
+    "Hiding purpose",
+    "Eliminating comments"
+  ],
+  correctAnswer: 1,
+  explanation: "Meaningful variable names make code self-documenting and easier to understand without extensive comments."
+},
+{
+  id: 199,
+  question: "Which evaluation technique is most objective for code quality?",
+  options: [
+    "Personal preference",
+    "Static analysis and metrics",
+    "Guessing",
+    "Ignoring quality"
+  ],
+  correctAnswer: 1,
+  explanation: "Static analysis tools and quality metrics provide objective measurements of code quality characteristics."
+},
+{
+  id: 200,
+  question: "In computational problem-solving, what is the final verification step?",
+  options: [
+    "Ignoring results",
+    "Ensuring solution meets all requirements",
+    "Starting new problem",
+    "Eliminating testing"
+  ],
+  correctAnswer: 1,
+  explanation: "Final verification ensures the completed solution fully meets all specified requirements and successfully solves the original problem."
+}
+
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 40;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'COS 102';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

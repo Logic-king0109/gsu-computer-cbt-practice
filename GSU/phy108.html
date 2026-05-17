@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/your_channel" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the law of reflection?",
+  options: [
+    "Angle of incidence equals angle of reflection",
+    "Light bends when entering different media",
+    "Light speed changes in different materials",
+    "Light intensity decreases with distance"
+  ],
+  correctAnswer: 0,
+  explanation: "The law of reflection states that the angle of incidence equals the angle of reflection, and both rays lie in the same plane with the normal."
+},
+{
+  id: 2,
+  question: "In the rectangular glass block experiment, what happens to light when it enters the glass from air?",
+  options: [
+    "It bends towards the normal",
+    "It bends away from the normal",
+    "It continues straight without bending",
+    "It reflects back completely"
+  ],
+  correctAnswer: 0,
+  explanation: "When light enters a denser medium (glass) from a rarer medium (air), it bends towards the normal due to decrease in speed."
+},
+{
+  id: 3,
+  question: "What is the purpose of using pins in the rectangular glass block experiment?",
+  options: [
+    "To measure temperature",
+    "To mark the path of light rays",
+    "To hold the glass block in place",
+    "To measure the angle of deviation"
+  ],
+  correctAnswer: 1,
+  explanation: "Pins are used to mark the incident and emergent rays, allowing us to trace the path of light through the glass block and verify the laws of refraction."
+},
+{
+  id: 4,
+  question: "When light passes through a rectangular glass prism, what phenomenon causes the emergent ray to be parallel to the incident ray?",
+  options: [
+    "Total internal reflection",
+    "Lateral displacement",
+    "Dispersion",
+    "Chromatic aberration"
+  ],
+  correctAnswer: 1,
+  explanation: "Lateral displacement causes the emergent ray to be parallel but shifted sideways from the incident ray when light passes through a parallel-sided glass block."
+},
+{
+  id: 5,
+  question: "What factors affect the lateral displacement in a rectangular glass block?",
+  options: [
+    "Thickness of the block and angle of incidence",
+    "Color of light and temperature",
+    "Density of air and humidity",
+    "Size of the light source and room lighting"
+  ],
+  correctAnswer: 0,
+  explanation: "Lateral displacement increases with increasing thickness of the block and increasing angle of incidence (up to a certain limit)."
+},
+{
+  id: 6,
+  question: "In the two plane mirrors experiment, what determines the number of images formed?",
+  options: [
+    "The size of the mirrors",
+    "The angle between the mirrors",
+    "The distance of the object from the mirrors",
+    "The color of the object"
+  ],
+  correctAnswer: 1,
+  explanation: "The number of images formed by two inclined mirrors is given by n = (360/θ) - 1, where θ is the angle between the mirrors."
+},
+{
+  id: 7,
+  question: "If two plane mirrors are inclined at 60°, how many images will be formed of an object placed between them?",
+  options: [
+    "3",
+    "4",
+    "5",
+    "6"
+  ],
+  correctAnswer: 2,
+  explanation: "Using the formula n = (360/θ) - 1 = (360/60) - 1 = 6 - 1 = 5 images will be formed."
+},
+{
+  id: 8,
+  question: "What is the focal length of a converging lens?",
+  options: [
+    "The distance from lens to object",
+    "The distance from lens to image",
+    "The distance from lens to focal point",
+    "The thickness of the lens"
+  ],
+  correctAnswer: 2,
+  explanation: "The focal length is the distance from the optical center of the lens to the focal point, where parallel rays converge after refraction."
+},
+{
+  id: 9,
+  question: "In the converging lens experiment, what type of image is formed when the object is beyond 2F?",
+  options: [
+    "Virtual, erect, and magnified",
+    "Real, inverted, and diminished",
+    "Real, inverted, and same size",
+    "Real, inverted, and magnified"
+  ],
+  correctAnswer: 1,
+  explanation: "When object is beyond 2F, the image is real, inverted, diminished, and located between F and 2F on the other side."
+},
+{
+  id: 10,
+  question: "What is Ohm's Law?",
+  options: [
+    "V = I/R",
+    "I = V × R",
+    "V = I × R",
+    "R = V × I"
+  ],
+  correctAnswer: 2,
+  explanation: "Ohm's Law states that the current (I) through a conductor is directly proportional to the voltage (V) across it, and inversely proportional to its resistance (R): V = I × R."
+},
+{
+  id: 11,
+  question: "In the verification of Ohm's Law experiment, what is plotted on the graph?",
+  options: [
+    "Current vs Resistance",
+    "Voltage vs Resistance",
+    "Current vs Voltage",
+    "Power vs Current"
+  ],
+  correctAnswer: 2,
+  explanation: "A graph of current (I) versus voltage (V) is plotted, which should give a straight line through the origin, with slope equal to 1/R."
+},
+{
+  id: 12,
+  question: "What does the slope of the V-I graph represent in Ohm's Law experiment?",
+  options: [
+    "Conductance",
+    "Resistance",
+    "Power",
+    "Current density"
+  ],
+  correctAnswer: 1,
+  explanation: "The slope of the V-I graph represents resistance (R), since V = IR, so slope = ΔV/ΔI = R."
+},
+{
+  id: 13,
+  question: "What is internal resistance of a cell?",
+  options: [
+    "Resistance of the connecting wires",
+    "Resistance within the cell itself",
+    "Resistance of the voltmeter",
+    "Resistance of the ammeter"
+  ],
+  correctAnswer: 1,
+  explanation: "Internal resistance is the opposition to current flow within the cell itself, due to the electrolyte and electrodes."
+},
+{
+  id: 14,
+  question: "How is internal resistance of a cell calculated experimentally?",
+  options: [
+    "r = (E - V)/I",
+    "r = V/I",
+    "r = E/I",
+    "r = (V - E)/I"
+  ],
+  correctAnswer: 0,
+  explanation: "Internal resistance r = (E - V)/I, where E is EMF, V is terminal voltage, and I is current."
+},
+{
+  id: 15,
+  question: "In the internal resistance experiment, what happens to terminal voltage when current increases?",
+  options: [
+    "Increases",
+    "Decreases",
+    "Remains constant",
+    "Becomes zero"
+  ],
+  correctAnswer: 1,
+  explanation: "Terminal voltage decreases with increasing current due to voltage drop across the internal resistance: V = E - Ir."
+},
+{
+  id: 16,
+  question: "What is Snell's Law?",
+  options: [
+    "n₁sinθ₁ = n₂sinθ₂",
+    "sinθ₁/sinθ₂ = n₂/n₁",
+    "θ₁ = θ₂",
+    "n₁/n₂ = sinθ₂/sinθ₁"
+  ],
+  correctAnswer: 0,
+  explanation: "Snell's Law states: n₁sinθ₁ = n₂sinθ₂, where n is refractive index and θ is angle with normal."
+},
+{
+  id: 17,
+  question: "In the rectangular glass block experiment, what is the relationship between incident angle and emergent angle?",
+  options: [
+    "They are equal",
+    "Emergent angle is always greater",
+    "Emergent angle is always smaller",
+    "They are unrelated"
+  ],
+  correctAnswer: 0,
+  explanation: "For a parallel-sided glass block, the emergent ray is parallel to the incident ray, so the emergent angle equals the incident angle."
+},
+{
+  id: 18,
+  question: "What is the critical angle?",
+  options: [
+    "Angle of incidence for which angle of refraction is 0°",
+    "Angle of incidence for which angle of refraction is 90°",
+    "Angle between incident and reflected rays",
+    "Angle between refracted ray and normal"
+  ],
+  correctAnswer: 1,
+  explanation: "Critical angle is the angle of incidence in the denser medium for which the angle of refraction in the rarer medium is 90°."
+},
+{
+  id: 19,
+  question: "In the two mirrors experiment, when are the images formed in a straight line?",
+  options: [
+    "When angle is 45°",
+    "When angle is 90°",
+    "When angle is 180°",
+    "When angle is 0°"
+  ],
+  correctAnswer: 1,
+  explanation: "When two mirrors are at 90°, the three images formed lie on a circle, but appear in a straight line arrangement."
+},
+{
+  id: 20,
+  question: "What is the lens formula?",
+  options: [
+    "1/f = 1/u - 1/v",
+    "1/f = 1/u + 1/v",
+    "f = u + v",
+    "f = uv/(u + v)"
+  ],
+  correctAnswer: 1,
+  explanation: "The lens formula is 1/f = 1/u + 1/v, where f is focal length, u is object distance, and v is image distance."
+},
+{
+  id: 21,
+  question: "In converging lens experiment, what is the nature of image when object is at F?",
+  options: [
+    "Real and inverted",
+    "Virtual and erect",
+    "Image at infinity",
+    "No image formed"
+  ],
+  correctAnswer: 2,
+  explanation: "When object is at focal point F, the refracted rays are parallel and the image is formed at infinity."
+},
+{
+  id: 22,
+  question: "What precaution is important in Ohm's Law experiment?",
+  options: [
+    "Keep current constant",
+    "Avoid heating of the wire",
+    "Use AC current only",
+    "Measure voltage in series"
+  ],
+  correctAnswer: 1,
+  explanation: "Heating of the wire should be avoided as it increases resistance, making measurements inaccurate. Use low currents to prevent heating."
+},
+{
+  id: 23,
+  question: "How does internal resistance affect cell performance?",
+  options: [
+    "Increases voltage output",
+    "Decreases voltage under load",
+    "Increases current capacity",
+    "Decreases energy storage"
+  ],
+  correctAnswer: 1,
+  explanation: "Internal resistance causes voltage drop under load: V = E - Ir, so higher internal resistance means greater voltage drop when current is drawn."
+},
+{
+  id: 24,
+  question: "What is the refractive index of glass typically used in experiments?",
+  options: [
+    "1.0",
+    "1.33",
+    "1.5",
+    "2.0"
+  ],
+  correctAnswer: 2,
+  explanation: "Common glass has refractive index around 1.5, meaning light travels 1.5 times slower in glass than in vacuum."
+},
+{
+  id: 25,
+  question: "In lateral displacement experiment, what is the relationship between thickness and displacement?",
+  options: [
+    "Displacement ∝ thickness",
+    "Displacement ∝ 1/thickness",
+    "No relationship",
+    "Displacement ∝ thickness²"
+  ],
+  correctAnswer: 0,
+  explanation: "Lateral displacement is directly proportional to the thickness of the glass block for a given angle of incidence."
+},
+{
+  id: 26,
+  question: "What is the minimum number of images formed by two plane mirrors?",
+  options: [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  correctAnswer: 1,
+  explanation: "The minimum number of images is 1, which occurs when the mirrors are parallel (θ = 0°), forming infinite images theoretically, but practically limited."
+},
+{
+  id: 27,
+  question: "In lens experiment, what is the significance of the principal focus?",
+  options: [
+    "Point where object is placed",
+    "Point where parallel rays converge",
+    "Center of the lens",
+    "Point where image is formed"
+  ],
+  correctAnswer: 1,
+  explanation: "Principal focus is the point where rays parallel to principal axis converge after refraction through the lens."
+},
+{
+  id: 28,
+  question: "What is the unit of internal resistance?",
+  options: [
+    "Volt",
+    "Ampere",
+    "Ohm",
+    "Watt"
+  ],
+  correctAnswer: 2,
+  explanation: "Internal resistance is measured in ohms (Ω), same as external resistance."
+},
+{
+  id: 29,
+  question: "In Ohm's Law experiment, why is a rheostat used?",
+  options: [
+    "To measure voltage",
+    "To vary current",
+    "To store charge",
+    "To generate EMF"
+  ],
+  correctAnswer: 1,
+  explanation: "A rheostat (variable resistor) is used to vary the current in the circuit, allowing multiple V-I readings to be taken."
+},
+{
+  id: 30,
+  question: "What is the relationship between EMF and terminal voltage?",
+  options: [
+    "EMF = Terminal voltage",
+    "EMF > Terminal voltage",
+    "EMF < Terminal voltage",
+    "No fixed relationship"
+  ],
+  correctAnswer: 1,
+  explanation: "EMF is always greater than terminal voltage when current flows, due to voltage drop across internal resistance: E = V + Ir."
+},
+{
+  id: 31,
+  question: "In refraction through glass block, what remains constant?",
+  options: [
+    "Speed of light",
+    "Frequency of light",
+    "Wavelength of light",
+    "Direction of light"
+  ],
+  correctAnswer: 1,
+  explanation: "Frequency remains constant when light passes from one medium to another, while speed and wavelength change proportionally."
+},
+{
+  id: 32,
+  question: "What is the condition for no emergent ray from a prism?",
+  options: [
+    "Angle of incidence = 0°",
+    "Angle of incidence > critical angle",
+    "Prism is equilateral",
+    "Light is monochromatic"
+  ],
+  correctAnswer: 1,
+  explanation: "When angle of incidence exceeds critical angle, total internal reflection occurs and no light emerges from the prism."
+},
+{
+  id: 33,
+  question: "In two mirrors experiment, what happens when angle is 0°?",
+  options: [
+    "No images formed",
+    "One image formed",
+    "Two images formed",
+    "Infinite images formed"
+  ],
+  correctAnswer: 3,
+  explanation: "When mirrors are parallel (θ = 0°), theoretically infinite images are formed, though practically limited by reflection losses and mirror size."
+},
+{
+  id: 34,
+  question: "What is the power of a lens?",
+  options: [
+    "1/focal length",
+    "Focal length",
+    "Diameter/focal length",
+    "Focal length × diameter"
+  ],
+  correctAnswer: 0,
+  explanation: "Power of lens P = 1/f, where f is focal length in meters. Unit is diopter (D)."
+},
+{
+  id: 35,
+  question: "In Ohm's Law experiment, what indicates ohmic conductor?",
+  options: [
+    "Curved V-I graph",
+    "Straight V-I graph through origin",
+    "V-I graph with negative slope",
+    "V-I graph not passing through origin"
+  ],
+  correctAnswer: 1,
+  explanation: "An ohmic conductor shows a straight line V-I graph passing through origin, indicating constant resistance."
+},
+{
+  id: 36,
+  question: "How does temperature affect internal resistance?",
+  options: [
+    "Increases with temperature",
+    "Decreases with temperature",
+    "Unaffected by temperature",
+    "Becomes zero at high temperature"
+  ],
+  correctAnswer: 1,
+  explanation: "Internal resistance generally decreases with increasing temperature due to increased ionic mobility in the electrolyte."
+},
+{
+  id: 37,
+  question: "What is the normal in reflection experiments?",
+  options: [
+    "Line parallel to surface",
+    "Line perpendicular to surface",
+    "Incident ray direction",
+    "Reflected ray direction"
+  ],
+  correctAnswer: 1,
+  explanation: "The normal is an imaginary line drawn perpendicular to the reflecting surface at the point of incidence."
+},
+{
+  id: 38,
+  question: "In glass block experiment, why is the emergent ray parallel but displaced?",
+  options: [
+    "Due to absorption",
+    "Due to lateral displacement",
+    "Due to dispersion",
+    "Due to interference"
+  ],
+  correctAnswer: 1,
+  explanation: "Lateral displacement occurs because light bends towards normal on entry and away from normal on exit, causing sideways shift."
+},
+{
+  id: 39,
+  question: "What is the formula for number of images with inclined mirrors?",
+  options: [
+    "n = 360/θ",
+    "n = (360/θ) - 1",
+    "n = θ/360",
+    "n = 180/θ"
+  ],
+  correctAnswer: 1,
+  explanation: "Number of images n = (360/θ) - 1, where θ is angle between mirrors in degrees. This works when 360/θ is integer."
+},
+{
+  id: 40,
+  question: "What is the focal length of a lens that converges parallel rays at 20cm?",
+  options: [
+    "10cm",
+    "20cm",
+    "40cm",
+    "5cm"
+  ],
+  correctAnswer: 1,
+  explanation: "By definition, focal length is the distance from lens to point where parallel rays converge, so f = 20cm."
+},
+{
+  id: 41,
+  question: "In Ohm's Law experiment, what is connected in series with the resistor?",
+  options: [
+    "Voltmeter",
+    "Ammeter",
+    "Both voltmeter and ammeter",
+    "Neither"
+  ],
+  correctAnswer: 1,
+  explanation: "Ammeter is connected in series to measure current, while voltmeter is connected in parallel across the resistor."
+},
+{
+  id: 42,
+  question: "What is the relationship between EMF and internal resistance?",
+  options: [
+    "Direct proportionality",
+    "Inverse proportionality",
+    "No relationship",
+    "Exponential relationship"
+  ],
+  correctAnswer: 2,
+  explanation: "EMF and internal resistance are independent properties of a cell; EMF depends on electrodes and electrolyte, while internal resistance depends on construction and condition."
+},
+{
+  id: 43,
+  question: "What is the angle of deviation in prism?",
+  options: [
+    "Angle between incident and emergent rays",
+    "Angle between refracted rays",
+    "Angle of the prism",
+    "Angle of incidence"
+  ],
+  correctAnswer: 0,
+  explanation: "Angle of deviation is the angle between the direction of incident ray and emergent ray after refraction through the prism."
+},
+{
+  id: 44,
+  question: "In rectangular glass block, what is the relationship between refractive index and critical angle?",
+  options: [
+    "n = 1/sin C",
+    "n = sin C",
+    "n = 1/cos C",
+    "n = cos C"
+  ],
+  correctAnswer: 0,
+  explanation: "Refractive index n = 1/sin C, where C is critical angle for glass to air interface."
+},
+{
+  id: 45,
+  question: "When two mirrors are at 120°, how many images are formed?",
+  options: [
+    "2",
+    "3",
+    "4",
+    "5"
+  ],
+  correctAnswer: 1,
+  explanation: "n = (360/120) - 1 = 3 - 1 = 2 images will be formed."
+},
+{
+  id: 46,
+  question: "What is the magnification formula for lenses?",
+  options: [
+    "m = v/u",
+    "m = u/v",
+    "m = f/u",
+    "m = f/v"
+  ],
+  correctAnswer: 0,
+  explanation: "Magnification m = height of image/height of object = v/u, where v is image distance and u is object distance."
+},
+{
+  id: 47,
+  question: "Why is a high resistance voltmeter used in internal resistance experiment?",
+  options: [
+    "To draw more current",
+    "To minimize current drawn",
+    "To increase voltage reading",
+    "To decrease internal resistance"
+  ],
+  correctAnswer: 1,
+  explanation: "High resistance voltmeter draws negligible current, ensuring accurate measurement of terminal voltage without significant voltage drop."
+},
+{
+  id: 48,
+  question: "What is the purpose of using multiple pins in ray optics experiments?",
+  options: [
+    "To determine ray path accurately",
+    "To hold the apparatus",
+    "To measure angles",
+    "To create multiple images"
+  ],
+  correctAnswer: 0,
+  explanation: "Multiple pins help determine the exact path of light rays by aligning them, reducing experimental errors in ray tracing."
+},
+{
+  id: 49,
+  question: "In Ohm's Law, what happens if the conductor heats up during experiment?",
+  options: [
+    "Resistance decreases",
+    "Resistance increases",
+    "Resistance remains constant",
+    "Current becomes zero"
+  ],
+  correctAnswer: 1,
+  explanation: "For most conductors, resistance increases with temperature due to increased atomic vibrations impeding electron flow."
+},
+{
+  id: 50,
+  question: "What is the typical range of internal resistance for a dry cell?",
+  options: [
+    "0.1 - 1 ohm",
+    "1 - 10 ohms",
+    "10 - 100 ohms",
+    "100 - 1000 ohms"
+  ],
+  correctAnswer: 1,
+  explanation: "A fresh dry cell typically has internal resistance between 1-10 ohms, which increases as the cell ages or discharges."
+}
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'PHY 108';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

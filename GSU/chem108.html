@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the atomic number of an element?",
+  options: [
+    "Number of protons and neutrons",
+    "Number of protons only",
+    "Number of electrons only",
+    "Number of neutrons only"
+  ],
+  correctAnswer: 1,
+  explanation: "The atomic number represents the number of protons in the nucleus of an atom, which determines the element's identity."
+},
+{
+  id: 2,
+  question: "Which subatomic particle has a negative charge?",
+  options: [
+    "Proton",
+    "Neutron",
+    "Electron",
+    "Positron"
+  ],
+  correctAnswer: 2,
+  explanation: "Electrons carry a negative charge and orbit the nucleus of an atom."
+},
+{
+  id: 3,
+  question: "What does the pH scale measure?",
+  options: [
+    "Temperature",
+    "Pressure",
+    "Acidity/basicity",
+    "Density"
+  ],
+  correctAnswer: 2,
+  explanation: "The pH scale measures the acidity or basicity of a solution, ranging from 0 (acidic) to 14 (basic)."
+},
+{
+  id: 4,
+  question: "How many electrons can occupy the first energy level?",
+  options: [
+    "2",
+    "8",
+    "18",
+    "32"
+  ],
+  correctAnswer: 0,
+  explanation: "The first energy level (n=1) can hold a maximum of 2 electrons according to the 2n² rule."
+},
+{
+  id: 5,
+  question: "What type of bond involves sharing electron pairs?",
+  options: [
+    "Ionic bond",
+    "Covalent bond",
+    "Metallic bond",
+    "Hydrogen bond"
+  ],
+  correctAnswer: 1,
+  explanation: "Covalent bonds form when atoms share pairs of electrons to achieve stable electron configurations."
+},
+{
+  id: 6,
+  question: "Which element has the chemical symbol 'Na'?",
+  options: [
+    "Nitrogen",
+    "Sodium",
+    "Nickel",
+    "Neon"
+  ],
+  correctAnswer: 1,
+  explanation: "Na is the chemical symbol for Sodium, derived from its Latin name 'Natrium'."
+},
+{
+  id: 7,
+  question: "What is the molar mass of water (H₂O)?",
+  options: [
+    "16 g/mol",
+    "18 g/mol",
+    "20 g/mol",
+    "22 g/mol"
+  ],
+  correctAnswer: 1,
+  explanation: "Water has 2 hydrogen atoms (1 g/mol each) and 1 oxygen atom (16 g/mol), totaling 18 g/mol."
+},
+{
+  id: 8,
+  question: "Which gas is produced when acids react with metals?",
+  options: [
+    "Oxygen",
+    "Carbon dioxide",
+    "Hydrogen",
+    "Nitrogen"
+  ],
+  correctAnswer: 2,
+  explanation: "Acids react with metals to produce hydrogen gas and a salt in a single displacement reaction."
+},
+{
+  id: 9,
+  question: "What is the SI unit for amount of substance?",
+  options: [
+    "Gram",
+    "Mole",
+    "Liter",
+    "Joule"
+  ],
+  correctAnswer: 1,
+  explanation: "The mole is the SI base unit for amount of substance, defined as containing exactly 6.022 × 10²³ elementary entities."
+},
+{
+  id: 10,
+  question: "Which laboratory equipment is used to measure precise liquid volumes?",
+  options: [
+    "Beaker",
+    "Graduated cylinder",
+    "Test tube",
+    "Evaporating dish"
+  ],
+  correctAnswer: 1,
+  explanation: "Graduated cylinders provide more precise volume measurements than beakers due to their narrow shape and fine graduations."
+},
+{
+  id: 11,
+  question: "What is the formula for calculating density?",
+  options: [
+    "Mass × Volume",
+    "Mass ÷ Volume",
+    "Volume ÷ Mass",
+    "Mass + Volume"
+  ],
+  correctAnswer: 1,
+  explanation: "Density is calculated as mass divided by volume (D = m/V), typically expressed in g/mL or g/cm³."
+},
+{
+  id: 12,
+  question: "Which type of reaction releases heat to the surroundings?",
+  options: [
+    "Endothermic",
+    "Exothermic",
+    "Isothermal",
+    "Adiabatic"
+  ],
+  correctAnswer: 1,
+  explanation: "Exothermic reactions release heat energy to the surroundings, often feeling warm to the touch."
+},
+{
+  id: 13,
+  question: "What is the oxidation state of oxygen in most compounds?",
+  options: [
+    "+1",
+    "+2",
+    "-1",
+    "-2"
+  ],
+  correctAnswer: 3,
+  explanation: "Oxygen typically has an oxidation state of -2 in compounds, except in peroxides where it is -1."
+},
+{
+  id: 14,
+  question: "Which element is the most electronegative?",
+  options: [
+    "Oxygen",
+    "Nitrogen",
+    "Fluorine",
+    "Chlorine"
+  ],
+  correctAnswer: 2,
+  explanation: "Fluorine is the most electronegative element with a Pauling electronegativity value of 4.0."
+},
+{
+  id: 15,
+  question: "What is Avogadro's number?",
+  options: [
+    "6.022 × 10²³",
+    "3.00 × 10⁸",
+    "1.67 × 10⁻²⁷",
+    "9.11 × 10⁻³¹"
+  ],
+  correctAnswer: 0,
+  explanation: "Avogadro's number is 6.022 × 10²³, representing the number of particles in one mole of substance."
+},
+{
+  id: 16,
+  question: "Which gas law relates pressure and volume at constant temperature?",
+  options: [
+    "Charles's Law",
+    "Boyle's Law",
+    "Gay-Lussac's Law",
+    "Avogadro's Law"
+  ],
+  correctAnswer: 1,
+  explanation: "Boyle's Law states that pressure and volume are inversely proportional at constant temperature (P₁V₁ = P₂V₂)."
+},
+{
+  id: 17,
+  question: "What is the electron configuration of carbon?",
+  options: [
+    "1s²2s²2p²",
+    "1s²2s²2p⁴",
+    "1s²2s²2p⁶",
+    "1s²2s¹2p³"
+  ],
+  correctAnswer: 0,
+  explanation: "Carbon has 6 electrons with the configuration 1s²2s²2p², placing it in group 14 of the periodic table."
+},
+{
+  id: 18,
+  question: "Which type of solution has a pH less than 7?",
+  options: [
+    "Basic",
+    "Acidic",
+    "Neutral",
+    "Amphoteric"
+  ],
+  correctAnswer: 1,
+  explanation: "Acidic solutions have pH values less than 7 due to higher concentration of H⁺ ions."
+},
+{
+  id: 19,
+  question: "What is the formula for sulfuric acid?",
+  options: [
+    "HCl",
+    "H₂SO₄",
+    "HNO₃",
+    "H₃PO₄"
+  ],
+  correctAnswer: 1,
+  explanation: "Sulfuric acid has the formula H₂SO₄ and is a strong acid commonly used in laboratories."
+},
+{
+  id: 20,
+  question: "Which separation technique uses boiling point differences?",
+  options: [
+    "Filtration",
+    "Distillation",
+    "Chromatography",
+    "Centrifugation"
+  ],
+  correctAnswer: 1,
+  explanation: "Distillation separates mixtures based on differences in boiling points of components."
+},
+{
+  id: 21,
+  question: "What is the charge of a proton?",
+  options: [
+    "+1",
+    "-1",
+    "0",
+    "+2"
+  ],
+  correctAnswer: 0,
+  explanation: "Protons carry a positive charge of +1 and are located in the atomic nucleus."
+},
+{
+  id: 22,
+  question: "Which element is a noble gas?",
+  options: [
+    "Chlorine",
+    "Argon",
+    "Nitrogen",
+    "Oxygen"
+  ],
+  correctAnswer: 1,
+  explanation: "Argon is a noble gas in group 18, characterized by its chemical inertness and full valence electron shell."
+},
+{
+  id: 23,
+  question: "What is the formula for sodium chloride?",
+  options: [
+    "NaCl",
+    "Na₂Cl",
+    "NaCl₂",
+    "Na₂Cl₂"
+  ],
+  correctAnswer: 0,
+  explanation: "Sodium chloride (table salt) has the formula NaCl, with a 1:1 ratio of sodium to chloride ions."
+},
+{
+  id: 24,
+  question: "How many significant figures are in 0.00450?",
+  options: [
+    "2",
+    "3",
+    "4",
+    "5"
+  ],
+  correctAnswer: 1,
+  explanation: "The number 0.00450 has 3 significant figures: 4, 5, and the final 0 (which is significant after a decimal)."
+},
+{
+  id: 25,
+  question: "What is the ideal gas law equation?",
+  options: [
+    "PV = nRT",
+    "P₁V₁ = P₂V₂",
+    "V₁/T₁ = V₂/T₂",
+    "P₁/T₁ = P₂/T₂"
+  ],
+  correctAnswer: 0,
+  explanation: "The ideal gas law is PV = nRT, where P is pressure, V is volume, n is moles, R is gas constant, and T is temperature."
+},
+{
+  id: 26,
+  question: "Which type of radiation has the greatest penetrating power?",
+  options: [
+    "Alpha particles",
+    "Beta particles",
+    "Gamma rays",
+    "Neutrons"
+  ],
+  correctAnswer: 2,
+  explanation: "Gamma rays have the greatest penetrating power and require thick lead or concrete for shielding."
+},
+{
+  id: 27,
+  question: "What is the oxidation state of hydrogen in most compounds?",
+  options: [
+    "+1",
+    "-1",
+    "0",
+    "+2"
+  ],
+  correctAnswer: 0,
+  explanation: "Hydrogen typically has an oxidation state of +1 in compounds, except in metal hydrides where it is -1."
+},
+{
+  id: 28,
+  question: "Which element has the highest melting point?",
+  options: [
+    "Iron",
+    "Tungsten",
+    "Carbon",
+    "Platinum"
+  ],
+  correctAnswer: 2,
+  explanation: "Carbon (as graphite) has one of the highest melting points at about 3,500°C, though tungsten is the highest melting metal."
+},
+{
+  id: 29,
+  question: "What is the purpose of a catalyst in a chemical reaction?",
+  options: [
+    "Increase temperature",
+    "Decrease pressure",
+    "Speed up reaction rate",
+    "Change products"
+  ],
+  correctAnswer: 2,
+  explanation: "Catalysts speed up chemical reactions by providing an alternative pathway with lower activation energy, without being consumed."
+},
+{
+  id: 30,
+  question: "Which laboratory safety equipment protects eyes?",
+  options: [
+    "Lab coat",
+    "Safety goggles",
+    "Gloves",
+    "Fume hood"
+  ],
+  correctAnswer: 1,
+  explanation: "Safety goggles provide essential eye protection against chemical splashes, flying particles, and other hazards."
+},
+{
+  id: 31,
+  question: "What is the formula for calculating moles?",
+  options: [
+    "Mass × Molar mass",
+    "Mass ÷ Molar mass",
+    "Molar mass ÷ Mass",
+    "Mass + Molar mass"
+  ],
+  correctAnswer: 1,
+  explanation: "Moles = mass divided by molar mass (n = m/M), allowing conversion between mass and number of particles."
+},
+{
+  id: 32,
+  question: "Which element is liquid at room temperature?",
+  options: [
+    "Bromine",
+    "Chlorine",
+    "Iodine",
+    "Fluorine"
+  ],
+  correctAnswer: 0,
+  explanation: "Bromine is one of the few elements that is liquid at room temperature (25°C)."
+},
+{
+  id: 33,
+  question: "What is the shape of a p orbital?",
+  options: [
+    "Spherical",
+    "Dumbbell",
+    "Cloverleaf",
+    "Complex"
+  ],
+  correctAnswer: 1,
+  explanation: "P orbitals have a dumbbell shape with two lobes on opposite sides of the nucleus."
+},
+{
+  id: 34,
+  question: "Which acid is found in vinegar?",
+  options: [
+    "Acetic acid",
+    "Citric acid",
+    "Lactic acid",
+    "Formic acid"
+  ],
+  correctAnswer: 0,
+  explanation: "Vinegar contains acetic acid (CH₃COOH), typically at 4-8% concentration."
+},
+{
+  id: 35,
+  question: "What is the maximum number of electrons in a d subshell?",
+  options: [
+    "2",
+    "6",
+    "10",
+    "14"
+  ],
+  correctAnswer: 2,
+  explanation: "The d subshell can hold a maximum of 10 electrons, following the 2(2l+1) rule where l=2 for d orbitals."
+},
+{
+  id: 36,
+  question: "Which gas is known as laughing gas?",
+  options: [
+    "Nitrogen dioxide",
+    "Nitrous oxide",
+    "Nitric oxide",
+    "Ammonia"
+  ],
+  correctAnswer: 1,
+  explanation: "Nitrous oxide (N₂O) is commonly known as laughing gas and is used as an anesthetic."
+},
+{
+  id: 37,
+  question: "What is the formula for calculating percent yield?",
+  options: [
+    "(Theoretical/Acual) × 100",
+    "(Actual/Theoretical) × 100",
+    "(Actual - Theoretical) × 100",
+    "(Theoretical - Actual) × 100"
+  ],
+  correctAnswer: 1,
+  explanation: "Percent yield = (actual yield ÷ theoretical yield) × 100%, measuring reaction efficiency."
+},
+{
+  id: 38,
+  question: "Which element is the most abundant in the Earth's crust?",
+  options: [
+    "Iron",
+    "Oxygen",
+    "Silicon",
+    "Aluminum"
+  ],
+  correctAnswer: 1,
+  explanation: "Oxygen is the most abundant element in the Earth's crust, comprising about 46% by mass."
+},
+{
+  id: 39,
+  question: "What is the SI unit of temperature?",
+  options: [
+    "Celsius",
+    "Fahrenheit",
+    "Kelvin",
+    "Rankine"
+  ],
+  correctAnswer: 2,
+  explanation: "Kelvin is the SI base unit for temperature, with 0 K representing absolute zero."
+},
+{
+  id: 40,
+  question: "Which type of bond forms between metal atoms?",
+  options: [
+    "Ionic",
+    "Covalent",
+    "Metallic",
+    "Hydrogen"
+  ],
+  correctAnswer: 2,
+  explanation: "Metallic bonds form between metal atoms, characterized by a 'sea' of delocalized electrons."
+},
+{
+  id: 41,
+  question: "What is the formula for carbon dioxide?",
+  options: [
+    "CO",
+    "CO₂",
+    "C₂O",
+    "C₂O₂"
+  ],
+  correctAnswer: 1,
+  explanation: "Carbon dioxide has the formula CO₂, consisting of one carbon atom bonded to two oxygen atoms."
+},
+{
+  id: 42,
+  question: "Which indicator turns pink in basic solution?",
+  options: [
+    "Litmus",
+    "Phenolphthalein",
+    "Methyl orange",
+    "Bromothymol blue"
+  ],
+  correctAnswer: 1,
+  explanation: "Phenolphthalein is colorless in acidic solutions but turns pink in basic solutions (pH > 8.3)."
+},
+{
+  id: 43,
+  question: "What is the atomic mass unit based on?",
+  options: [
+    "Mass of hydrogen atom",
+    "Mass of carbon-12 atom",
+    "Mass of oxygen-16 atom",
+    "Mass of proton"
+  ],
+  correctAnswer: 1,
+  explanation: "One atomic mass unit (amu) is defined as 1/12 the mass of a carbon-12 atom."
+},
+{
+  id: 44,
+  question: "Which law states that matter cannot be created or destroyed?",
+  options: [
+    "Law of Conservation of Energy",
+    "Law of Conservation of Mass",
+    "Law of Definite Proportions",
+    "Law of Multiple Proportions"
+  ],
+  correctAnswer: 1,
+  explanation: "The Law of Conservation of Mass states that matter is neither created nor destroyed in chemical reactions."
+},
+{
+  id: 45,
+  question: "What is the oxidation state of chromium in K₂Cr₂O₇?",
+  options: [
+    "+2",
+    "+3",
+    "+6",
+    "+7"
+  ],
+  correctAnswer: 2,
+  explanation: "In potassium dichromate (K₂Cr₂O₇), chromium has an oxidation state of +6."
+},
+{
+  id: 46,
+  question: "Which element is used in fluorescent lights?",
+  options: [
+    "Neon",
+    "Argon",
+    "Mercury",
+    "Xenon"
+  ],
+  correctAnswer: 2,
+  explanation: "Mercury vapor in fluorescent lights produces ultraviolet light that excites phosphors to create visible light."
+},
+{
+  id: 47,
+  question: "What is the formula for ammonia?",
+  options: [
+    "NH₃",
+    "NH₄",
+    "N₂H₄",
+    "HNO₃"
+  ],
+  correctAnswer: 0,
+  explanation: "Ammonia has the formula NH₃ and is a common base used in fertilizers and cleaning products."
+},
+{
+  id: 48,
+  question: "Which separation method uses a stationary and mobile phase?",
+  options: [
+    "Filtration",
+    "Distillation",
+    "Chromatography",
+    "Crystallization"
+  ],
+  correctAnswer: 2,
+  explanation: "Chromatography separates mixtures based on differential partitioning between a stationary and mobile phase."
+},
+{
+  id: 49,
+  question: "What is the electron configuration of a neutral sodium atom?",
+  options: [
+    "1s²2s²2p⁶3s¹",
+    "1s²2s²2p⁶",
+    "1s²2s²2p⁶3s²",
+    "1s²2s²2p⁵3s²"
+  ],
+  correctAnswer: 0,
+  explanation: "Sodium (atomic number 11) has the electron configuration 1s²2s²2p⁶3s¹."
+},
+{
+  id: 50,
+  question: "Which gas law relates volume and temperature at constant pressure?",
+  options: [
+    "Boyle's Law",
+    "Charles's Law",
+    "Gay-Lussac's Law",
+    "Dalton's Law"
+  ],
+  correctAnswer: 1,
+  explanation: "Charles's Law states that volume and temperature are directly proportional at constant pressure (V₁/T₁ = V₂/T₂)."
+},
+{
+  id: 51,
+  question: "What is the formula for calculating energy of a photon?",
+  options: [
+    "E = mc²",
+    "E = hf",
+    "E = kq/r",
+    "E = ½mv²"
+  ],
+  correctAnswer: 1,
+  explanation: "The energy of a photon is given by E = hf, where h is Planck's constant and f is frequency."
+},
+{
+  id: 52,
+  question: "Which element has the highest electronegativity?",
+  options: [
+    "Chlorine",
+    "Oxygen",
+    "Fluorine",
+    "Nitrogen"
+  ],
+  correctAnswer: 2,
+  explanation: "Fluorine has the highest electronegativity (4.0 on Pauling scale) due to its small atomic radius and high nuclear charge."
+},
+{
+  id: 53,
+  question: "What is the pH of a neutral solution at 25°C?",
+  options: [
+    "0",
+    "7",
+    "14",
+    "1"
+  ],
+  correctAnswer: 1,
+  explanation: "A neutral solution has pH = 7 at 25°C, where [H⁺] = [OH⁻] = 10⁻⁷ M."
+},
+{
+  id: 54,
+  question: "Which type of crystal lattice is formed by sodium chloride?",
+  options: [
+    "Simple cubic",
+    "Body-centered cubic",
+    "Face-centered cubic",
+    "Hexagonal close-packed"
+  ],
+  correctAnswer: 2,
+  explanation: "Sodium chloride forms a face-centered cubic crystal lattice with alternating Na⁺ and Cl⁻ ions."
+},
+{
+  id: 55,
+  question: "What is the formula for magnesium hydroxide?",
+  options: [
+    "MgO",
+    "Mg(OH)₂",
+    "MgH",
+    "Mg₂OH"
+  ],
+  correctAnswer: 1,
+  explanation: "Magnesium hydroxide has the formula Mg(OH)₂ and is used as an antacid (milk of magnesia)."
+},
+{
+  id: 56,
+  question: "Which quantum number describes orbital shape?",
+  options: [
+    "Principal (n)",
+    "Azimuthal (l)",
+    "Magnetic (mₗ)",
+    "Spin (mₛ)"
+  ],
+  correctAnswer: 1,
+  explanation: "The azimuthal quantum number (l) determines the shape of the orbital (s, p, d, f)."
+},
+{
+  id: 57,
+  question: "What is the common name for calcium carbonate?",
+  options: [
+    "Gypsum",
+    "Limestone",
+    "Quicklime",
+    "Slaked lime"
+  ],
+  correctAnswer: 1,
+  explanation: "Calcium carbonate (CaCO₃) is commonly known as limestone and is found in rocks, shells, and pearls."
+},
+{
+  id: 58,
+  question: "Which element is a semiconductor?",
+  options: [
+    "Copper",
+    "Silicon",
+    "Silver",
+    "Aluminum"
+  ],
+  correctAnswer: 1,
+  explanation: "Silicon is a semiconductor widely used in electronics due to its intermediate conductivity."
+},
+{
+  id: 59,
+  question: "What is the formula for calculating pressure?",
+  options: [
+    "Mass/Volume",
+    "Force/Area",
+    "Work/Time",
+    "Energy/Volume"
+  ],
+  correctAnswer: 1,
+  explanation: "Pressure is defined as force per unit area (P = F/A), typically measured in pascals (Pa) or atm."
+},
+{
+  id: 60,
+  question: "Which type of reaction involves electron transfer?",
+  options: [
+    "Acid-base",
+    "Redox",
+    "Precipitation",
+    "Combustion"
+  ],
+  correctAnswer: 1,
+  explanation: "Redox (reduction-oxidation) reactions involve the transfer of electrons between species."
+},
+{
+  id: 61,
+  question: "What is the molar volume of a gas at STP?",
+  options: [
+    "22.4 L/mol",
+    "24.5 L/mol",
+    "20.0 L/mol",
+    "25.0 L/mol"
+  ],
+  correctAnswer: 0,
+  explanation: "At Standard Temperature and Pressure (STP), one mole of any gas occupies 22.4 liters."
+},
+{
+  id: 62,
+  question: "Which element is essential for organic compounds?",
+  options: [
+    "Carbon",
+    "Nitrogen",
+    "Oxygen",
+    "Hydrogen"
+  ],
+  correctAnswer: 0,
+  explanation: "Carbon is the fundamental element in organic chemistry, forming the backbone of organic compounds."
+},
+{
+  id: 63,
+  question: "What is the formula for nitric acid?",
+  options: [
+    "HNO₂",
+    "HNO₃",
+    "H₂SO₄",
+    "H₃PO₄"
+  ],
+  correctAnswer: 1,
+  explanation: "Nitric acid has the formula HNO₃ and is a strong oxidizing acid."
+},
+{
+  id: 64,
+  question: "Which law describes pressure-volume relationship?",
+  options: [
+    "Charles's Law",
+    "Boyle's Law",
+    "Gay-Lussac's Law",
+    "Avogadro's Law"
+  ],
+  correctAnswer: 1,
+  explanation: "Boyle's Law states that pressure and volume are inversely proportional at constant temperature."
+},
+{
+  id: 65,
+  question: "What is the oxidation state of sulfur in H₂SO₄?",
+  options: [
+    "+4",
+    "+6",
+    "-2",
+    "0"
+  ],
+  correctAnswer: 1,
+  explanation: "In sulfuric acid (H₂SO₄), sulfur has an oxidation state of +6."
+},
+{
+  id: 66,
+  question: "Which element is used in nuclear reactors?",
+  options: [
+    "Uranium",
+    "Radium",
+    "Thorium",
+    "Plutonium"
+  ],
+  correctAnswer: 0,
+  explanation: "Uranium-235 is commonly used as fuel in nuclear reactors due to its fissionable properties."
+},
+{
+  id: 67,
+  question: "What is the formula for calculating concentration in mol/L?",
+  options: [
+    "Mass/Volume",
+    "Moles/Volume",
+    "Volume/Moles",
+    "Mass/Moles"
+  ],
+  correctAnswer: 1,
+  explanation: "Molar concentration (molarity) = moles of solute ÷ liters of solution (M = n/V)."
+},
+{
+  id: 68,
+  question: "Which type of isomerism occurs in alkenes?",
+  options: [
+    "Structural isomerism",
+    "Geometric isomerism",
+    "Optical isomerism",
+    "Conformational isomerism"
+  ],
+  correctAnswer: 1,
+  explanation: "Alkenes exhibit geometric (cis-trans) isomerism due to restricted rotation around the double bond."
+},
+{
+  id: 69,
+  question: "What is the common name for sodium bicarbonate?",
+  options: [
+    "Baking soda",
+    "Washing soda",
+    "Table salt",
+    "Baking powder"
+  ],
+  correctAnswer: 0,
+  explanation: "Sodium bicarbonate (NaHCO₃) is commonly known as baking soda and is used in cooking and as an antacid."
+},
+{
+  id: 70,
+  question: "Which gas is responsible for the greenhouse effect?",
+  options: [
+    "Oxygen",
+    "Nitrogen",
+    "Carbon dioxide",
+    "Helium"
+  ],
+  correctAnswer: 2,
+  explanation: "Carbon dioxide is a major greenhouse gas that traps heat in the Earth's atmosphere."
+},
+{
+  id: 71,
+  question: "What is the formula for calcium oxide?",
+  options: [
+    "CaO",
+    "Ca(OH)₂",
+    "CaCO₃",
+    "CaCl₂"
+  ],
+  correctAnswer: 0,
+  explanation: "Calcium oxide (CaO) is known as quicklime and is produced by heating limestone."
+},
+{
+  id: 72,
+  question: "Which quantum number determines orbital orientation?",
+  options: [
+    "Principal (n)",
+    "Azimuthal (l)",
+    "Magnetic (mₗ)",
+    "Spin (mₛ)"
+  ],
+  correctAnswer: 2,
+  explanation: "The magnetic quantum number (mₗ) determines the orientation of orbitals in space."
+},
+{
+  id: 73,
+  question: "What is the formula for methane?",
+  options: [
+    "CH₄",
+    "C₂H₆",
+    "C₃H₈",
+    "C₄H₁₀"
+  ],
+  correctAnswer: 0,
+  explanation: "Methane (CH₄) is the simplest alkane and the main component of natural gas."
+},
+{
+  id: 74,
+  question: "Which element is a halogen?",
+  options: [
+    "Sodium",
+    "Chlorine",
+    "Argon",
+    "Potassium"
+  ],
+  correctAnswer: 1,
+  explanation: "Chlorine is a halogen in group 17, known for forming salts with metals."
+},
+{
+  id: 75,
+  question: "What is the purpose of a buffer solution?",
+  options: [
+    "Change pH rapidly",
+    "Maintain constant pH",
+    "Increase temperature",
+    "Decrease viscosity"
+  ],
+  correctAnswer: 1,
+  explanation: "Buffer solutions resist pH changes when small amounts of acid or base are added."
+},
+{
+  id: 76,
+  question: "Which law states that equal volumes of gases contain equal numbers of molecules?",
+  options: [
+    "Boyle's Law",
+    "Charles's Law",
+    "Avogadro's Law",
+    "Gay-Lussac's Law"
+  ],
+  correctAnswer: 2,
+  explanation: "Avogadro's Law states that equal volumes of gases at the same temperature and pressure contain equal numbers of molecules."
+},
+{
+  id: 77,
+  question: "What is the formula for potassium permanganate?",
+  options: [
+    "KMnO₄",
+    "K₂MnO₄",
+    "KMnO₃",
+    "K₂MnO₃"
+  ],
+  correctAnswer: 0,
+  explanation: "Potassium permanganate (KMnO₄) is a strong oxidizing agent used in titrations and as a disinfectant."
+},
+{
+  id: 78,
+  question: "Which type of radiation is stopped by paper?",
+  options: [
+    "Alpha particles",
+    "Beta particles",
+    "Gamma rays",
+    "X-rays"
+  ],
+  correctAnswer: 0,
+  explanation: "Alpha particles have low penetrating power and can be stopped by a sheet of paper or skin."
+},
+{
+  id: 79,
+  question: "What is the oxidation state of manganese in KMnO₄?",
+  options: [
+    "+2",
+    "+4",
+    "+6",
+    "+7"
+  ],
+  correctAnswer: 3,
+  explanation: "In potassium permanganate (KMnO₄), manganese has an oxidation state of +7."
+},
+{
+  id: 80,
+  question: "Which element is used in photocopiers?",
+  options: [
+    "Selenium",
+    "Silicon",
+    "Germanium",
+    "Tellurium"
+  ],
+  correctAnswer: 0,
+  explanation: "Selenium is used in photocopiers and laser printers due to its photoconductive properties."
+},
+{
+  id: 81,
+  question: "What is the formula for calculating work?",
+  options: [
+    "Force × Distance",
+    "Mass × Acceleration",
+    "Pressure × Volume",
+    "Energy × Time"
+  ],
+  correctAnswer: 0,
+  explanation: "Work is calculated as force multiplied by distance (W = F × d), measured in joules."
+},
+{
+  id: 82,
+  question: "Which element has the highest thermal conductivity?",
+  options: [
+    "Silver",
+    "Copper",
+    "Gold",
+    "Aluminum"
+  ],
+  correctAnswer: 0,
+  explanation: "Silver has the highest thermal conductivity of all elements, followed by copper and gold."
+},
+{
+  id: 83,
+  question: "What is the formula for ethanol?",
+  options: [
+    "CH₃OH",
+    "C₂H₅OH",
+    "C₃H₇OH",
+    "C₄H₉OH"
+  ],
+  correctAnswer: 1,
+  explanation: "Ethanol (C₂H₅OH) is the alcohol found in alcoholic beverages and used as a fuel and solvent."
+},
+{
+  id: 84,
+  question: "Which type of bond is strongest?",
+  options: [
+    "Ionic bond",
+    "Covalent bond",
+    "Metallic bond",
+    "Hydrogen bond"
+  ],
+  correctAnswer: 1,
+  explanation: "Covalent bonds are generally the strongest type of chemical bond, though bond strength varies."
+},
+{
+  id: 85,
+  question: "What is the common name for dihydrogen monoxide?",
+  options: [
+    "Hydrogen peroxide",
+    "Water",
+    "Hydrochloric acid",
+    "Ammonia"
+  ],
+  correctAnswer: 1,
+  explanation: "Dihydrogen monoxide is the systematic name for water (H₂O)."
+},
+{
+  id: 86,
+  question: "Which element is used in dating archaeological materials?",
+  options: [
+    "Carbon-14",
+    "Uranium-238",
+    "Potassium-40",
+    "All of the above"
+  ],
+  correctAnswer: 3,
+  explanation: "Carbon-14 is used for dating organic materials, while uranium and potassium isotopes date older geological samples."
+},
+{
+  id: 87,
+  question: "What is the formula for calculating density?",
+  options: [
+    "Mass × Volume",
+    "Mass ÷ Volume",
+    "Volume ÷ Mass",
+    "Weight × Volume"
+  ],
+  correctAnswer: 1,
+  explanation: "Density = mass divided by volume (ρ = m/V), typically expressed in g/cm³ or kg/m³."
+},
+{
+  id: 88,
+  question: "Which gas is produced during photosynthesis?",
+  options: [
+    "Carbon dioxide",
+    "Oxygen",
+    "Nitrogen",
+    "Hydrogen"
+  ],
+  correctAnswer: 1,
+  explanation: "Photosynthesis produces oxygen gas as a byproduct when plants convert carbon dioxide and water into glucose."
+},
+{
+  id: 89,
+  question: "What is the oxidation state of iron in Fe₂O₃?",
+  options: [
+    "+2",
+    "+3",
+    "+4",
+    "+6"
+  ],
+  correctAnswer: 1,
+  explanation: "In iron(III) oxide (Fe₂O₃), iron has an oxidation state of +3."
+},
+{
+  id: 90,
+  question: "Which element is a liquid metal at room temperature?",
+  options: [
+    "Mercury",
+    "Gallium",
+    "Bromine",
+    "Both mercury and gallium"
+  ],
+  correctAnswer: 3,
+  explanation: "Mercury is liquid at room temperature, and gallium melts at about 30°C, making it liquid in warm conditions."
+},
+{
+  id: 91,
+  question: "What is the formula for calculating heat energy?",
+  options: [
+    "Q = mcΔT",
+    "Q = mv²",
+    "Q = PΔV",
+    "Q = Fd"
+  ],
+  correctAnswer: 0,
+  explanation: "Heat energy Q = mass × specific heat capacity × temperature change (Q = mcΔT)."
+},
+{
+  id: 92,
+  question: "Which element has the electron configuration [Ar]4s¹3d¹⁰?",
+  options: [
+    "Copper",
+    "Silver",
+    "Gold",
+    "Zinc"
+  ],
+  correctAnswer: 0,
+  explanation: "Copper has the electron configuration [Ar]4s¹3d¹⁰, an exception to the Aufbau principle for stability."
+},
+{
+  id: 93,
+  question: "What is the formula for carbon monoxide?",
+  options: [
+    "CO",
+    "CO₂",
+    "C₂O",
+    "C₂O₂"
+  ],
+  correctAnswer: 0,
+  explanation: "Carbon monoxide has the formula CO and is a toxic gas produced by incomplete combustion."
+},
+{
+  id: 94,
+  question: "Which type of reaction absorbs heat from surroundings?",
+  options: [
+    "Exothermic",
+    "Endothermic",
+    "Isothermal",
+    "Adiabatic"
+  ],
+  correctAnswer: 1,
+  explanation: "Endothermic reactions absorb heat energy from the surroundings, often feeling cold to the touch."
+},
+{
+  id: 95,
+  question: "What is the oxidation state of nitrogen in NH₃?",
+  options: [
+    "-3",
+    "-2",
+    "+3",
+    "+5"
+  ],
+  correctAnswer: 0,
+  explanation: "In ammonia (NH₃), nitrogen has an oxidation state of -3."
+},
+{
+  id: 96,
+  question: "Which element is used in light bulbs?",
+  options: [
+    "Tungsten",
+    "Copper",
+    "Aluminum",
+    "Iron"
+  ],
+  correctAnswer: 0,
+  explanation: "Tungsten is used in incandescent light bulb filaments due to its high melting point."
+},
+{
+  id: 97,
+  question: "What is the formula for sulfuric acid?",
+  options: [
+    "H₂SO₃",
+    "H₂SO₄",
+    "H₂S",
+    "H₂SO₅"
+  ],
+  correctAnswer: 1,
+  explanation: "Sulfuric acid has the formula H₂SO₄ and is one of the most important industrial chemicals."
+},
+{
+  id: 98,
+  question: "Which law describes the relationship between partial pressures?",
+  options: [
+    "Boyle's Law",
+    "Charles's Law",
+    "Dalton's Law",
+    "Henry's Law"
+  ],
+  correctAnswer: 2,
+  explanation: "Dalton's Law states that the total pressure of a gas mixture equals the sum of partial pressures of individual gases."
+},
+{
+  id: 99,
+  question: "What is the oxidation state of oxygen in H₂O₂?",
+  options: [
+    "-2",
+    "-1",
+    "0",
+    "+1"
+  ],
+  correctAnswer: 1,
+  explanation: "In hydrogen peroxide (H₂O₂), oxygen has an oxidation state of -1, unlike most compounds where it's -2."
+},
+{
+  id: 100,
+  question: "Which element is essential for hemoglobin?",
+  options: [
+    "Iron",
+    "Copper",
+    "Zinc",
+    "Magnesium"
+  ],
+  correctAnswer: 0,
+  explanation: "Iron is the central atom in hemoglobin, responsible for oxygen transport in blood."
+}
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'CHEM 108';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

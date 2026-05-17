@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the primary purpose of using a microscope in biological studies?",
+  options: [
+    "To observe structures too small for naked eye examination",
+    "To make small objects appear smaller", 
+    "To measure the weight of microorganisms",
+    "To count the number of cells quickly"
+  ],
+  correctAnswer: 0,
+  explanation: "Microscopes magnify small specimens, allowing detailed observation of cellular structures, microorganisms, and tissues that are invisible to the naked eye, fundamental to biological research and diagnosis."
+},
+{
+  id: 2,
+  question: "When preparing a wet mount slide, why is the cover slip placed at an angle?",
+  options: [
+    "To reduce air bubbles trapped under the cover slip",
+    "To make the slide more attractive",
+    "To prevent the specimen from moving", 
+    "To allow easier staining later"
+  ],
+  correctAnswer: 0,
+  explanation: "Placing the cover slip at approximately 45° and lowering it slowly minimizes air bubble formation, which can obstruct viewing and distort the specimen appearance."
+},
+{
+  id: 3,
+  question: "What safety precaution is essential when handling biological specimens?",
+  options: [
+    "Wear gloves and practice proper hygiene",
+    "Work quickly to minimize exposure",
+    "Use maximum magnification always", 
+    "Keep specimens at room temperature"
+  ],
+  correctAnswer: 0,
+  explanation: "Gloves protect against pathogens, stains, and chemicals. Proper hygiene prevents contamination of specimens and protects the researcher from potential biohazards."
+},
+{
+  id: 4,
+  question: "Why is iodine solution used when observing onion epidermal cells?",
+  options: [
+    "It stains starch in cell walls and nuclei for better visibility",
+    "It kills the cells to prevent movement",
+    "It provides nutrients for the cells", 
+    "It changes the cell structure permanently"
+  ],
+  correctAnswer: 0,
+  explanation: "Iodine reacts with starch to form blue-black complexes, making cell walls and nuclei more visible under the microscope by increasing contrast with the background."
+},
+{
+  id: 5,
+  question: "What is the correct way to carry a microscope?",
+  options: [
+    "One hand on arm, one hand supporting base",
+    "By the eyepiece only",
+    "By the stage only", 
+    "Using both hands on the body tube"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper carrying technique: one hand grasps the arm firmly while the other supports the base. This prevents damage to mechanical parts and ensures secure handling."
+},
+{
+  id: 6,
+  question: "In plant tissue experiments, why is sectioning done using a sharp blade?",
+  options: [
+    "To obtain thin, uniform sections without crushing tissues",
+    "To make the process faster",
+    "To practice surgical techniques", 
+    "To separate different tissue types"
+  ],
+  correctAnswer: 0,
+  explanation: "Sharp blades make clean cuts that minimize cell damage and tissue distortion, allowing clear observation of cellular arrangement and structure in thin sections."
+},
+{
+  id: 7,
+  question: "What does the presence of starch indicate in food testing experiments?",
+  options: [
+    "The food contains complex carbohydrates",
+    "The food is high in protein",
+    "The food contains lipids", 
+    "The food is acidic"
+  ],
+  correctAnswer: 0,
+  explanation: "Starch, a complex carbohydrate, gives blue-black color with iodine solution. This simple test identifies starch storage in plants and starch content in foods."
+},
+{
+  id: 8,
+  question: "Why should microscope lenses be cleaned only with lens paper?",
+  options: [
+    "To prevent scratching the delicate optical surfaces",
+    "To save money on cleaning supplies",
+    "Lens paper is more absorbent", 
+    "Other materials don't clean effectively"
+  ],
+  correctAnswer: 0,
+  explanation: "Lens paper is specifically designed for optical surfaces. Other materials like tissue paper or cloth may contain abrasives that scratch lenses, reducing image quality."
+},
+{
+  id: 9,
+  question: "What is the purpose of using a control in biological experiments?",
+  options: [
+    "To provide baseline for comparison with experimental groups",
+    "To use up extra materials",
+    "To make the experiment more complicated", 
+    "To practice experimental techniques"
+  ],
+  correctAnswer: 0,
+  explanation: "Controls establish what happens under normal conditions, helping distinguish between treatment effects and natural variations or experimental artifacts."
+},
+{
+  id: 10,
+  question: "In enzyme activity experiments, why is temperature control important?",
+  options: [
+    "Enzyme activity is highly temperature-dependent",
+    "To prevent the water bath from overflowing",
+    "To make the experiment more challenging", 
+    "The thermometer needs to be used regularly"
+  ],
+  correctAnswer: 0,
+  explanation: "Enzyme activity increases with temperature up to an optimum, then decreases due to denaturation. Precise temperature control is essential for studying these effects accurately."
+},
+{
+  id: 11,
+  question: "What does Benedict's test detect in food substances?",
+  options: [
+    "Reducing sugars like glucose and maltose",
+    "Proteins and amino acids",
+    "Lipids and fatty acids", 
+    "Starch and cellulose"
+  ],
+  correctAnswer: 0,
+  explanation: "Benedict's reagent tests for reducing sugars. Color changes from blue to green, yellow, orange, or red indicate increasing concentrations of reducing sugars."
+},
+{
+  id: 12,
+  question: "Why is proper labeling essential for biological specimens?",
+  options: [
+    "To prevent mix-ups and ensure accurate identification",
+    "To make the laboratory look organized",
+    "The instructor requires labeling", 
+    "It helps in storage organization"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper labeling with specimen name, date, treatment, and other relevant information prevents confusion, ensures data integrity, and allows proper specimen tracking."
+},
+{
+  id: 13,
+  question: "What is the purpose of using a haemocytometer in cell biology?",
+  options: [
+    "To count cells in a suspension accurately",
+    "To measure cell size precisely",
+    "To observe cell movement", 
+    "To stain cells for microscopy"
+  ],
+  correctAnswer: 0,
+  explanation: "Haemocytometers have precisely ruled grids that allow counting cells in known volumes, enabling calculation of cell concentration in suspensions."
+},
+{
+  id: 14,
+  question: "Why is aseptic technique important in microbiology?",
+  options: [
+    "To prevent contamination of cultures and environment",
+    "To make the procedure faster",
+    "To practice surgical skills", 
+    "To save money on media"
+  ],
+  correctAnswer: 0,
+  explanation: "Aseptic technique prevents introduction of unwanted microorganisms into cultures and protects researchers from potential pathogens, ensuring pure cultures and safe working conditions."
+},
+{
+  id: 15,
+  question: "What does the biuret test specifically detect?",
+  options: [
+    "Proteins through violet color formation",
+    "Reducing sugars",
+    "Starch and carbohydrates", 
+    "Lipids and fats"
+  ],
+  correctAnswer: 0,
+  explanation: "Biuret test detects proteins and peptides through violet color formation with copper ions in alkaline solution, indicating the presence of peptide bonds."
+},
+{
+  id: 16,
+  question: "Why should biological waste be disposed of properly?",
+  options: [
+    "To prevent spread of pathogens and environmental contamination",
+    "To save space in trash cans",
+    "It's required by laboratory rules", 
+    "It makes cleaning easier"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper disposal of biological waste prevents disease transmission, protects the environment, and complies with safety regulations for handling potentially hazardous materials."
+},
+{
+  id: 17,
+  question: "In photosynthesis experiments, why is a water plant used?",
+  options: [
+    "To easily observe oxygen bubble production",
+    "Water plants photosynthesize faster",
+    "They are easier to obtain", 
+    "They don't need soil"
+  ],
+  correctAnswer: 0,
+  explanation: "Aquatic plants like Elodea release oxygen as visible bubbles during photosynthesis, providing direct visual evidence of the process that can be easily measured."
+},
+{
+  id: 18,
+  question: "What is the purpose of using a control group in germination experiments?",
+  options: [
+    "To compare treated seeds with untreated seeds under same conditions",
+    "To use up all the available seeds",
+    "To practice setting up experiments", 
+    "To have extra seeds in case some don't grow"
+  ],
+  correctAnswer: 0,
+  explanation: "Control groups provide baseline germination rates under normal conditions, allowing determination of whether experimental treatments actually affect germination."
+},
+{
+  id: 19,
+  question: "Why is it important to record observation times in physiological experiments?",
+  options: [
+    "Biological processes are time-dependent",
+    "The laboratory period has time limits",
+    "Instructors require time records", 
+    "It makes the data look more complete"
+  ],
+  correctAnswer: 0,
+  explanation: "Biological processes like enzyme reactions, growth, and physiological changes occur over time. Precise timing allows analysis of rates and kinetics."
+},
+{
+  id: 20,
+  question: "What does the emulsion test detect in food analysis?",
+  options: [
+    "Lipids through formation of white emulsion",
+    "Proteins and amino acids",
+    "Reducing sugars", 
+    "Starch content"
+  ],
+  correctAnswer: 0,
+  explanation: "The emulsion test detects lipids by shaking the sample with ethanol and water, producing a cloudy white emulsion if lipids are present."
+},
+{
+  id: 21,
+  question: "Why should cultures be incubated at specific temperatures?",
+  options: [
+    "Different organisms have optimal growth temperatures",
+    "To prevent contamination",
+    "The incubator only works at certain temperatures", 
+    "It speeds up all biological processes"
+  ],
+  correctAnswer: 0,
+  explanation: "Microorganisms have specific temperature requirements for optimal growth. Incubation at correct temperatures ensures proper growth and prevents growth of contaminants."
+},
+{
+  id: 22,
+  question: "In DNA extraction, what is the purpose of adding detergent?",
+  options: [
+    "To break down cell and nuclear membranes",
+    "To make the solution clearer",
+    "To kill the cells", 
+    "To precipitate the DNA"
+  ],
+  correctAnswer: 0,
+  explanation: "Detergents disrupt lipid membranes by emulsifying lipids and proteins, releasing cellular contents including DNA from cells and nuclei."
+},
+{
+  id: 23,
+  question: "What safety precaution is specific to handling microorganisms?",
+  options: [
+    "Proper sterilization and disinfection procedures",
+    "Working quickly to minimize exposure",
+    "Using maximum magnification", 
+    "Keeping specimens cold"
+  ],
+  correctAnswer: 0,
+  explanation: "Sterilization of equipment, disinfection of work surfaces, and proper handling prevent contamination and protect against potential pathogens in microbiological work."
+},
+{
+  id: 24,
+  question: "Why is it important to use sterile techniques when inoculating media?",
+  options: [
+    "To prevent contamination that could affect results",
+    "To practice laboratory skills",
+    "The media is expensive", 
+    "It makes the procedure faster"
+  ],
+  correctAnswer: 0,
+  explanation: "Sterile techniques ensure that only the desired microorganisms grow, preventing contamination that could lead to false results or mixed cultures."
+},
+{
+  id: 25,
+  question: "What does the presence of catalase enzyme indicate?",
+  options: [
+    "Ability to break down hydrogen peroxide into water and oxygen",
+    "Presence of aerobic respiration",
+    "Ability to digest proteins", 
+    "Presence of photosynthetic pigments"
+  ],
+  correctAnswer: 0,
+  explanation: "Catalase test detects the enzyme that decomposes H₂O₂. Bubbling indicates positive test, common in aerobic organisms to detoxify peroxide."
+},
+{
+  id: 26,
+  question: "Why should specimens be examined immediately after collection?",
+  options: [
+    "To prevent degradation and obtain accurate observations",
+    "To finish the work quickly",
+    "The laboratory time is limited", 
+    "They might be needed for other experiments"
+  ],
+  correctAnswer: 0,
+  explanation: "Biological specimens begin deteriorating immediately after collection. Prompt examination ensures observations reflect true living conditions and prevent artifacts from decomposition."
+},
+{
+  id: 27,
+  question: "In population studies, why is random sampling important?",
+  options: [
+    "To avoid bias and obtain representative data",
+    "It's easier than systematic sampling",
+    "It requires less planning", 
+    "It covers more area quickly"
+  ],
+  correctAnswer: 0,
+  explanation: "Random sampling ensures every individual has equal chance of selection, preventing bias and making statistical inferences valid for the entire population."
+},
+{
+  id: 28,
+  question: "What is the purpose of using a quadrat in ecology?",
+  options: [
+    "To sample organisms in a defined area systematically",
+    "To measure temperature in different areas",
+    "To collect water samples", 
+    "To mark study boundaries"
+  ],
+  correctAnswer: 0,
+  explanation: "Quadrats frame a specific area for systematic sampling of plant coverage, species distribution, and population density in ecological studies."
+},
+{
+  id: 29,
+  question: "Why is pH important in biological experiments?",
+  options: [
+    "It affects enzyme activity and cellular processes",
+    "It determines the color of solutions",
+    "It affects the temperature", 
+    "It changes the density"
+  ],
+  correctAnswer: 0,
+  explanation: "pH influences enzyme activity, membrane function, and overall cellular metabolism. Most biological processes occur within specific pH ranges."
+},
+{
+  id: 30,
+  question: "What does the oxidase test detect in microbiology?",
+  options: [
+    "Presence of cytochrome c oxidase in electron transport chain",
+    "Ability to ferment sugars",
+    "Presence of catalase enzyme", 
+    "Ability to hydrolyze starch"
+  ],
+  correctAnswer: 0,
+  explanation: "Oxidase test identifies bacteria possessing cytochrome c oxidase, which turns oxidase reagent dark blue within seconds, important in bacterial identification."
+},
+{
+  id: 31,
+  question: "Why should microscope slides be cleaned after use?",
+  options: [
+    "To prevent contamination of future specimens",
+    "To save money on new slides",
+    "The instructor requires clean slides", 
+    "It makes storage easier"
+  ],
+  correctAnswer: 0,
+  explanation: "Clean slides prevent carryover contamination between specimens and ensure clear observations without interference from previous samples or stains."
+},
+{
+  id: 32,
+  question: "In genetic experiments, why is a large sample size important?",
+  options: [
+    "To obtain statistically significant results",
+    "To use all available materials",
+    "It makes the experiment more impressive", 
+    "To ensure some organisms survive"
+  ],
+  correctAnswer: 0,
+  explanation: "Large sample sizes reduce sampling error, allow detection of rare events, and provide sufficient data for meaningful statistical analysis in genetic studies."
+},
+{
+  id: 33,
+  question: "What is the purpose of using a respirometer?",
+  options: [
+    "To measure rate of respiration in organisms",
+    "To measure photosynthesis rate",
+    "To count microorganisms", 
+    "To measure temperature changes"
+  ],
+  correctAnswer: 0,
+  explanation: "Respirometers measure oxygen consumption or carbon dioxide production, providing quantitative data on respiratory rates in various organisms and conditions."
+},
+{
+  id: 34,
+  question: "Why is it important to calibrate pH meters before use?",
+  options: [
+    "To ensure accurate and reproducible pH measurements",
+    "To practice using the equipment",
+    "The manufacturer requires it", 
+    "To use up buffer solutions"
+  ],
+  correctAnswer: 0,
+  explanation: "pH electrodes drift over time and must be calibrated with standard buffers to establish accurate slope and intercept for reliable pH measurements."
+},
+{
+  id: 35,
+  question: "What does the indole test detect in bacterial identification?",
+  options: [
+    "Ability to produce indole from tryptophan",
+    "Ability to ferment lactose",
+    "Presence of cytochrome oxidase", 
+    "Ability to reduce nitrate"
+  ],
+  correctAnswer: 0,
+  explanation: "Indole test detects tryptophanase enzyme that converts tryptophan to indole. Kovac's reagent forms red ring with indole, used in bacterial identification."
+},
+{
+  id: 36,
+  question: "Why should biological drawings be made during observation?",
+  options: [
+    "To record details that photographs might miss",
+    "To practice artistic skills",
+    "The instructor requires drawings", 
+    "It makes the report more attractive"
+  ],
+  correctAnswer: 0,
+  explanation: "Drawing forces careful observation, helps identify key features, and allows emphasis on important structures that might not be clear in photographs."
+},
+{
+  id: 37,
+  question: "In enzyme kinetics, why is initial rate measurement important?",
+  options: [
+    "To avoid complications from product inhibition and substrate depletion",
+    "It's easier to measure than later rates",
+    "The reaction is fastest initially", 
+    "It requires less time"
+  ],
+  correctAnswer: 0,
+  explanation: "Initial reaction rates reflect true enzyme activity before products accumulate or substrates deplete significantly, providing accurate kinetic parameters."
+},
+{
+  id: 38,
+  question: "What is the purpose of using a standard curve in spectrophotometry?",
+  options: [
+    "To relate absorbance to concentration for unknown samples",
+    "To check instrument performance",
+    "To practice making graphs", 
+    "To use up standard solutions"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard curves prepared from solutions of known concentration allow determination of unknown concentrations by measuring their absorbance and reading from the curve."
+},
+{
+  id: 39,
+  question: "Why is proper lighting important in microscopy?",
+  options: [
+    "To optimize contrast and resolution for clear viewing",
+    "To prevent eye strain",
+    "The microscope requires specific lighting", 
+    "It makes the specimen look better"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper Köhler illumination provides even lighting, maximum resolution, and optimal contrast, essential for observing fine details in biological specimens."
+},
+{
+  id: 40,
+  question: "What does the methyl red test detect in microbiology?",
+  options: [
+    "Mixed acid fermentation producing stable acids",
+    "Butanediol fermentation",
+    "Citrate utilization", 
+    "Urea hydrolysis"
+  ],
+  correctAnswer: 0,
+  explanation: "Methyl red test detects mixed acid fermentation. Red color at pH 4.4 indicates positive test, distinguishing enteric bacteria like E. coli from Enterobacter."
+},
+{
+  id: 41,
+  question: "Why should field notes include environmental conditions?",
+  options: [
+    "Biological observations depend on environmental context",
+    "It makes the notes more complete",
+    "The instructor requires environmental data", 
+    "It helps remember the location"
+  ],
+  correctAnswer: 0,
+  explanation: "Environmental factors like temperature, humidity, light, and weather affect biological phenomena and must be recorded for proper interpretation of field observations."
+},
+{
+  id: 42,
+  question: "In plant physiology, why is the petiole kept in water during experiments?",
+  options: [
+    "To maintain water supply and prevent wilting",
+    "To make the plant look fresh",
+    "To measure water uptake", 
+    "To keep the leaves clean"
+  ],
+  correctAnswer: 0,
+  explanation: "Keeping cut stems in water prevents air embolism in xylem vessels and maintains turgor pressure, ensuring normal physiological function during experiments."
+},
+{
+  id: 43,
+  question: "What safety precaution is specific to handling plant specimens?",
+  options: [
+    "Awareness of potentially toxic or allergenic plants",
+    "Working quickly to prevent wilting",
+    "Using gloves for all plants", 
+    "Keeping plants refrigerated"
+  ],
+  correctAnswer: 0,
+  explanation: "Some plants produce toxic compounds, spines, or cause allergic reactions. Proper identification and handling prevent accidental poisoning or injury."
+},
+{
+  id: 44,
+  question: "Why is it important to use the same developmental stage in plant experiments?",
+  options: [
+    "Physiological responses vary with developmental stage",
+    "It makes measurements more consistent",
+    "The plants look more uniform", 
+    "It's easier to obtain same-aged plants"
+  ],
+  correctAnswer: 0,
+  explanation: "Plants at different developmental stages may respond differently to treatments. Using uniform stages ensures comparable results and valid conclusions."
+},
+{
+  id: 45,
+  question: "What does the Voges-Proskauer test detect?",
+  options: [
+    "Acetoin production from glucose fermentation",
+    "Mixed acid fermentation",
+    "Citrate utilization", 
+    "Gelatin hydrolysis"
+  ],
+  correctAnswer: 0,
+  explanation: "VP test detects acetoin (precursor to butanediol) in glucose fermentation. Red color after reagents indicates positive test, used in bacterial identification."
+},
+{
+  id: 46,
+  question: "Why should specimens be fixed before long-term storage?",
+  options: [
+    "To preserve structure and prevent decomposition",
+    "To make them easier to handle",
+    "To change their color for better viewing", 
+    "To kill any microorganisms"
+  ],
+  correctAnswer: 0,
+  explanation: "Fixation using chemicals like formaldehyde preserves biological structures by cross-linking proteins and preventing enzymatic degradation during storage."
+},
+{
+  id: 47,
+  question: "In behavior studies, why is observer bias a concern?",
+  options: [
+    "Expectations can influence interpretation of animal behavior",
+    "Animals behave differently when watched",
+    "Different observers see different things", 
+    "All of the above"
+  ],
+  correctAnswer: 3,
+  explanation: "Observer bias, observer effect, and inter-observer variability can all affect behavioral data. Blind observation protocols and multiple observers help minimize these issues."
+},
+{
+  id: 48,
+  question: "What is the purpose of using a transect in ecological surveys?",
+  options: [
+    "To sample along environmental gradients systematically",
+    "To mark study area boundaries",
+    "To measure distances accurately", 
+    "To collect water samples"
+  ],
+  correctAnswer: 0,
+  explanation: "Transects are lines along which samples are taken at regular intervals, useful for studying changes in species distribution across environmental gradients."
+},
+{
+  id: 49,
+  question: "Why is it important to record magnification used in microscopy?",
+  options: [
+    "For proper interpretation and reproduction of observations",
+    "The instructor requires magnification records",
+    "It makes the notes more scientific", 
+    "Different magnifications show different details"
+  ],
+  correctAnswer: 0,
+  explanation: "Recording magnification allows others to understand the scale of observations and reproduce the viewing conditions, essential for scientific communication."
+},
+{
+  id: 50,
+  question: "What does the citrate test determine in bacterial identification?",
+  options: [
+    "Ability to use citrate as sole carbon source",
+    "Ability to ferment glucose",
+    "Presence of catalase enzyme", 
+    "Ability to hydrolyze starch"
+  ],
+  correctAnswer: 0,
+  explanation: "Citrate test detects citrate-permease enzyme. Blue color change indicates positive test as bacteria grow using citrate, alkaline byproducts raise pH."
+},
+{
+  id: 51,
+  question: "Why should culture media be sterilized before use?",
+  options: [
+    "To eliminate contaminants that could affect results",
+    "To make the media clearer",
+    "To concentrate nutrients", 
+    "To change the pH"
+  ],
+  correctAnswer: 0,
+  explanation: "Sterilization kills all microorganisms present, ensuring that only intentionally inoculated organisms grow, preventing contamination that could invalidate experiments."
+},
+{
+  id: 52,
+  question: "In population genetics, why is Hardy-Weinberg equilibrium important?",
+  options: [
+    "It provides null hypothesis for detecting evolutionary forces",
+    "It makes calculations easier",
+    "Most populations are in equilibrium", 
+    "It's required for statistical tests"
+  ],
+  correctAnswer: 0,
+  explanation: "Hardy-Weinberg principle describes expected genotype frequencies without evolutionary forces. Deviations from equilibrium indicate selection, drift, mutation, or gene flow."
+},
+{
+  id: 53,
+  question: "What is the purpose of using a water bath in enzyme experiments?",
+  options: [
+    "To maintain constant temperature for reproducible results",
+    "To prevent evaporation of solutions",
+    "To mix reagents thoroughly", 
+    "To support reaction vessels"
+  ],
+  correctAnswer: 0,
+  explanation: "Water baths provide precise temperature control essential for enzyme studies, as enzyme activity is highly temperature-sensitive and requires stable conditions."
+},
+{
+  id: 54,
+  question: "Why is it important to use fresh reagents in some biological tests?",
+  options: [
+    "Some reagents degrade or oxidize over time",
+    "Fresh reagents work faster",
+    "They are more readily available", 
+    "They give clearer results"
+  ],
+  correctAnswer: 0,
+  explanation: "Many biological reagents, especially enzymes, cofactors, and some indicators, deteriorate with storage, leading to unreliable or false results."
+},
+{
+  id: 55,
+  question: "What does the nitrate reduction test detect?",
+  options: [
+    "Ability to reduce nitrate to nitrite or nitrogen gases",
+    "Ability to oxidize nitrate",
+    "Presence of nitrate in media", 
+    "Ability to use nitrate as carbon source"
+  ],
+  correctAnswer: 0,
+  explanation: "Nitrate reduction test identifies bacteria that can reduce NO₃ to NO₂ or N₂. Color change with reagents indicates nitrite presence after incubation."
+},
+{
+  id: 56,
+  question: "Why should dissection instruments be kept sharp?",
+  options: [
+    "To make clean cuts without crushing tissues",
+    "They are easier to handle when sharp",
+    "Sharp instruments look better", 
+    "They last longer when properly maintained"
+  ],
+  correctAnswer: 0,
+  explanation: "Sharp instruments produce clean sections with minimal tissue damage, allowing clear observation of anatomical structures and relationships."
+},
+{
+  id: 57,
+  question: "In photosynthesis experiments, why is a control without light important?",
+  options: [
+    "To demonstrate that light is necessary for photosynthesis",
+    "To use up all available plants",
+    "To practice experimental setup", 
+    "To have extra plants in case some die"
+  ],
+  correctAnswer: 0,
+  explanation: "Light-excluded controls show that observed effects (oxygen production, starch formation) require light, confirming they result from photosynthesis rather than other processes."
+},
+{
+  id: 58,
+  question: "What is the purpose of using a buffer in biochemical experiments?",
+  options: [
+    "To maintain constant pH despite reaction products",
+    "To increase reaction rate",
+    "To provide nutrients for cells", 
+    "To change the solution color"
+  ],
+  correctAnswer: 0,
+  explanation: "Buffers resist pH changes caused by metabolic products, maintaining optimal conditions for enzyme activity and cellular processes throughout experiments."
+},
+{
+  id: 59,
+  question: "Why is proper waste segregation important in biology laboratories?",
+  options: [
+    "Different types of biological waste require different disposal methods",
+    "It makes cleaning easier",
+    "The janitorial staff requires it", 
+    "It saves space in trash containers"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper segregation ensures hazardous biological waste, chemical waste, and regular trash are disposed of safely according to regulations, preventing contamination and hazards."
+},
+{
+  id: 60,
+  question: "What does the urease test detect?",
+  options: [
+    "Ability to hydrolyze urea to ammonia and CO₂",
+    "Ability to ferment urea",
+    "Presence of urea in media", 
+    "Ability to use urea as carbon source"
+  ],
+  correctAnswer: 0,
+  explanation: "Urease test detects enzyme that hydrolyzes urea. Pink color indicates positive test as ammonia production raises pH, used to identify bacteria like Proteus."
+},
+{
+  id: 61,
+  question: "Why should field equipment be cleaned between sites?",
+  options: [
+    "To prevent transfer of organisms between ecosystems",
+    "To keep equipment in good condition",
+    "It makes the work more organized", 
+    "The equipment works better when clean"
+  ],
+  correctAnswer: 0,
+  explanation: "Cleaning equipment prevents introducing foreign species or pathogens into different ecosystems, protecting ecological integrity and preventing spread of diseases."
+},
+{
+  id: 62,
+  question: "In cell fractionation, why is homogenization done in cold buffer?",
+  options: [
+    "To preserve enzyme activity and prevent degradation",
+    "Cold buffers work faster",
+    "It makes the cells easier to break", 
+    "Cold buffers are less expensive"
+  ],
+  correctAnswer: 0,
+  explanation: "Cold conditions reduce enzymatic activity that could degrade cellular components during homogenization, preserving organelle integrity and biochemical functions."
+},
+{
+  id: 63,
+  question: "What is the purpose of using a standard in quantitative analysis?",
+  options: [
+    "To provide reference for accurate measurement and calibration",
+    "To practice the measurement technique",
+    "To use up all available materials", 
+    "To make the procedure more complicated"
+  ],
+  correctAnswer: 0,
+  explanation: "Standards with known concentrations or properties allow calibration of instruments and verification of method accuracy in quantitative biological analyses."
+},
+{
+  id: 64,
+  question: "Why is it important to record the time of day in some biological studies?",
+  options: [
+    "Many biological processes show circadian rhythms",
+    "It helps remember when work was done",
+    "The laboratory has specific hours", 
+    "It makes data more precise"
+  ],
+  correctAnswer: 0,
+  explanation: "Circadian rhythms affect physiology, behavior, and biochemical processes. Recording time allows detection of daily patterns and ensures comparable sampling times."
+},
+{
+  id: 65,
+  question: "What does the coagulase test detect in microbiology?",
+  options: [
+    "Ability to coagulate plasma, distinguishing pathogenic staphylococci",
+    "Ability to clot milk",
+    "Presence of fibrinogen", 
+    "Ability to digest proteins"
+  ],
+  correctAnswer: 0,
+  explanation: "Coagulase test detects enzyme that clots plasma. Positive test identifies Staphylococcus aureus, distinguishing it from less pathogenic staphylococci."
+},
+{
+  id: 66,
+  question: "Why should biological samples be stored properly?",
+  options: [
+    "To maintain viability and prevent degradation",
+    "To save space in storage areas",
+    "It makes inventory easier", 
+    "Samples look better when stored properly"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper storage conditions (temperature, humidity, light protection) preserve sample integrity, viability, and prevent chemical or biological degradation."
+},
+{
+  id: 67,
+  question: "In electrophoresis, why is a tracking dye used?",
+  options: [
+    "To monitor migration progress and estimate molecular sizes",
+    "To make the gel more visible",
+    "To stain the samples", 
+    "To increase conductivity"
+  ],
+  correctAnswer: 0,
+  explanation: "Tracking dyes migrate ahead of samples, showing electrophoresis progress and providing reference for estimating molecular sizes relative to dye migration."
+},
+{
+  id: 68,
+  question: "What is the purpose of using a sham operation in physiological experiments?",
+  options: [
+    "To control for effects of surgical procedure itself",
+    "To practice surgical techniques",
+    "To use all experimental animals", 
+    "To make the experiment more ethical"
+  ],
+  correctAnswer: 0,
+  explanation: "Sham operations involve identical surgical procedures without the experimental intervention, controlling for stress and trauma effects of surgery itself."
+},
+{
+  id: 69,
+  question: "Why is it important to use random assignment in experimental groups?",
+  options: [
+    "To minimize bias and ensure groups are comparable",
+    "It's easier than systematic assignment",
+    "It requires less planning", 
+    "It makes statistical analysis simpler"
+  ],
+  correctAnswer: 0,
+  explanation: "Random assignment ensures that known and unknown variables are evenly distributed between groups, making them comparable and results statistically valid."
+},
+{
+  id: 70,
+  question: "What does the OF (Oxidation-Fermentation) test determine?",
+  options: [
+    "Whether bacteria metabolize sugars oxidatively or fermentatively",
+    "Ability to use oxygen",
+    "Presence of electron transport chain", 
+    "Ability to produce acid from sugars"
+  ],
+  correctAnswer: 0,
+  explanation: "OF test uses two tubes - one sealed with oil. Color change only in open tube indicates oxidative metabolism; both tubes change indicates fermentation."
+},
+{
+  id: 71,
+  question: "Why should microscope work be done in a comfortable position?",
+  options: [
+    "To prevent fatigue and maintain observation quality",
+    "It's more enjoyable when comfortable",
+    "The microscope works better this way", 
+    "It prevents damaging the equipment"
+  ],
+  correctAnswer: 0,
+  explanation: "Comfortable positioning reduces physical strain, allowing longer, more careful observations and preventing errors from fatigue or discomfort."
+},
+{
+  id: 72,
+  question: "In population ecology, why is mark-recapture method used?",
+  options: [
+    "To estimate population size without counting all individuals",
+    "It's easier than complete counts",
+    "It provides more accurate results", 
+    "It allows tracking individual movements"
+  ],
+  correctAnswer: 0,
+  explanation: "Mark-recapture method estimates population size using proportion of marked individuals in recapture sample: N = (M × C)/R, where M=marked, C=total captured, R=recaptured marked."
+},
+{
+  id: 73,
+  question: "What is the purpose of using a killing jar in entomology?",
+  options: [
+    "To humanely kill insects for collection and study",
+    "To store dead insects",
+    "To display insect collections", 
+    "To measure insect activity"
+  ],
+  correctAnswer: 0,
+  explanation: "Killing jars with ethyl acetate or cyanide quickly dispatch insects without damaging specimens, allowing preservation for identification and study."
+},
+{
+  id: 74,
+  question: "Why is it important to record weather conditions in field biology?",
+  options: [
+    "Weather affects organism behavior and distribution",
+    "It makes field notes more complete",
+    "The instructor requires weather data", 
+    "It helps remember the field trip"
+  ],
+  correctAnswer: 0,
+  explanation: "Temperature, precipitation, wind, and humidity influence animal activity, plant physiology, and sampling conditions, essential for interpreting field observations."
+},
+{
+  id: 75,
+  question: "What does the decarboxylase test detect?",
+  options: [
+    "Ability to decarboxylate specific amino acids",
+    "Ability to ferment carbohydrates",
+    "Presence of decarboxylase enzymes", 
+    "Ability to produce CO₂ from sugars"
+  ],
+  correctAnswer: 0,
+  explanation: "Decarboxylase test detects enzymes that remove CO₂ from amino acids like lysine, ornithine, arginine. Purple color indicates positive test as alkaline products raise pH."
+},
+{
+  id: 76,
+  question: "Why should biological data be recorded in permanent ink?",
+  options: [
+    "To prevent loss of data from fading or smudging",
+    "Permanent ink looks more professional",
+    "The laboratory requires permanent records", 
+    "It's easier to read than pencil"
+  ],
+  correctAnswer: 0,
+  explanation: "Permanent ink ensures long-term data integrity, preventing loss of valuable experimental results from environmental factors or accidental erasure."
+},
+{
+  id: 77,
+  question: "In tissue culture, why is aseptic technique critical?",
+  options: [
+    "To prevent contamination that could destroy cultures",
+    "To practice sterile procedures",
+    "The media is expensive", 
+    "It makes the work more challenging"
+  ],
+  correctAnswer: 0,
+  explanation: "Tissue cultures lack immune defenses and rich media supports microbial growth. Strict aseptic technique is essential to prevent contamination and culture loss."
+},
+{
+  id: 78,
+  question: "What is the purpose of using a control solution in chemical tests?",
+  options: [
+    "To verify reagents are working properly",
+    "To use up extra reagents",
+    "To practice the test procedure", 
+    "To make the test more reliable"
+  ],
+  correctAnswer: 0,
+  explanation: "Control solutions with known composition verify that reagents are functional and tests are working correctly, ensuring validity of experimental results."
+},
+{
+  id: 79,
+  question: "Why is it important to use the same observer in behavioral studies?",
+  options: [
+    "To maintain consistent interpretation criteria",
+    "It's easier to schedule one observer",
+    "The animals get used to one person", 
+    "It reduces inter-observer variability"
+  ],
+  correctAnswer: 0,
+  explanation: "Single observers maintain consistent interpretation of behavioral categories, reducing variability that could arise from different observers' subjective judgments."
+},
+{
+  id: 80,
+  question: "What does the gelatin hydrolysis test detect?",
+  options: [
+    "Ability to produce gelatinase enzyme",
+    "Ability to ferment gelatin",
+    "Presence of gelatin in media", 
+    "Ability to use gelatin as carbon source"
+  ],
+  correctAnswer: 0,
+  explanation: "Gelatin hydrolysis test detects gelatinase enzyme. Liquefaction of solid gelatin indicates positive test, used in bacterial identification."
+},
+{
+  id: 81,
+  question: "Why should field samples be processed quickly?",
+  options: [
+    "To prevent changes in composition or viability",
+    "To finish field work faster",
+    "The laboratory is waiting for samples", 
+    "It makes data collection more efficient"
+  ],
+  correctAnswer: 0,
+  explanation: "Field samples begin changing immediately due to environmental stress, decomposition, or physiological changes. Quick processing preserves original conditions."
+},
+{
+  id: 82,
+  question: "In genetic crosses, why is a large number of offspring important?",
+  options: [
+    "To obtain statistically significant Mendelian ratios",
+    "To use all available parents",
+    "It makes the experiment more impressive", 
+    "To ensure some offspring survive"
+  ],
+  correctAnswer: 0,
+  explanation: "Large offspring numbers allow detection of expected Mendelian ratios and rare recombination events, providing sufficient data for meaningful genetic analysis."
+},
+{
+  id: 83,
+  question: "What is the purpose of using a mordant in staining?",
+  options: [
+    "To fix dye to tissue or enhance staining intensity",
+    "To make the stain more colorful",
+    "To prevent staining of unwanted areas", 
+    "To speed up the staining process"
+  ],
+  correctAnswer: 0,
+  explanation: "Mordants like iodine in Gram staining form complexes with dyes, fixing them to tissues or intensifying color for better visualization of structures."
+},
+{
+  id: 84,
+  question: "Why is it important to record the source of biological materials?",
+  options: [
+    "For reproducibility and identification of strain characteristics",
+    "To complete the materials section",
+    "The instructor requires source information", 
+    "It helps in future ordering"
+  ],
+  correctAnswer: 0,
+  explanation: "Recording sources (suppliers, collection locations, strain numbers) ensures reproducibility and helps identify source-specific characteristics that might affect results."
+},
+{
+  id: 85,
+  question: "What does the CAMP test detect?",
+  options: [
+    "Synergistic hemolysis between Staphylococcus and Streptococcus",
+    "Ability to ferment camphene",
+    "Presence of CAMP factor", 
+    "Ability to produce cAMP"
+  ],
+  correctAnswer: 0,
+  explanation: "CAMP test detects enhanced hemolysis when Group B streptococci are grown near S. aureus. Arrowhead-shaped hemolysis indicates positive test for S. agalactiae."
+},
+{
+  id: 86,
+  question: "Why should experimental procedures be followed exactly?",
+  options: [
+    "To ensure reproducibility and valid comparisons",
+    "It's easier than developing new methods",
+    "The instructor requires exact procedures", 
+    "Published methods are proven to work"
+  ],
+  correctAnswer: 0,
+  explanation: "Exact procedure following ensures experiments can be reproduced, results compared between studies, and methods remain consistent for valid conclusions."
+},
+{
+  id: 87,
+  question: "In ecological sampling, why are multiple quadrats used?",
+  options: [
+    "To obtain representative data and estimate variability",
+    "To cover more area quickly",
+    "It makes the study more comprehensive", 
+    "To use all available equipment"
+  ],
+  correctAnswer: 0,
+  explanation: "Multiple quadrats provide better population estimates and allow calculation of means and variances, giving more reliable ecological data than single samples."
+},
+{
+  id: 88,
+  question: "What is the purpose of using a blank in spectrophotometry?",
+  options: [
+    "To zero the instrument and correct for solvent/reagent effects",
+    "To practice using the spectrophotometer",
+    "To clean the cuvette between measurements", 
+    "To standardize the light source"
+  ],
+  correctAnswer: 0,
+  explanation: "The blank contains everything except the analyte and sets 100% transmission (zero absorbance), correcting for solvent, reagent, and cuvette background effects."
+},
+{
+  id: 89,
+  question: "Why is it important to use the same batch of reagents in an experiment?",
+  options: [
+    "To minimize variation from different manufacturing lots",
+    "It's more convenient",
+    "The laboratory has limited storage", 
+    "It ensures consistent results"
+  ],
+  correctAnswer: 0,
+  explanation: "Different reagent batches may have slight variations in composition or potency. Using the same batch eliminates this source of experimental variation."
+},
+{
+  id: 90,
+  question: "What does the optochin test determine?",
+  options: [
+    "Sensitivity to optochin, identifying Streptococcus pneumoniae",
+    "Ability to produce optochin",
+    "Presence of optochinase enzyme", 
+    "Ability to use optochin as nutrient"
+  ],
+  correctAnswer: 0,
+  explanation: "Optochin test uses antibiotic disc. Zone of inhibition around disc identifies S. pneumoniae, which is sensitive, unlike other alpha-hemolytic streptococci."
+},
+{
+  id: 91,
+  question: "Why should biological collections be properly curated?",
+  options: [
+    "To preserve specimens for future research and education",
+    "To make the collection look organized",
+    "The institution requires curation", 
+    "It increases the collection's value"
+  ],
+  correctAnswer: 0,
+  explanation: "Proper curation (labeling, storage, maintenance) preserves specimens' scientific value, allowing future researchers to study them and verify original findings."
+},
+{
+  id: 92,
+  question: "In physiological recording, why is calibration important?",
+  options: [
+    "To convert instrument readings to meaningful biological units",
+    "To practice using the equipment",
+    "The manufacturer requires calibration", 
+    "It makes the recordings more accurate"
+  ],
+  correctAnswer: 0,
+  explanation: "Calibration establishes relationship between instrument output (voltage, deflection) and actual biological parameters (pressure, force, concentration) being measured."
+},
+{
+  id: 93,
+  question: "What is the purpose of using a positive control in diagnostic tests?",
+  options: [
+    "To verify the test can detect what it's designed to detect",
+    "To use up known positive samples",
+    "To practice the test procedure", 
+    "To make the test more reliable"
+  ],
+  correctAnswer: 0,
+  explanation: "Positive controls with known positive status verify that the test is working correctly and can detect the target organism or substance when present."
+},
+{
+  id: 94,
+  question: "Why is it important to record unexpected observations?",
+  options: [
+    "They may lead to new discoveries or identify problems",
+    "It makes the notes more complete",
+    "The instructor requires all observations", 
+    "They might be important later"
+  ],
+  correctAnswer: 0,
+  explanation: "Unexpected observations often lead to scientific discoveries, identify experimental problems, or reveal previously unknown biological phenomena."
+},
+{
+  id: 95,
+  question: "What does the bacitracin test detect?",
+  options: [
+    "Sensitivity to bacitracin, identifying Group A streptococci",
+    "Ability to produce bacitracin",
+    "Presence of bacitracinase enzyme", 
+    "Ability to use bacitracin as nutrient"
+  ],
+  correctAnswer: 0,
+  explanation: "Bacitracin test uses antibiotic disc. Zone of inhibition identifies Group A beta-hemolytic streptococci (S. pyogenes), which are sensitive."
+},
+{
+  id: 96,
+  question: "Why should experimental conditions be maintained constant?",
+  options: [
+    "To ensure only the variable being tested affects results",
+    "It's easier to keep conditions constant",
+    "The procedure requires constant conditions", 
+    "It makes data analysis simpler"
+  ],
+  correctAnswer: 0,
+  explanation: "Constant conditions (temperature, light, humidity, etc.) ensure that observed effects result from the experimental variable alone, not environmental fluctuations."
+},
+{
+  id: 97,
+  question: "In molecular biology, why are negative controls used?",
+  options: [
+    "To detect contamination or false positive results",
+    "To use up all available materials",
+    "To practice techniques", 
+    "To make experiments more reliable"
+  ],
+  correctAnswer: 0,
+  explanation: "Negative controls without template DNA detect contamination in PCR, while those without primary antibody detect nonspecific binding in immunological assays."
+},
+{
+  id: 98,
+  question: "What is the purpose of using a standard taxonomic key?",
+  options: [
+    "To systematically identify organisms using characteristic features",
+    "To practice identification skills",
+    "To learn about organism classification", 
+    "To make identification more accurate"
+  ],
+  correctAnswer: 0,
+  explanation: "Taxonomic keys use dichotomous choices based on morphological or biochemical characteristics to systematically identify unknown organisms."
+},
+{
+  id: 99,
+  question: "Why is it important to understand the biology of study organisms?",
+  options: [
+    "To design appropriate experiments and interpret results correctly",
+    "It makes the study more interesting",
+    "The instructor requires background knowledge", 
+    "It helps in handling organisms properly"
+  ],
+  correctAnswer: 0,
+  explanation: "Understanding organism biology (life cycle, behavior, physiology) ensures experimental designs are appropriate and results are interpreted in correct biological context."
+},
+{
+  id: 100,
+  question: "What does the novobiocin test determine?",
+  options: [
+    "Sensitivity to novobiocin, distinguishing staphylococcal species",
+    "Ability to produce novobiocin",
+    "Presence of novobiocinase enzyme", 
+    "Ability to use novobiocin as nutrient"
+  ],
+  correctAnswer: 0,
+  explanation: "Novobiocin test uses antibiotic disc. S. saprophyticus is resistant (no zone), while S. epidermidis is sensitive (zone), distinguishing these UTI-causing staphylococci."
+},
+
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'BIO 107';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

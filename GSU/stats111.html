@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gsu computer based text</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .telegram-section {
+            background: #0088cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+        }
+        
+        .telegram-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .telegram-btn {
+            background: white;
+            color: #0088cc;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .telegram-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .verified-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .timer {
+            background: #FF9800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .question-number {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            display: inline-block;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8fff8;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        .option:hover {
+            border-color: #4CAF50;
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .option.selected .option-label {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn:disabled {
+            background: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .score-display {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .feedback {
+            background: #f8fff8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .correct {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        .wrong {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        #examArea {
+            display: none;
+        }
+        
+        #resultsSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Subscription Required -->
+    <div class="telegram-section" id="telegramSection">
+        <h2>📢 Subscribe to Our Telegram Channel</h2>
+        <p>You must subscribe to our Telegram channel to access the exam.</p>
+        
+        <a href="https://t.me/gstateuniversity" target="_blank" class="telegram-btn" onclick="markAsSubscribed()">
+            📱 Join Telegram Channel
+        </a>
+        
+        <br>
+        
+        <button class="telegram-btn" style="background: #4CAF50; color: white;" onclick="verifySubscription()">
+            ✅ I Have Subscribed
+        </button>
+        
+        <div class="verified-badge" id="verifiedBadge">
+            ✓ Subscription Verified! You can now start the exam.
+        </div>
+        
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()" style="margin-top: 20px; display: none;">
+            🚀 Start Exam (40 Questions - 20 Minutes)
+        </button>
+    </div>
+
+    <!-- Exam Area (Hidden until subscription) -->
+    <div id="examArea">
+        <div class="header">
+            <h1>Exam preparation</h1>
+            <div id="studentInfo">Registration: Loading... | Course: Loading...</div>
+            <div class="timer" id="timer">Time Left: 20:00</div>
+            <div style="font-size: 14px; margin-top: 5px;">20 Questions | Auto-submit in 20 minutes</div>
+        </div>
+
+        <div class="question-number" id="questionNum">Question 1 of 40</div>
+        
+        <div class="question-text" id="questionText">
+            Loading question...
+        </div>
+
+        <div id="optionsContainer">
+            <!-- Options loaded here -->
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>← Previous</button>
+            
+            <div class="progress" id="progress">1/40</div>
+            
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitExam()" style="display: none;">Submit Exam</button>
+        </div>
+    </div>
+
+    <div class="results" id="resultsSection">
+        <h2>Exam Completed! 🎉</h2>
+        <div class="score-display">
+            <h3>Your Score</h3>
+            <div style="font-size: 40px; font-weight: bold;" id="finalScore">0/40</div>
+            <p id="scoreMessage">Performance feedback</p>
+        </div>
+        
+        <div id="feedbackArea">
+            <!-- Feedback loaded here -->
+        </div>
+        
+        <button class="btn btn-primary" onclick="resetExam()" style="margin-top: 20px;">🔄 Take Exam Again</button>
+    </div>
+
+    <script>
+        // =====================
+        // TELEGRAM SUBSCRIPTION
+        // =====================
+        let isSubscribed = false;
+
+        // =====================
+        // QUESTION DATABASE - ADD YOUR 100+ QUESTIONS HERE
+        // =====================
+        const allQuestions = [
+            // CURRENT 3 QUESTIONS - ADD 97+ MORE BELOW
+
+{
+  id: 1,
+  question: "What is the primary purpose of descriptive statistics?",
+  options: [
+    "Summarize and describe data features",
+    "Make predictions about populations",
+    "Test hypotheses",
+    "Determine causality"
+  ],
+  correctAnswer: 0,
+  explanation: "Descriptive statistics are used to summarize, organize, and present data in an informative way through measures of central tendency, variability, and graphical displays."
+},
+{
+  id: 2,
+  question: "Which of the following is a measure of central tendency?",
+  options: [
+    "Mean",
+    "Range", 
+    "Variance",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "The mean is a measure of central tendency that represents the average value. Range, variance, and standard deviation are measures of dispersion."
+},
+{
+  id: 3,
+  question: "Calculate the mean of this dataset: 5, 7, 9, 11, 13",
+  options: [
+    "9",
+    "8",
+    "10",
+    "11"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean = (5 + 7 + 9 + 11 + 13) ÷ 5 = 45 ÷ 5 = 9"
+},
+{
+  id: 4,
+  question: "What is the median of: 3, 8, 12, 15, 20?",
+  options: [
+    "12",
+    "11.6",
+    "15",
+    "8"
+  ],
+  correctAnswer: 0,
+  explanation: "The median is the middle value when data is ordered. With 5 values, the 3rd value (12) is the median."
+},
+{
+  id: 5,
+  question: "Find the mode of: 4, 6, 6, 8, 9, 9, 9, 10",
+  options: [
+    "9",
+    "6",
+    "8",
+    "No mode"
+  ],
+  correctAnswer: 0,
+  explanation: "The mode is the most frequent value. 9 appears three times, which is more than any other value."
+},
+{
+  id: 6,
+  question: "Which measure of central tendency is most affected by outliers?",
+  options: [
+    "Mean",
+    "Median",
+    "Mode",
+    "All equally affected"
+  ],
+  correctAnswer: 0,
+  explanation: "The mean is most sensitive to outliers because it incorporates all values in its calculation."
+},
+{
+  id: 7,
+  question: "What is the range of: 12, 18, 22, 25, 31?",
+  options: [
+    "19",
+    "20",
+    "21",
+    "22"
+  ],
+  correctAnswer: 0,
+  explanation: "Range = Maximum - Minimum = 31 - 12 = 19"
+},
+{
+  id: 8,
+  question: "Calculate the sample variance of: 2, 4, 6, 8, 10",
+  options: [
+    "10",
+    "8",
+    "6",
+    "4"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean = 6. Squared deviations: 16, 4, 0, 4, 16. Sum = 40. Sample variance = 40 ÷ (5-1) = 10"
+},
+{
+  id: 9,
+  question: "What is the standard deviation of: 10, 20, 30, 40, 50?",
+  options: [
+    "15.81",
+    "14.14",
+    "17.32",
+    "12.25"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean = 30. Squared deviations: 400, 100, 0, 100, 400. Sum = 1000. Variance = 1000 ÷ 4 = 250. Standard deviation = √250 ≈ 15.81"
+},
+{
+  id: 10,
+  question: "In a symmetric distribution, which relationship is true?",
+  options: [
+    "Mean = Median",
+    "Mean > Median",
+    "Mean < Median",
+    "Mode > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In symmetric distributions, the mean, median, and mode are all equal and located at the center."
+},
+// Questions 11-20
+{
+  id: 11,
+  question: "Which graphical display is best for showing the distribution of a continuous variable?",
+  options: [
+    "Histogram",
+    "Bar chart",
+    "Pie chart",
+    "Scatter plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Histograms display the distribution of continuous data by grouping values into bins and showing frequencies."
+},
+{
+  id: 12,
+  question: "What does a box plot display?",
+  options: [
+    "Five-number summary",
+    "Mean and standard deviation",
+    "Correlation coefficient",
+    "Probability distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Box plots show minimum, Q1, median, Q3, and maximum - the five-number summary."
+},
+{
+  id: 13,
+  question: "Calculate the z-score for a value of 75 when mean = 70 and standard deviation = 5",
+  options: [
+    "1.0",
+    "1.5",
+    "2.0",
+    "0.5"
+  ],
+  correctAnswer: 0,
+  explanation: "z-score = (75 - 70) ÷ 5 = 5 ÷ 5 = 1.0"
+},
+{
+  id: 14,
+  question: "Which measure is most appropriate for categorical data?",
+  options: [
+    "Mode",
+    "Mean",
+    "Median",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "For categorical data, the mode (most frequent category) is the only appropriate measure of central tendency."
+},
+{
+  id: 15,
+  question: "What is the interquartile range of: 10, 15, 20, 25, 30, 35, 40?",
+  options: [
+    "15",
+    "20",
+    "25",
+    "30"
+  ],
+  correctAnswer: 0,
+  explanation: "Q1 = 15, Q3 = 35, IQR = Q3 - Q1 = 35 - 15 = 20"
+},
+{
+  id: 16,
+  question: "In a right-skewed distribution, which is typically true?",
+  options: [
+    "Mean > Median",
+    "Mean < Median",
+    "Mean = Median",
+    "Mode > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In right-skewed distributions, the mean is pulled toward the tail, so mean > median."
+},
+{
+  id: 17,
+  question: "What is the coefficient of variation when mean = 80 and standard deviation = 20?",
+  options: [
+    "25%",
+    "40%",
+    "75%",
+    "125%"
+  ],
+  correctAnswer: 0,
+  explanation: "CV = (20 ÷ 80) × 100% = 0.25 × 100% = 25%"
+},
+{
+  id: 18,
+  question: "Which graphical display is best for comparing proportions?",
+  options: [
+    "Pie chart",
+    "Histogram",
+    "Stem-and-leaf plot",
+    "Box plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Pie charts effectively show how a whole is divided into proportional parts."
+},
+{
+  id: 19,
+  question: "What is the midrange of: 15, 20, 25, 30, 35?",
+  options: [
+    "25",
+    "22.5",
+    "27.5",
+    "30"
+  ],
+  correctAnswer: 0,
+  explanation: "Midrange = (Minimum + Maximum) ÷ 2 = (15 + 35) ÷ 2 = 50 ÷ 2 = 25"
+},
+{
+  id: 20,
+  question: "If all values in a dataset are multiplied by 4, what happens to the standard deviation?",
+  options: [
+    "Multiplied by 4",
+    "Remains the same",
+    "Multiplied by 16",
+    "Divided by 4"
+  ],
+  correctAnswer: 0,
+  explanation: "When all values are multiplied by k, standard deviation is also multiplied by k."
+},
+// Questions 21-30
+{
+  id: 21,
+  question: "Which measure is most resistant to outliers?",
+  options: [
+    "Median",
+    "Mean",
+    "Range",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "The median is resistant to outliers because it depends only on the middle values, not extremes."
+},
+{
+  id: 22,
+  question: "What is the purpose of a scatter plot?",
+  options: [
+    "Show relationship between two quantitative variables",
+    "Display distribution of one variable",
+    "Compare categorical data",
+    "Show changes over time"
+  ],
+  correctAnswer: 0,
+  explanation: "Scatter plots visualize relationships and correlations between two quantitative variables."
+},
+{
+  id: 23,
+  question: "In a normal distribution, what percentage of data falls within ±1 standard deviation of the mean?",
+  options: [
+    "68%",
+    "95%",
+    "99.7%",
+    "50%"
+  ],
+  correctAnswer: 0,
+  explanation: "The empirical rule states that approximately 68% of data in a normal distribution falls within one standard deviation of the mean."
+},
+{
+  id: 24,
+  question: "What is the geometric mean of 9 and 16?",
+  options: [
+    "12",
+    "11.5",
+    "13",
+    "14.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean = √(9 × 16) = √144 = 12"
+},
+{
+  id: 25,
+  question: "Which is a relative measure of dispersion?",
+  options: [
+    "Coefficient of variation",
+    "Variance",
+    "Standard deviation",
+    "Range"
+  ],
+  correctAnswer: 0,
+  explanation: "Coefficient of variation expresses standard deviation relative to the mean, allowing comparisons across different scales."
+},
+{
+  id: 26,
+  question: "What does a cumulative frequency distribution show?",
+  options: [
+    "Running total of frequencies",
+    "Individual frequencies only",
+    "Relative proportions",
+    "Percentage differences"
+  ],
+  correctAnswer: 0,
+  explanation: "Cumulative frequency shows the total number of observations up to each class boundary."
+},
+{
+  id: 27,
+  question: "If Q1 = 30 and Q3 = 70, what values are outliers using the 1.5×IQR rule?",
+  options: [
+    "Below -30 or above 130",
+    "Below 0 or above 100",
+    "Below 15 or above 85",
+    "Below 45 or above 55"
+  ],
+  correctAnswer: 0,
+  explanation: "IQR = 70 - 30 = 40. Lower fence = 30 - 60 = -30. Upper fence = 70 + 60 = 130."
+},
+{
+  id: 28,
+  question: "What is the harmonic mean of 3, 4, and 6?",
+  options: [
+    "4",
+    "4.33",
+    "3.5",
+    "4.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Harmonic mean = 3 ÷ (1/3 + 1/4 + 1/6) = 3 ÷ (4/12 + 3/12 + 2/12) = 3 ÷ (9/12) = 3 × (12/9) = 4"
+},
+{
+  id: 29,
+  question: "Which measure is best for rates and ratios?",
+  options: [
+    "Geometric mean",
+    "Arithmetic mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean accounts for compounding effects in rates and ratios."
+},
+{
+  id: 30,
+  question: "What is the relationship between variance and standard deviation?",
+  options: [
+    "Variance = (Standard deviation)²",
+    "Standard deviation = (Variance)²",
+    "They are unrelated",
+    "Variance = 2 × Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Variance is the square of the standard deviation."
+},
+// Questions 31-40
+{
+  id: 31,
+  question: "In a left-skewed distribution, where is the mode typically located?",
+  options: [
+    "Right of the mean",
+    "Left of the mean",
+    "Equal to the mean",
+    "Cannot determine"
+  ],
+  correctAnswer: 0,
+  explanation: "In left-skewed distributions, the mode is typically to the right of the mean."
+},
+{
+  id: 32,
+  question: "What is the purpose of a stem-and-leaf plot?",
+  options: [
+    "Show distribution shape and individual values",
+    "Compare multiple groups",
+    "Display time series",
+    "Show correlation"
+  ],
+  correctAnswer: 0,
+  explanation: "Stem-and-leaf plots preserve individual data values while showing distribution shape."
+},
+{
+  id: 33,
+  question: "Calculate the weighted mean: values 5, 10, 15 with weights 1, 2, 3",
+  options: [
+    "11.67",
+    "10",
+    "12.5",
+    "13"
+  ],
+  correctAnswer: 0,
+  explanation: "Weighted mean = (5×1 + 10×2 + 15×3) ÷ (1+2+3) = (5+20+45) ÷ 6 = 70 ÷ 6 ≈ 11.67"
+},
+{
+  id: 34,
+  question: "What is the 75th percentile also known as?",
+  options: [
+    "Third quartile (Q3)",
+    "First quartile (Q1)",
+    "Median",
+    "Interquartile range"
+  ],
+  correctAnswer: 0,
+  explanation: "The 75th percentile is equivalent to the third quartile (Q3)."
+},
+{
+  id: 35,
+  question: "Which measure uses all data values in its calculation?",
+  options: [
+    "Mean",
+    "Median",
+    "Mode",
+    "All of the above"
+  ],
+  correctAnswer: 0,
+  explanation: "Only the mean incorporates all data values in its calculation."
+},
+{
+  id: 36,
+  question: "What is the range of this grouped data: Class 10-20, 20-30, 30-40?",
+  options: [
+    "30",
+    "20",
+    "25",
+    "Cannot determine"
+  ],
+  correctAnswer: 0,
+  explanation: "Range = Upper limit of last class - Lower limit of first class = 40 - 10 = 30"
+},
+{
+  id: 37,
+  question: "Which is not a measure of central tendency?",
+  options: [
+    "Variance",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Variance is a measure of dispersion, not central tendency."
+},
+{
+  id: 38,
+  question: "What is the mode of a normal distribution?",
+  options: [
+    "Equal to the mean",
+    "Greater than the mean",
+    "Less than the mean",
+    "Undefined"
+  ],
+  correctAnswer: 0,
+  explanation: "In normal distributions, the mode equals the mean and median."
+},
+{
+  id: 39,
+  question: "Which graph is best for time series data?",
+  options: [
+    "Line graph",
+    "Bar chart",
+    "Pie chart",
+    "Histogram"
+  ],
+  correctAnswer: 0,
+  explanation: "Line graphs effectively show trends and patterns over time."
+},
+{
+  id: 40,
+  question: "What is the empirical rule used for?",
+  options: [
+    "Approximate percentages in normal distributions",
+    "Calculate exact probabilities",
+    "Determine sample size",
+    "Test hypotheses"
+  ],
+  correctAnswer: 0,
+  explanation: "The empirical rule provides approximate percentages of data within certain standard deviation ranges in normal distributions."
+},
+// Questions 41-50
+{
+  id: 41,
+  question: "Calculate the mean deviation from mean for: 2, 4, 6, 8",
+  options: [
+    "2",
+    "1.5",
+    "2.5",
+    "3"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean = 5. Absolute deviations: 3, 1, 1, 3. Sum = 8. Mean deviation = 8 ÷ 4 = 2"
+},
+{
+  id: 42,
+  question: "Which percentile is the median?",
+  options: [
+    "50th",
+    "25th",
+    "75th",
+    "100th"
+  ],
+  correctAnswer: 0,
+  explanation: "The median is the 50th percentile, dividing the data into two equal halves."
+},
+{
+  id: 43,
+  question: "What is the purpose of standardization?",
+  options: [
+    "Compare values from different distributions",
+    "Increase data values",
+    "Decrease variability",
+    "Create categorical data"
+  ],
+  correctAnswer: 0,
+  explanation: "Standardization (using z-scores) allows comparison of values from different distributions by removing units and scaling."
+},
+{
+  id: 44,
+  question: "Which is not a measure of dispersion?",
+  options: [
+    "Mean",
+    "Range",
+    "Variance",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean is a measure of central tendency, not dispersion."
+},
+{
+  id: 45,
+  question: "What does a high kurtosis value indicate?",
+  options: [
+    "Heavy tails and sharp peak",
+    "Light tails and flat peak",
+    "Right skew",
+    "Left skew"
+  ],
+  correctAnswer: 0,
+  explanation: "High kurtosis indicates a distribution with heavy tails and a sharp peak compared to normal."
+},
+{
+  id: 46,
+  question: "Calculate Q1 for: 8, 12, 15, 18, 22, 25, 30",
+  options: [
+    "12",
+    "13.5",
+    "15",
+    "11"
+  ],
+  correctAnswer: 0,
+  explanation: "Q1 is the median of the lower half: 8, 12, 15. Median of these three values is 12."
+},
+{
+  id: 47,
+  question: "Which graph shows cumulative frequencies?",
+  options: [
+    "Ogive",
+    "Histogram",
+    "Stem-and-leaf",
+    "Scatter plot"
+  ],
+  correctAnswer: 0,
+  explanation: "An ogive (cumulative frequency polygon) shows cumulative frequencies."
+},
+{
+  id: 48,
+  question: "What is the coefficient of range for data with min=20, max=80?",
+  options: [
+    "0.6",
+    "0.4",
+    "0.75",
+    "0.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Coefficient of range = (80-20) ÷ (80+20) = 60 ÷ 100 = 0.6"
+},
+{
+  id: 49,
+  question: "Which is true for bimodal distributions?",
+  options: [
+    "Has two peaks",
+    "Is always symmetric",
+    "Has no mode",
+    "Is always normal"
+  ],
+  correctAnswer: 0,
+  explanation: "Bimodal distributions have two distinct peaks or modes."
+},
+{
+  id: 50,
+  question: "What does a negative skewness indicate?",
+  options: [
+    "Left-skewed distribution",
+    "Right-skewed distribution",
+    "Symmetric distribution",
+    "Normal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Negative skewness indicates the distribution is left-skewed (tail extends left)."
+},
+// Questions 51-60
+{
+  id: 51,
+  question: "Calculate the pooled variance for two samples: n1=10, var1=16; n2=15, var2=25",
+  options: [
+    "21.5",
+    "20.5",
+    "22",
+    "19.8"
+  ],
+  correctAnswer: 0,
+  explanation: "Pooled variance = [(10-1)×16 + (15-1)×25] ÷ (10+15-2) = [9×16 + 14×25] ÷ 23 = [144 + 350] ÷ 23 = 494 ÷ 23 ≈ 21.48"
+},
+{
+  id: 52,
+  question: "Which measure is based on all observations?",
+  options: [
+    "Mean",
+    "Median",
+    "Mode",
+    "All of above"
+  ],
+  correctAnswer: 0,
+  explanation: "Only the mean uses all data values in its calculation."
+},
+{
+  id: 53,
+  question: "What is the mid-quartile range?",
+  options: [
+    "(Q1 + Q3)/2",
+    "Q3 - Q1",
+    "(Max + Min)/2",
+    "Q2"
+  ],
+  correctAnswer: 0,
+  explanation: "Mid-quartile range is the average of Q1 and Q3: (Q1 + Q3)/2"
+},
+{
+  id: 54,
+  question: "Which is not a graphical method?",
+  options: [
+    "Standard deviation",
+    "Histogram",
+    "Box plot",
+    "Stem-and-leaf"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard deviation is a numerical measure, not a graphical method."
+},
+{
+  id: 55,
+  question: "What does a leptokurtic distribution have?",
+  options: [
+    "High peak and heavy tails",
+    "Low peak and light tails",
+    "No peak",
+    "Multiple peaks"
+  ],
+  correctAnswer: 0,
+  explanation: "Leptokurtic distributions have higher peaks and heavier tails than normal."
+},
+{
+  id: 56,
+  question: "Calculate the relative frequency for class 20-30 with frequency 15 and total 60",
+  options: [
+    "0.25",
+    "0.15",
+    "0.30",
+    "0.20"
+  ],
+  correctAnswer: 0,
+  explanation: "Relative frequency = 15 ÷ 60 = 0.25"
+},
+{
+  id: 57,
+  question: "Which is a positional average?",
+  options: [
+    "Median",
+    "Mean",
+    "Standard deviation",
+    "Variance"
+  ],
+  correctAnswer: 0,
+  explanation: "Median is a positional average because it depends on the position of values, not their magnitude."
+},
+{
+  id: 58,
+  question: "What is the purpose of a frequency polygon?",
+  options: [
+    "Show frequency distribution shape",
+    "Compare means",
+    "Display correlations",
+    "Test normality"
+  ],
+  correctAnswer: 0,
+  explanation: "Frequency polygons show the shape of frequency distributions by connecting midpoints of histogram bars."
+},
+{
+  id: 59,
+  question: "Which is not affected by extreme values?",
+  options: [
+    "Median",
+    "Mean",
+    "Standard deviation",
+    "Range"
+  ],
+  correctAnswer: 0,
+  explanation: "Median is resistant to extreme values because it uses only middle positions."
+},
+{
+  id: 60,
+  question: "What does a coefficient of variation of 40% indicate?",
+  options: [
+    "High relative variability",
+    "Low relative variability",
+    "No variability",
+    "Negative variability"
+  ],
+  correctAnswer: 0,
+  explanation: "CV of 40% indicates relatively high variability compared to the mean."
+},
+// Questions 61-70
+{
+  id: 61,
+  question: "Calculate the harmonic mean of 2, 3, and 6",
+  options: [
+    "3",
+    "3.67",
+    "2.5",
+    "4"
+  ],
+  correctAnswer: 0,
+  explanation: "Harmonic mean = 3 ÷ (1/2 + 1/3 + 1/6) = 3 ÷ (3/6 + 2/6 + 1/6) = 3 ÷ (6/6) = 3"
+},
+{
+  id: 62,
+  question: "Which graph is best for categorical data?",
+  options: [
+    "Bar chart",
+    "Histogram",
+    "Stem-and-leaf",
+    "Box plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Bar charts are appropriate for categorical data with distinct categories."
+},
+{
+  id: 63,
+  question: "What is the relationship between mean, median, and mode in symmetric distributions?",
+  options: [
+    "Mean = Median = Mode",
+    "Mean > Median > Mode",
+    "Mean < Median < Mode",
+    "No relationship"
+  ],
+  correctAnswer: 0,
+  explanation: "In symmetric distributions, all three measures of central tendency are equal."
+},
+{
+  id: 64,
+  question: "Calculate the range coefficient for data with min=25, max=75",
+  options: [
+    "0.5",
+    "0.6",
+    "0.4",
+    "0.75"
+  ],
+  correctAnswer: 0,
+  explanation: "Range coefficient = (75-25) ÷ (75+25) = 50 ÷ 100 = 0.5"
+},
+{
+  id: 65,
+  question: "Which is not a type of average?",
+  options: [
+    "Standard deviation",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard deviation measures dispersion, not central tendency (average)."
+},
+{
+  id: 66,
+  question: "What does a platykurtic distribution have?",
+  options: [
+    "Flat peak and light tails",
+    "Sharp peak and heavy tails",
+    "No peak",
+    "Multiple peaks"
+  ],
+  correctAnswer: 0,
+  explanation: "Platykurtic distributions are flatter than normal with lighter tails."
+},
+{
+  id: 67,
+  question: "Calculate the z-score for x=110, μ=100, σ=8",
+  options: [
+    "1.25",
+    "1.5",
+    "1.75",
+    "2.0"
+  ],
+  correctAnswer: 0,
+  explanation: "z = (110-100) ÷ 8 = 10 ÷ 8 = 1.25"
+},
+{
+  id: 68,
+  question: "Which measure is based on squared deviations?",
+  options: [
+    "Variance",
+    "Range",
+    "Mean deviation",
+    "IQR"
+  ],
+  correctAnswer: 0,
+  explanation: "Variance is calculated using squared deviations from the mean."
+},
+{
+  id: 69,
+  question: "What is the purpose of a box plot?",
+  options: [
+    "Display five-number summary and outliers",
+    "Show frequency distribution",
+    "Display correlation",
+    "Compare means"
+  ],
+  correctAnswer: 0,
+  explanation: "Box plots effectively display the five-number summary and identify potential outliers."
+},
+{
+  id: 70,
+  question: "Which is true for normal distribution?",
+  options: [
+    "Skewness = 0",
+    "Skewness > 0",
+    "Skewness < 0",
+    "Kurtosis = 0"
+  ],
+  correctAnswer: 0,
+  explanation: "Normal distributions have zero skewness (perfect symmetry)."
+},
+// Questions 71-80
+{
+  id: 71,
+  question: "Calculate the geometric mean of 4, 9, and 16",
+  options: [
+    "8.32",
+    "9.67",
+    "7.5",
+    "8.0"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean = ∛(4×9×16) = ∛576 ≈ 8.32"
+},
+{
+  id: 72,
+  question: "Which graph shows trends over time?",
+  options: [
+    "Line graph",
+    "Bar chart",
+    "Pie chart",
+    "Histogram"
+  ],
+  correctAnswer: 0,
+  explanation: "Line graphs effectively display trends and patterns over time periods."
+},
+{
+  id: 73,
+  question: "What is the coefficient of quartile deviation for Q1=25, Q3=75?",
+  options: [
+    "0.5",
+    "0.6",
+    "0.4",
+    "0.75"
+  ],
+  correctAnswer: 0,
+  explanation: "Quartile deviation = (75-25) ÷ (75+25) = 50 ÷ 100 = 0.5"
+},
+{
+  id: 74,
+  question: "Which is not a measure of location?",
+  options: [
+    "Variance",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Variance measures dispersion, not location or central tendency."
+},
+{
+  id: 75,
+  question: "What does positive kurtosis indicate?",
+  options: [
+    "Leptokurtic distribution",
+    "Platykurtic distribution",
+    "Mesokurtic distribution",
+    "Bimodal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Positive kurtosis indicates a leptokurtic distribution (sharper peak, heavier tails)."
+},
+{
+  id: 76,
+  question: "Calculate the mean of this frequency distribution: Class 0-10:5, 10-20:8, 20-30:7",
+  options: [
+    "15.5",
+    "16.2",
+    "14.8",
+    "15.0"
+  ],
+  correctAnswer: 0,
+  explanation: "Midpoints: 5,15,25. Weighted sum = 5×5 + 15×8 + 25×7 = 25+120+175=320. Mean = 320÷20=16"
+},
+{
+  id: 77,
+  question: "Which is based on all items?",
+  options: [
+    "Mean",
+    "Median",
+    "Mode",
+    "Quartiles"
+  ],
+  correctAnswer: 0,
+  explanation: "Only the mean incorporates all data values in its calculation."
+},
+{
+  id: 78,
+  question: "What is the purpose of a scatter plot?",
+  options: [
+    "Show relationship between two variables",
+    "Display frequency distribution",
+    "Compare categories",
+    "Show time trends"
+  ],
+  correctAnswer: 0,
+  explanation: "Scatter plots visualize the relationship and correlation between two quantitative variables."
+},
+{
+  id: 79,
+  question: "Which is not a measure of skewness?",
+  options: [
+    "Standard deviation",
+    "Pearson's coefficient",
+    "Bowley's coefficient",
+    "Moments coefficient"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard deviation measures dispersion, not skewness."
+},
+{
+  id: 80,
+  question: "What does a CV of 15% indicate?",
+  options: [
+    "Low relative variability",
+    "High relative variability",
+    "No variability",
+    "Negative variability"
+  ],
+  correctAnswer: 0,
+  explanation: "CV of 15% indicates relatively low variability compared to the mean."
+},
+// Questions 81-90
+{
+  id: 81,
+  question: "Calculate the mode for grouped data with modal class 30-40, f=25, f_prev=15, f_next=20, class width=10",
+  options: [
+    "34.17",
+    "35.0",
+    "33.5",
+    "36.2"
+  ],
+  correctAnswer: 0,
+  explanation: "Mode = L + [(f - f_prev) ÷ (2f - f_prev - f_next)] × w = 30 + [(25-15) ÷ (50-15-20)] × 10 = 30 + [10 ÷ 15] × 10 ≈ 34.17"
+},
+{
+  id: 82,
+  question: "Which graph uses cumulative percentages?",
+  options: [
+    "Ogive",
+    "Histogram",
+    "Frequency polygon",
+    "Stem-and-leaf"
+  ],
+  correctAnswer: 0,
+  explanation: "Ogive (cumulative frequency graph) uses cumulative percentages."
+},
+{
+  id: 83,
+  question: "What is the relationship in right-skewed distributions?",
+  options: [
+    "Mean > Median > Mode",
+    "Mean < Median < Mode",
+    "Mean = Median = Mode",
+    "Mode > Median > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In right-skewed distributions: Mean > Median > Mode"
+},
+{
+  id: 84,
+  question: "Calculate the median for grouped data: Class 0-10:5, 10-20:12, 20-30:8, N=25",
+  options: [
+    "17.5",
+    "18.2",
+    "16.8",
+    "19.0"
+  ],
+  correctAnswer: 0,
+  explanation: "Median class is 10-20. Median = L + [(N/2 - CF) ÷ f] × w = 10 + [(12.5-5) ÷ 12] × 10 = 10 + (7.5÷12)×10 ≈ 17.5"
+},
+{
+  id: 85,
+  question: "Which is not a graphical presentation?",
+  options: [
+    "Standard deviation",
+    "Histogram",
+    "Pie chart",
+    "Bar chart"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard deviation is a numerical measure, not a graphical presentation."
+},
+{
+  id: 86,
+  question: "What does mesokurtic mean?",
+  options: [
+    "Normal kurtosis",
+    "High kurtosis",
+    "Low kurtosis",
+    "No kurtosis"
+  ],
+  correctAnswer: 0,
+  explanation: "Mesokurtic distributions have kurtosis similar to normal distribution."
+},
+{
+  id: 87,
+  question: "Calculate Pearson's skewness: mean=45, median=40, SD=10",
+  options: [
+    "0.5",
+    "0.4",
+    "0.6",
+    "0.3"
+  ],
+  correctAnswer: 0,
+  explanation: "Skewness = 3(45-40) ÷ 10 = 15 ÷ 10 = 1.5"
+},
+{
+  id: 88,
+  question: "Which is based on quartiles?",
+  options: [
+    "Bowley's skewness",
+    "Pearson's skewness",
+    "Moments skewness",
+    "All of above"
+  ],
+  correctAnswer: 0,
+  explanation: "Bowley's skewness uses quartiles: (Q3 + Q1 - 2Q2) ÷ (Q3 - Q1)"
+},
+{
+  id: 89,
+  question: "What is the purpose of a histogram?",
+  options: [
+    "Show frequency distribution shape",
+    "Compare means",
+    "Display correlations",
+    "Test hypotheses"
+  ],
+  correctAnswer: 0,
+  explanation: "Histograms display the shape of frequency distributions for continuous data."
+},
+{
+  id: 90,
+  question: "Which is true for left-skewed distributions?",
+  options: [
+    "Mean < Median < Mode",
+    "Mean > Median > Mode",
+    "Mean = Median = Mode",
+    "Mode < Median < Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In left-skewed distributions: Mean < Median < Mode"
+},
+// Questions 91-100
+{
+  id: 91,
+  question: "Calculate the standard deviation for population: 6, 8, 10, 12, 14",
+  options: [
+    "2.83",
+    "2.5",
+    "3.0",
+    "3.16"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean=10. Squared deviations:16,4,0,4,16. Sum=40. Population variance=40÷5=8. SD=√8≈2.83"
+},
+{
+  id: 92,
+  question: "Which graph shows component parts?",
+  options: [
+    "Pie chart",
+    "Histogram",
+    "Stem-and-leaf",
+    "Box plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Pie charts show how a whole is divided into component parts."
+},
+{
+  id: 93,
+  question: "What is the empirical rule range for 95%?",
+  options: [
+    "μ ± 2σ",
+    "μ ± σ",
+    "μ ± 3σ",
+    "μ ± 1.5σ"
+  ],
+  correctAnswer: 0,
+  explanation: "The empirical rule states 95% of data falls within μ ± 2σ in normal distributions."
+},
+{
+  id: 94,
+  question: "Calculate the harmonic mean of 4, 5, and 20",
+  options: [
+    "6.67",
+    "7.5",
+    "8.0",
+    "6.0"
+  ],
+  correctAnswer: 0,
+  explanation: "Harmonic mean = 3 ÷ (1/4 + 1/5 + 1/20) = 3 ÷ (5/20 + 4/20 + 1/20) = 3 ÷ (10/20) = 3 × 2 = 6"
+},
+{
+  id: 95,
+  question: "Which is not a measure of central tendency?",
+  options: [
+    "Range",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Range measures dispersion, not central tendency."
+},
+{
+  id: 96,
+  question: "What does negative kurtosis indicate?",
+  options: [
+    "Platykurtic distribution",
+    "Leptokurtic distribution",
+    "Mesokurtic distribution",
+    "Bimodal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Negative kurtosis indicates platykurtic distribution (flatter than normal)."
+},
+{
+  id: 97,
+  question: "Calculate the z-score for x=80, μ=75, σ=4",
+  options: [
+    "1.25",
+    "1.5",
+    "1.75",
+    "2.0"
+  ],
+  correctAnswer: 0,
+  explanation: "z = (80-75) ÷ 4 = 5 ÷ 4 = 1.25"
+},
+{
+  id: 98,
+  question: "Which is based on mean and standard deviation?",
+  options: [
+    "Pearson's skewness",
+    "Bowley's skewness",
+    "Quartile deviation",
+    "Range"
+  ],
+  correctAnswer: 0,
+  explanation: "Pearson's skewness uses mean and standard deviation in its calculation."
+},
+{
+  id: 99,
+  question: "What is the purpose of a frequency distribution?",
+  options: [
+    "Organize and summarize data",
+    "Calculate probabilities",
+    "Test hypotheses",
+    "Determine causality"
+  ],
+  correctAnswer: 0,
+  explanation: "Frequency distributions organize raw data into meaningful patterns and summaries."
+},
+{
+  id: 100,
+  question: "Which is true for bimodal distributions?",
+  options: [
+    "Has two modes",
+    "Is always symmetric",
+    "Has no mean",
+    "Is always normal"
+  ],
+  correctAnswer: 0,
+  explanation: "Bimodal distributions have two distinct peaks or frequent values."
+},
+// Questions 101-110
+{
+  id: 101,
+  question: "Calculate the geometric mean of 2, 8, and 32",
+  options: [
+    "8",
+    "10",
+    "12",
+    "14"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean = ∛(2×8×32) = ∛512 = 8"
+},
+{
+  id: 102,
+  question: "Which graph shows frequency with individual values?",
+  options: [
+    "Stem-and-leaf plot",
+    "Histogram",
+    "Pie chart",
+    "Bar chart"
+  ],
+  correctAnswer: 0,
+  explanation: "Stem-and-leaf plots preserve individual data values while showing distribution."
+},
+{
+  id: 103,
+  question: "What is the coefficient of variation formula?",
+  options: [
+    "(σ/μ) × 100%",
+    "(μ/σ) × 100%",
+    "(σ²/μ) × 100%",
+    "(μ/σ²) × 100%"
+  ],
+  correctAnswer: 0,
+  explanation: "Coefficient of variation = (Standard deviation ÷ Mean) × 100%"
+},
+{
+  id: 104,
+  question: "Calculate Q3 for: 5, 8, 12, 15, 18, 21, 25",
+  options: [
+    "21",
+    "20",
+    "22",
+    "19.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Q3 is median of upper half: 18, 21, 25. Median is 21."
+},
+{
+  id: 105,
+  question: "Which is not a measure of dispersion?",
+  options: [
+    "Mean",
+    "Range",
+    "Variance",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean measures central tendency, not dispersion."
+},
+{
+  id: 106,
+  question: "What does high positive skewness indicate?",
+  options: [
+    "Right-skewed distribution",
+    "Left-skewed distribution",
+    "Symmetric distribution",
+    "Normal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "High positive skewness indicates right-skewed distribution (tail extends right)."
+},
+{
+  id: 107,
+  question: "Calculate the mean deviation for: 10, 20, 30, 40",
+  options: [
+    "10",
+    "8",
+    "12",
+    "15"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean=25. Absolute deviations:15,5,5,15. Sum=40. Mean deviation=40÷4=10"
+},
+{
+  id: 108,
+  question: "Which is based on extreme values?",
+  options: [
+    "Range",
+    "Variance",
+    "Standard deviation",
+    "Mean deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Range uses only the minimum and maximum values."
+},
+{
+  id: 109,
+  question: "What is the purpose of standardization?",
+  options: [
+    "Make different distributions comparable",
+    "Increase data values",
+    "Decrease variability",
+    "Create categorical data"
+  ],
+  correctAnswer: 0,
+  explanation: "Standardization removes units and scales data for comparison across distributions."
+},
+{
+  id: 110,
+  question: "Which is true for normal distribution?",
+  options: [
+    "Skewness = 0, Kurtosis = 3",
+    "Skewness = 1, Kurtosis = 3",
+    "Skewness = 0, Kurtosis = 0",
+    "Skewness = 1, Kurtosis = 0"
+  ],
+  correctAnswer: 0,
+  explanation: "Normal distributions have skewness=0 and kurtosis=3 (excess kurtosis=0)."
+},
+// Questions 111-120
+{
+  id: 111,
+  question: "Calculate the weighted mean: values 2,4,6 with weights 3,2,1",
+  options: [
+    "3.33",
+    "3.0",
+    "3.5",
+    "4.0"
+  ],
+  correctAnswer: 0,
+  explanation: "Weighted mean = (2×3 + 4×2 + 6×1) ÷ (3+2+1) = (6+8+6) ÷ 6 = 20 ÷ 6 ≈ 3.33"
+},
+{
+  id: 112,
+  question: "Which graph shows relationships between variables?",
+  options: [
+    "Scatter plot",
+    "Histogram",
+    "Pie chart",
+    "Bar chart"
+  ],
+  correctAnswer: 0,
+  explanation: "Scatter plots display relationships and correlations between two variables."
+},
+{
+  id: 113,
+  question: "What is the empirical rule range for 99.7%?",
+  options: [
+    "μ ± 3σ",
+    "μ ± 2σ",
+    "μ ± σ",
+    "μ ± 1.5σ"
+  ],
+  correctAnswer: 0,
+  explanation: "The empirical rule states 99.7% of data falls within μ ± 3σ in normal distributions."
+},
+{
+  id: 114,
+  question: "Calculate the harmonic mean of 3, 4, and 12",
+  options: [
+    "4.5",
+    "5.0",
+    "4.0",
+    "5.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Harmonic mean = 3 ÷ (1/3 + 1/4 + 1/12) = 3 ÷ (4/12 + 3/12 + 1/12) = 3 ÷ (8/12) = 3 × 1.5 = 4.5"
+},
+{
+  id: 115,
+  question: "Which is not a measure of variability?",
+  options: [
+    "Median",
+    "Range",
+    "Variance",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Median measures central tendency, not variability."
+},
+{
+  id: 116,
+  question: "What does platykurtic distribution have?",
+  options: [
+    "Flat peak and light tails",
+    "Sharp peak and heavy tails",
+    "No peak",
+    "Multiple peaks"
+  ],
+  correctAnswer: 0,
+  explanation: "Platykurtic distributions are flatter than normal with lighter tails."
+},
+{
+  id: 117,
+  question: "Calculate the z-score for x=60, μ=50, σ=8",
+  options: [
+    "1.25",
+    "1.5",
+    "1.75",
+    "2.0"
+  ],
+  correctAnswer: 0,
+  explanation: "z = (60-50) ÷ 8 = 10 ÷ 8 = 1.25"
+},
+{
+  id: 118,
+  question: "Which is based on squared deviations from mean?",
+  options: [
+    "Variance",
+    "Range",
+    "Mean deviation",
+    "IQR"
+  ],
+  correctAnswer: 0,
+  explanation: "Variance uses squared deviations from the mean."
+},
+{
+  id: 119,
+  question: "What is the purpose of a box plot?",
+  options: [
+    "Show distribution summary and outliers",
+    "Display frequency distribution",
+    "Show correlation",
+    "Compare means"
+  ],
+  correctAnswer: 0,
+  explanation: "Box plots display five-number summary and identify potential outliers."
+},
+{
+  id: 120,
+  question: "Which is true for right-skewed distributions?",
+  options: [
+    "Mean > Median > Mode",
+    "Mean < Median < Mode",
+    "Mean = Median = Mode",
+    "Mode > Median > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In right-skewed distributions: Mean > Median > Mode"
+},
+// Questions 121-130
+{
+  id: 121,
+  question: "Calculate the geometric mean of 5, 20, and 80",
+  options: [
+    "20",
+    "25",
+    "30",
+    "35"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean = ∛(5×20×80) = ∛8000 = 20"
+},
+{
+  id: 122,
+  question: "Which graph shows cumulative frequencies?",
+  options: [
+    "Ogive",
+    "Histogram",
+    "Stem-and-leaf",
+    "Scatter plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Ogive displays cumulative frequencies or percentages."
+},
+{
+  id: 123,
+  question: "What is the formula for coefficient of range?",
+  options: [
+    "(Max - Min)/(Max + Min)",
+    "(Max + Min)/(Max - Min)",
+    "Max/Min",
+    "Min/Max"
+  ],
+  correctAnswer: 0,
+  explanation: "Coefficient of range = (Maximum - Minimum) ÷ (Maximum + Minimum)"
+},
+{
+  id: 124,
+  question: "Calculate Q1 for: 4, 7, 10, 13, 16, 19, 22",
+  options: [
+    "7",
+    "8.5",
+    "9",
+    "6.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Q1 is median of lower half: 4, 7, 10. Median is 7."
+},
+{
+  id: 125,
+  question: "Which is not a type of average?",
+  options: [
+    "Standard deviation",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Standard deviation measures dispersion, not central tendency (average)."
+},
+{
+  id: 126,
+  question: "What does negative skewness indicate?",
+  options: [
+    "Left-skewed distribution",
+    "Right-skewed distribution",
+    "Symmetric distribution",
+    "Normal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Negative skewness indicates left-skewed distribution (tail extends left)."
+},
+{
+  id: 127,
+  question: "Calculate the mean deviation for: 15, 25, 35, 45",
+  options: [
+    "10",
+    "12",
+    "15",
+    "8"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean=30. Absolute deviations:15,5,5,15. Sum=40. Mean deviation=40÷4=10"
+},
+{
+  id: 128,
+  question: "Which is based on quartiles?",
+  options: [
+    "Interquartile range",
+    "Variance",
+    "Standard deviation",
+    "Mean deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Interquartile range uses Q1 and Q3: IQR = Q3 - Q1"
+},
+{
+  id: 129,
+  question: "What is the purpose of a histogram?",
+  options: [
+    "Show frequency distribution shape",
+    "Compare means",
+    "Display correlations",
+    "Test hypotheses"
+  ],
+  correctAnswer: 0,
+  explanation: "Histograms display the shape of frequency distributions for continuous data."
+},
+{
+  id: 130,
+  question: "Which is true for symmetric distributions?",
+  options: [
+    "Mean = Median = Mode",
+    "Mean > Median > Mode",
+    "Mean < Median < Mode",
+    "Mode > Median > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In symmetric distributions, all three measures of central tendency are equal."
+},
+// Questions 131-140
+{
+  id: 131,
+  question: "Calculate the standard deviation for sample: 5, 10, 15, 20, 25",
+  options: [
+    "7.91",
+    "7.5",
+    "8.0",
+    "8.5"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean=15. Squared deviations:100,25,0,25,100. Sum=250. Sample variance=250÷4=62.5. SD=√62.5≈7.91"
+},
+{
+  id: 132,
+  question: "Which graph shows component parts of whole?",
+  options: [
+    "Pie chart",
+    "Histogram",
+    "Stem-and-leaf",
+    "Box plot"
+  ],
+  correctAnswer: 0,
+  explanation: "Pie charts show how a whole is divided into component parts as percentages."
+},
+{
+  id: 133,
+  question: "What is the empirical rule range for 68%?",
+  options: [
+    "μ ± σ",
+    "μ ± 2σ",
+    "μ ± 3σ",
+    "μ ± 1.5σ"
+  ],
+  correctAnswer: 0,
+  explanation: "The empirical rule states 68% of data falls within μ ± σ in normal distributions."
+},
+{
+  id: 134,
+  question: "Calculate the harmonic mean of 6, 8, and 24",
+  options: [
+    "9.6",
+    "10.0",
+    "8.5",
+    "11.2"
+  ],
+  correctAnswer: 0,
+  explanation: "Harmonic mean = 3 ÷ (1/6 + 1/8 + 1/24) = 3 ÷ (4/24 + 3/24 + 1/24) = 3 ÷ (8/24) = 3 × 3 = 9"
+},
+{
+  id: 135,
+  question: "Which is not a measure of central tendency?",
+  options: [
+    "Range",
+    "Mean",
+    "Median",
+    "Mode"
+  ],
+  correctAnswer: 0,
+  explanation: "Range measures dispersion, not central tendency."
+},
+{
+  id: 136,
+  question: "What does leptokurtic distribution have?",
+  options: [
+    "Sharp peak and heavy tails",
+    "Flat peak and light tails",
+    "No peak",
+    "Multiple peaks"
+  ],
+  correctAnswer: 0,
+  explanation: "Leptokurtic distributions have sharper peaks and heavier tails than normal."
+},
+{
+  id: 137,
+  question: "Calculate the z-score for x=85, μ=80, σ=4",
+  options: [
+    "1.25",
+    "1.5",
+    "1.75",
+    "2.0"
+  ],
+  correctAnswer: 0,
+  explanation: "z = (85-80) ÷ 4 = 5 ÷ 4 = 1.25"
+},
+{
+  id: 138,
+  question: "Which is based on mean and standard deviation?",
+  options: [
+    "Pearson's skewness",
+    "Bowley's skewness",
+    "Quartile deviation",
+    "Range"
+  ],
+  correctAnswer: 0,
+  explanation: "Pearson's skewness coefficient uses mean and standard deviation."
+},
+{
+  id: 139,
+  question: "What is the purpose of a frequency distribution?",
+  options: [
+    "Organize and summarize data",
+    "Calculate probabilities",
+    "Test hypotheses",
+    "Determine causality"
+  ],
+  correctAnswer: 0,
+  explanation: "Frequency distributions organize raw data into meaningful patterns for analysis."
+},
+{
+  id: 140,
+  question: "Which is true for unimodal distributions?",
+  options: [
+    "Has one mode",
+    "Has two modes",
+    "Has no mode",
+    "Has multiple modes"
+  ],
+  correctAnswer: 0,
+  explanation: "Unimodal distributions have one clear peak or mode."
+},
+// Questions 141-150
+{
+  id: 141,
+  question: "Calculate the geometric mean of 3, 12, and 48",
+  options: [
+    "12",
+    "15",
+    "18",
+    "21"
+  ],
+  correctAnswer: 0,
+  explanation: "Geometric mean = ∛(3×12×48) = ∛1728 = 12"
+},
+{
+  id: 142,
+  question: "Which graph shows individual values and distribution?",
+  options: [
+    "Stem-and-leaf plot",
+    "Histogram",
+    "Pie chart",
+    "Bar chart"
+  ],
+  correctAnswer: 0,
+  explanation: "Stem-and-leaf plots preserve individual data values while showing distribution shape."
+},
+{
+  id: 143,
+  question: "What is the formula for coefficient of variation?",
+  options: [
+    "(σ/μ) × 100%",
+    "(μ/σ) × 100%",
+    "(σ²/μ) × 100%",
+    "(μ/σ²) × 100%"
+  ],
+  correctAnswer: 0,
+  explanation: "Coefficient of variation = (Standard deviation ÷ Mean) × 100%"
+},
+{
+  id: 144,
+  question: "Calculate the median for: 6, 9, 12, 15, 18, 21",
+  options: [
+    "13.5",
+    "12",
+    "15",
+    "14"
+  ],
+  correctAnswer: 0,
+  explanation: "With even number of values, median = average of middle two: (12+15)÷2=13.5"
+},
+{
+  id: 145,
+  question: "Which is not a measure of dispersion?",
+  options: [
+    "Mean",
+    "Range",
+    "Variance",
+    "Standard deviation"
+  ],
+  correctAnswer: 0,
+  explanation: "Mean measures central tendency, not dispersion."
+},
+{
+  id: 146,
+  question: "What does zero skewness indicate?",
+  options: [
+    "Symmetric distribution",
+    "Right-skewed distribution",
+    "Left-skewed distribution",
+    "Bimodal distribution"
+  ],
+  correctAnswer: 0,
+  explanation: "Zero skewness indicates perfect symmetry in the distribution."
+},
+{
+  id: 147,
+  question: "Calculate the range for: 22, 25, 28, 32, 35, 40",
+  options: [
+    "18",
+    "20",
+    "22",
+    "25"
+  ],
+  correctAnswer: 0,
+  explanation: "Range = Maximum - Minimum = 40 - 22 = 18"
+},
+{
+  id: 148,
+  question: "Which is based on all observations?",
+  options: [
+    "Mean",
+    "Median",
+    "Mode",
+    "Quartiles"
+  ],
+  correctAnswer: 0,
+  explanation: "Only the mean incorporates all data values in its calculation."
+},
+{
+  id: 149,
+  question: "What is the purpose of standardization?",
+  options: [
+    "Make distributions comparable",
+    "Increase data values",
+    "Decrease variability",
+    "Create categorical data"
+  ],
+  correctAnswer: 0,
+  explanation: "Standardization using z-scores allows comparison across different distributions and scales."
+},
+{
+  id: 150,
+  question: "Which is true for normal distribution?",
+  options: [
+    "Mean = Median = Mode",
+    "Mean > Median > Mode",
+    "Mean < Median < Mode",
+    "Mode > Median > Mean"
+  ],
+  correctAnswer: 0,
+  explanation: "In normal distributions, all three measures of central tendency are equal and located at the center."
+},
+
+            
+            // =====================
+            // ADD MORE QUESTIONS HERE - FOLLOW THIS FORMAT:
+            // =====================
+            // {
+            //     id: 4, // ← INCREASE THIS NUMBER
+            //     question: "Your question here?",
+            //     options: ["Option A", "Option B", "Option C", "Option D"],
+            //     correctAnswer: 0, // 0=A, 1=B, 2=C, 3=D
+            //     explanation: "Explanation why this is correct"
+            // },
+            // COPY THE ABOVE TEMPLATE AND PASTE FOR EACH NEW QUESTION
+            // YOU CAN ADD UP TO 100+ QUESTIONS TOTAL
+            // =====================
+        ];
+
+        // =====================
+        // EXAM VARIABLES
+        // =====================
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let examTimer;
+        let timeLeft = 20 * 60; // 20 minutes
+        const QUESTIONS_PER_EXAM = 20;
+
+        // =====================
+        // TELEGRAM FUNCTIONS
+        // =====================
+        function markAsSubscribed() {
+            console.log("Telegram channel opened");
+        }
+
+        function verifySubscription() {
+            isSubscribed = true;
+            localStorage.setItem('telegramSubscribed', 'true');
+            document.getElementById('verifiedBadge').style.display = 'block';
+            document.getElementById('startExamBtn').style.display = 'block';
+            alert("✅ Subscription verified! You can now start the exam.");
+        }
+
+        function startExam() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            
+            if (!isSubscribed && subscribed !== 'true') {
+                alert("❌ Please verify your Telegram subscription first!\n\n1. Click the Telegram link to join our channel\n2. Then click 'I Have Subscribed' to verify");
+                return;
+            }
+            
+            document.getElementById('telegramSection').style.display = 'none';
+            document.getElementById('examArea').style.display = 'block';
+            initializeExam();
+        }
+
+        function checkPreviousSubscription() {
+            const subscribed = localStorage.getItem('telegramSubscribed');
+            if (subscribed === 'true') {
+                isSubscribed = true;
+                document.getElementById('verifiedBadge').style.display = 'block';
+                document.getElementById('startExamBtn').style.display = 'block';
+            }
+        }
+
+        // =====================
+        // EXAM FUNCTIONS
+        // =====================
+        function initializeExam() {
+            // Get student info from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || 'UG23/EDCS/1065';
+            const course = urlParams.get('course') || 'STATS 111';
+            document.getElementById('studentInfo').textContent = `Registration: ${username} | Course: ${course}`;
+
+            // AUTO-SHUFFLE: Select random 40 questions from pool
+            const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+            currentQuestions = shuffled.slice(0, QUESTIONS_PER_EXAM);
+            
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            startTimer();
+            loadQuestion(0);
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            timeLeft = 20 * 60;
+            
+            examTimer = setInterval(function() {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time reaches 0
+                if (timeLeft <= 0) {
+                    clearInterval(examTimer);
+                    submitExam();
+                    alert("⏰ Time's up! Exam submitted automatically.");
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            const q = currentQuestions[index];
+            
+            document.getElementById('questionNum').textContent = `Question ${index + 1} of ${QUESTIONS_PER_EXAM}`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('progress').textContent = `${index + 1}/${QUESTIONS_PER_EXAM}`;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${userAnswers[q.id] === i ? 'selected' : ''}`;
+                optionDiv.onclick = () => selectAnswer(q.id, i);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + i)}</div>
+                    <div>${option}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').style.display = index === currentQuestions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = index === currentQuestions.length - 1 ? 'block' : 'none';
+        }
+
+        function selectAnswer(questionId, answerIndex) {
+            userAnswers[questionId] = answerIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            
+            let score = 0;
+            let feedbackHTML = '<h3>📊 Exam Review & Feedback:</h3>';
+            
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                const isCorrect = userAnswer === q.correctAnswer;
+                
+                if (isCorrect) score++;
+                
+                feedbackHTML += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p class="correct">✅ Correct: ${String.fromCharCode(65 + q.correctAnswer)}. ${q.options[q.correctAnswer]}</p>
+                        ${!isCorrect ? `
+                            <p class="wrong">❌ Your Answer: ${userAnswer !== undefined ? 
+                                String.fromCharCode(65 + userAnswer) + '. ' + q.options[userAnswer] : 'Not answered'}
+                            </p>
+                        ` : ''}
+                        <p><strong>💡 Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / QUESTIONS_PER_EXAM) * 100);
+            let message = '';
+            if (percentage >= 80) message = "🎉 Outstanding! Excellent performance!";
+            else if (percentage >= 70) message = "👍 Very good! Well done!";
+            else if (percentage >= 60) message = "💪 Good effort! Keep improving!";
+            else if (percentage >= 50) message = "📚 Passing score. Practice more!";
+            else message = "🌟 Keep studying! You'll improve!";
+            
+            document.getElementById('finalScore').textContent = `${score}/${QUESTIONS_PER_EXAM}`;
+            document.getElementById('scoreMessage').textContent = `${message} (${percentage}%)`;
+            document.getElementById('feedbackArea').innerHTML = feedbackHTML;
+            
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function resetExam() {
+            // AUTO-SHUFFLE again when restarting
+            document.getElementById('examArea').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            initializeExam();
+        }
+
+        // =====================
+        // INITIALIZE PAGE
+        // =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPreviousSubscription();
+            document.getElementById('examArea').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
